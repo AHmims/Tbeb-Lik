@@ -24,3 +24,8 @@
     border-bottom-left-radius: $radius;
     border-bottom-right-radius: $radius;
 }
+
+// 
+@mixin boxShadow() {
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.025);
+}

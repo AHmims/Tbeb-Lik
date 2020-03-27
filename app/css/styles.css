@@ -29,7 +29,7 @@ body {
   flex-direction: row;
   justify-content: flex-start;
   align-items: flex-start;
-  background-color: #E5E5E5;
+  background-color: #FFFFFF;
 }
 
 #navBar {
@@ -84,10 +84,178 @@ body {
   padding: 0 40px;
   background-color: #FFFFFF;
 }
+#content #container {
+  flex: 1;
+  box-sizing: border-box;
+  padding: 40px;
+  background-color: #F6F9FC;
+}
+#content #container .bigBox {
+  width: 100%;
+  height: 100%;
+  background-color: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.025);
+  border-radius: 20px;
+  box-sizing: border-box;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+#content #container .table {
+  padding: 0;
+}
+#content #container .tableHead {
+  width: 100%;
+  height: 62px;
+  box-sizing: border-box;
+  padding: 0 20px;
+  border-bottom: 1px solid #E8EFF6;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+#content #container .vertical {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: flex-start;
+}
+#content #container .txt-main {
+  color: #004348;
+  text-transform: capitalize;
+  font-size: 20px;
+  font-family: "Gilroy";
+  font-weight: bold;
+}
+#content #container .txt-second {
+  color: #C5D7EA;
+  text-transform: capitalize;
+  font-size: 16px;
+  font-family: "Gilroy";
+  font-weight: medium;
+}
+#content #container .btn-doc {
+  padding: 7.5px 15px;
+  background-color: #1FDBAE;
+  text-transform: capitalize;
+  font-size: 20px;
+  font-family: "Gilroy";
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+}
+#content #container .btn-doc img {
+  margin-right: 10px;
+}
+#content #container .btn-acc {
+  padding: 9px 10px;
+  background-color: #1FDBAE;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-family: "Gilroy";
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+}
+#content #container .btn-acc img {
+  margin-right: 5px;
+}
+#content #container .btn-no {
+  padding: 9px 10px;
+  background-color: #FC5E79;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-family: "Gilroy";
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+}
+#content #container .btn-no img {
+  margin-right: 5px;
+}
+#content #container .btn-download {
+  padding: 5px 14px;
+  background-color: #F6F9FC;
+  text-transform: uppercase;
+  font-size: 12px;
+  font-family: "Gilroy";
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  color: #C5D7EA;
+  border: none;
+  cursor: pointer;
+}
+#content #container .btn-download img {
+  margin-left: 18px;
+}
+#content #container .btn-send {
+  padding: 9px 10px;
+  background-color: #1FDBAE;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-family: "Gilroy";
+  font-weight: bold;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  border-radius: 5px;
+  color: #FFFFFF;
+  border: none;
+  cursor: pointer;
+}
+#content #container .btn-send img {
+  margin-left: 5px;
+}
+#content #container .innerTable {
+  box-sizing: border-box;
+  padding: 10px;
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: flex-start;
+  flex-wrap: wrap;
+}
 #content .title {
   font-family: "Gilroy";
   font-weight: bold;
   font-size: 24px;
+  color: #004348;
+}
+
+.radiusRight {
+  border-top-left-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
+}
+
+.radiusLeft {
+  border-top-right-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
 }
 
 /*# sourceMappingURL=styles.css.map */

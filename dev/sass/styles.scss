@@ -14,7 +14,7 @@ body {
 // 
 #body {
     @include display.flex(row, flex-start, flex-start);
-    background-color: #E5E5E5;
+    background-color: colors.$white;
 }
 
 #navBar {
@@ -60,6 +60,157 @@ body {
         @include display.flex(row, flex-start, center);
         padding: 0 40px;
         background-color: colors.$white;
+        // @include display.boxShadow();
+    }
+
+    // 
+    #container {
+        flex: 1;
+        box-sizing: border-box;
+        padding: 40px;
+        background-color: colors.$form;
+
+        // 
+        .bigBox {
+            width: 100%;
+            height: 100%;
+            background-color: colors.$white;
+            @include display.boxShadow();
+            border-radius: values.$bRadius;
+            box-sizing: border-box;
+            padding: 20px;
+            @include display.flex(column, flex-start, flex-start);
+        }
+
+        .table {
+            padding: 0;
+        }
+
+        .tableHead {
+            width: 100%;
+            height: 62px;
+            box-sizing: border-box;
+            padding: 0 20px;
+            border-bottom: 1px solid colors.$form-mid;
+            @include display.flex(row, space-between, center);
+        }
+
+        .vertical {
+            @include display.flex(column, flex-start, flex-start);
+        }
+
+        .txt-main {
+            color: colors.$dark;
+            text-transform: capitalize;
+            font-size: 20px;
+            font-family: "Gilroy";
+            font-weight: bold;
+        }
+
+        .txt-second {
+            color: colors.$form-dark;
+            text-transform: capitalize;
+            font-size: 16px;
+            font-family: "Gilroy";
+            font-weight: medium;
+        }
+
+        .btn-doc {
+            padding: 7.5px 15px;
+            background-color: colors.$accent;
+            text-transform: capitalize;
+            font-size: 20px;
+            font-family: "Gilroy";
+            font-weight: bold;
+            @include display.flex(row, center, center);
+            border-radius: values.$bRadius-2;
+            color: colors.$white;
+            border: none;
+            cursor: pointer;
+
+            img {
+                margin-right: 10px;
+            }
+        }
+
+        .btn-acc {
+            padding: 9px 10px;
+            background-color: colors.$accent;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-family: "Gilroy";
+            font-weight: bold;
+            @include display.flex(row, center, center);
+            border-radius: values.$bRadius-2;
+            color: colors.$white;
+            border: none;
+            cursor: pointer;
+
+            img {
+                margin-right: 5px;
+            }
+        }
+
+        .btn-no {
+            padding: 9px 10px;
+            background-color: colors.$red;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-family: "Gilroy";
+            font-weight: bold;
+            @include display.flex(row, center, center);
+            border-radius: values.$bRadius-2;
+            color: colors.$white;
+            border: none;
+            cursor: pointer;
+
+            img {
+                margin-right: 5px;
+            }
+        }
+
+        .btn-download {
+            padding: 5px 14px;
+            background-color: colors.$form;
+            text-transform: uppercase;
+            font-size: 12px;
+            font-family: "Gilroy";
+            font-weight: bold;
+            @include display.flex(row, center, center);
+            border-radius: values.$bRadius-2;
+            color: colors.$form-dark;
+            border: none;
+            cursor: pointer;
+
+            img {
+                margin-left: 18px;
+            }
+        }
+
+        .btn-send {
+            padding: 9px 10px;
+            background-color: colors.$accent;
+            text-transform: uppercase;
+            font-size: 18px;
+            font-family: "Gilroy";
+            font-weight: bold;
+            @include display.flex(row, center, center);
+            border-radius: values.$bRadius-3;
+            color: colors.$white;
+            border: none;
+            cursor: pointer;
+
+            img {
+                margin-left: 5px;
+            }
+        }
+
+        .innerTable {
+            box-sizing: border-box;
+            padding: 10px;
+            @include display.flex(row, flex-start, flex-start);
+            flex-wrap: wrap;
+        }
     }
 
     // 
@@ -67,5 +218,16 @@ body {
         font-family: "Gilroy";
         font-weight: bold;
         font-size: 24px;
+        color: colors.$dark;
     }
+}
+
+.radiusRight {
+    border-top-left-radius: 0 !important;
+    border-bottom-left-radius: 0 !important;
+}
+
+.radiusLeft {
+    border-top-right-radius: 0 !important;
+    border-bottom-right-radius: 0 !important;
 }
