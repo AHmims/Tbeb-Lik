@@ -1,6 +1,7 @@
 @use 'colors';
 @use 'display';
 @use 'values';
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap');
 
 // 
 html,
@@ -205,11 +206,173 @@ body {
             }
         }
 
+        .btn-main {
+            padding: 16px 30px;
+            background-color: colors.$accent;
+            text-transform: uppercase;
+            font-size: 18px;
+            font-family: "Gilroy";
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: values.$bRadius-1;
+            color: colors.$white;
+            border: none;
+        }
+
+        // 
+        .box-notif {
+            position: relative;
+            box-sizing: border-box;
+            width: 368px;
+            padding: 15px;
+            // padding: 10px;
+            @include display.flex(column, unset, unset);
+            background-color: colors.$white;
+            @include display.boxShadow();
+            border-radius: values.$bRadius-1;
+            font-family: 'Gilroy';
+            font-weight: medium;
+            font-size: 16px;
+            color: colors.$dark;
+            letter-spacing: 0.6px;
+
+            .box-notif-switch {
+                position: absolute;
+                top: 25px;
+                right: 15px;
+                cursor: pointer;
+            }
+
+            .box-notif-title {
+                font-weight: bold;
+                font-size: 22px;
+            }
+
+            .box-notif-date {
+                color: colors.$accent;
+                font-size: 18px;
+            }
+
+            .box-notif-name {
+                margin-top: 15px;
+                font-size: 20px;
+            }
+
+            // 
+            .box-notif-ext {
+                @include display.flex(column, unset, unset);
+                display: none;
+
+                // 
+                .box-notif-subTitle {
+                    font-size: 20px;
+                    font-weight: bold;
+                    margin-top: 15px;
+                    margin-bottom: 5px;
+                }
+
+                .box-notif-desc {
+                    box-sizing: border-box;
+                    width: 100%;
+                    padding: 5px;
+                    font-size: 14px;
+                    color: colors.$dark;
+                    font-family: 'Roboto', sans-serif;
+                    background-color: colors.$form;
+                    border-radius: values.$bRadius-2;
+                }
+            }
+        }
+
+        // 
+        .box-rndv {
+            box-sizing: border-box;
+            width: 530px;
+            padding: 15px;
+            // padding: 10px;
+            @include display.flex(column, unset, unset);
+            background-color: colors.$white;
+            @include display.boxShadow();
+            border-radius: values.$bRadius;
+            letter-spacing: 0.6px;
+
+            .box-rndv-date {
+                @include display.flex(row, flex-start, center);
+            }
+
+            .box-rndv-date-input {
+                height: 33px;
+                width: 375px;
+                margin: 10px 0;
+                padding: 0;
+                border: 1px solid colors.$form-dark;
+                border-radius: values.$bRadius-2;
+                color: colors.$form-dark;
+                background-color: colors.$form;
+                font-family: 'Roboto';
+                font-style: italic;
+                box-sizing: border-box;
+                padding: 0 10px;
+                font-size: 16px;
+            }
+
+            .box-rndv-note-input {
+                width: 100%;
+                margin: 10px 0;
+                background-color: colors.$form;
+                border-radius: values.$bRadius-2;
+                color: colors.$dark;
+                font-family: 'Roboto';
+                font-size: 16px;
+                min-height: 170px;
+                margin-bottom: 40px;
+                box-sizing: border-box;
+                padding: 5px 10px;
+
+                &:empty:before {
+                    content: attr(placeholder);
+                    color: colors.$form-dark;
+                    font-family: 'Roboto';
+                    font-style: italic;
+                }
+            }
+        }
+
+        .title-24 {
+            font-family: 'Gilroy';
+            font-size: 24px;
+            color: colors.$dark;
+            // text-transform: capitalize;
+            font-weight: bold;
+        }
+
+        .row-collection {
+            @include display.flex(row, unset, center);
+        }
+
+        .align-right {
+            align-self: flex-end;
+            justify-self: flex-end;
+            margin-left: auto;
+        }
+
+        .m-top-20 {
+            margin-top: 20px;
+        }
+
+        .trans-flip {
+            transform: rotate(180deg);
+        }
+
         .innerTable {
             box-sizing: border-box;
             padding: 10px;
             @include display.flex(row, flex-start, flex-start);
             flex-wrap: wrap;
+
+            * {
+                margin-right: 5px;
+            }
         }
     }
 
