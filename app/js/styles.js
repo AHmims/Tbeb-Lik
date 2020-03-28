@@ -87,6 +87,35 @@ window.onload = () => {
             txt[i].innerHTML = `<img src="../icon/pen.svg" class="box-rndv-note-icon"> <span>${string}</span>`;
         }
     }
+    if (dgclass('patientRow').length > 0) {
+        var rows = dgclass('patientRow');
+        for (let i = 0; i < rows.length; i++) {
+            var icon = document.createElement('img');
+            icon.setAttribute('src', '../icon/dots.svg');
+            icon.setAttribute('class', 'align-right');
+            rows[i].appendChild(icon);
+            // 
+            rows[i].addEventListener('click', () => {
+                for (let j = 0; j < rows.length; j++) {
+                    if (i != j)
+                        rows[j].setAttribute('class', 'patientRow');
+                    else
+                        rows[j].setAttribute('class', 'patientRow patientRow-active');
+                }
+            });
+            // 
+        }
+    }
+    if (dgclass('patientInfos-ordo-info').length > 0) {
+        var cont = dgclass('patientInfos-ordo-info');
+        for (let i = 0; i < cont.length; i++) {
+            var icon = document.createElement('img');
+            icon.setAttribute('class', 'patientInfos-ordo-info-icon');
+            icon.setAttribute('src', '../icon/hint.svg');
+            // 
+            cont[i].appendChild(icon);
+        }
+    }
     // 
     // 
     flatpickr('.box-rndv-date-input', {
