@@ -50,6 +50,57 @@ window.onload = () => {
             btns[i].innerHTML = `${str} <img src="../icon/send1.svg"/>`;
         }
     }
+    if (dgclass('box-notif').length > 0) {
+        var boxes = dgclass('box-notif');
+        for (let i = 0; i < boxes.length; i++) {
+            var icon = document.createElement('img');
+            icon.setAttribute('class', 'box-notif-switch');
+            icon.setAttribute('src', '../icon/switch.svg');
+            // 
+            icon.addEventListener('click', () => {
+                var icons = dgclass('box-notif-switch');
+                var extension = dgclass('box-notif-ext');
+                var state = extension[i].style.display;
+                // 
+                if (state == "flex")
+                    icons[i].classList.remove("trans-flip");
+                else
+                    icons[i].classList.add("trans-flip");
+                // 
+                extension[i].style.display = state == "flex" ? "none" : "flex";
+            });
+            // 
+            boxes[i].appendChild(icon);
+        }
+    }
+    if (dgclass('box-rndv-date').length > 0) {
+        var txt = dgclass('box-rndv-date');
+        for (let i = 0; i < txt.length; i++) {
+            var string = txt[i].innerText;
+            txt[i].innerHTML = `<img src="../icon/calendar2.svg" class="box-rndv-date-icon"> <span>${string}</span>`;
+        }
+    }
+    if (dgclass('box-rndv-note').length > 0) {
+        var txt = dgclass('box-rndv-note');
+        for (let i = 0; i < txt.length; i++) {
+            var string = txt[i].innerText;
+            txt[i].innerHTML = `<img src="../icon/pen.svg" class="box-rndv-note-icon"> <span>${string}</span>`;
+        }
+    }
+    // 
+    // 
+    flatpickr('.box-rndv-date-input', {
+        "disable": [
+            (date) => {
+                return (date.getDay() === 0 || date.getDay() === 6);
+            }
+        ],
+        "locale": {
+            "firstDayOfWeek": 1
+        }
+    });
+    // 
+    // console.log('%c ', 'font-size:400px; background:url(https://pics.me.me/codeit-google-until-youfinda-stackoverflow-answerwith-code-to-copy-paste-34126823.png) no-repeat;');
 }
 // 
 function dgid(id) {

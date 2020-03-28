@@ -1,3 +1,4 @@
+@import url("https://fonts.googleapis.com/css2?family=Roboto:ital@0;1&display=swap");
 @font-face {
   font-family: "Gilroy";
   src: url("../../app/font/Gilroy-Bold.ttf");
@@ -232,6 +233,153 @@ body {
 #content #container .btn-send img {
   margin-left: 5px;
 }
+#content #container .btn-main {
+  padding: 16px 30px;
+  background-color: #1FDBAE;
+  text-transform: uppercase;
+  font-size: 18px;
+  font-family: "Gilroy";
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 15px;
+  color: #FFFFFF;
+  border: none;
+}
+#content #container .box-notif {
+  position: relative;
+  box-sizing: border-box;
+  width: 368px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: unset;
+  align-items: unset;
+  background-color: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.025);
+  border-radius: 15px;
+  font-family: "Gilroy";
+  font-weight: medium;
+  font-size: 16px;
+  color: #004348;
+  letter-spacing: 0.6px;
+}
+#content #container .box-notif .box-notif-switch {
+  position: absolute;
+  top: 25px;
+  right: 15px;
+  cursor: pointer;
+}
+#content #container .box-notif .box-notif-title {
+  font-weight: bold;
+  font-size: 22px;
+}
+#content #container .box-notif .box-notif-date {
+  color: #1FDBAE;
+  font-size: 18px;
+}
+#content #container .box-notif .box-notif-name {
+  margin-top: 15px;
+  font-size: 20px;
+}
+#content #container .box-notif .box-notif-ext {
+  display: flex;
+  flex-direction: column;
+  justify-content: unset;
+  align-items: unset;
+  display: none;
+}
+#content #container .box-notif .box-notif-ext .box-notif-subTitle {
+  font-size: 20px;
+  font-weight: bold;
+  margin-top: 15px;
+  margin-bottom: 5px;
+}
+#content #container .box-notif .box-notif-ext .box-notif-desc {
+  box-sizing: border-box;
+  width: 100%;
+  padding: 5px;
+  font-size: 14px;
+  color: #004348;
+  font-family: "Roboto", sans-serif;
+  background-color: #F6F9FC;
+  border-radius: 10px;
+}
+#content #container .box-rndv {
+  box-sizing: border-box;
+  width: 530px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: unset;
+  align-items: unset;
+  background-color: #FFFFFF;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.025);
+  border-radius: 20px;
+  letter-spacing: 0.6px;
+}
+#content #container .box-rndv .box-rndv-date {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+}
+#content #container .box-rndv .box-rndv-date-input {
+  height: 33px;
+  width: 375px;
+  margin: 10px 0;
+  padding: 0;
+  border: 1px solid #C5D7EA;
+  border-radius: 10px;
+  color: #C5D7EA;
+  background-color: #F6F9FC;
+  font-family: "Roboto";
+  font-style: italic;
+  box-sizing: border-box;
+  padding: 0 10px;
+  font-size: 16px;
+}
+#content #container .box-rndv .box-rndv-note-input {
+  width: 100%;
+  margin: 10px 0;
+  background-color: #F6F9FC;
+  border-radius: 10px;
+  color: #004348;
+  font-family: "Roboto";
+  font-size: 16px;
+  min-height: 170px;
+  margin-bottom: 40px;
+  box-sizing: border-box;
+  padding: 5px 10px;
+}
+#content #container .box-rndv .box-rndv-note-input:empty:before {
+  content: attr(placeholder);
+  color: #C5D7EA;
+  font-family: "Roboto";
+  font-style: italic;
+}
+#content #container .title-24 {
+  font-family: "Gilroy";
+  font-size: 24px;
+  color: #004348;
+  font-weight: bold;
+}
+#content #container .row-collection {
+  display: flex;
+  flex-direction: row;
+  justify-content: unset;
+  align-items: center;
+}
+#content #container .align-right {
+  align-self: flex-end;
+  justify-self: flex-end;
+  margin-left: auto;
+}
+#content #container .m-top-20 {
+  margin-top: 20px;
+}
+#content #container .trans-flip {
+  transform: rotate(180deg);
+}
 #content #container .innerTable {
   box-sizing: border-box;
   padding: 10px;
@@ -240,6 +388,9 @@ body {
   justify-content: flex-start;
   align-items: flex-start;
   flex-wrap: wrap;
+}
+#content #container .innerTable * {
+  margin-right: 5px;
 }
 #content .title {
   font-family: "Gilroy";
