@@ -8,6 +8,10 @@ window.onload = () => {
     if (dgclass('btn-doc').length > 0) {
         var btns = dgclass('btn-doc');
         for (let i = 0; i < btns.length; i++) {
+            btns[i].addEventListener('click', () => {
+                makeOrdonanceForm("dd", "ddd");
+            });
+            // 
             var str = btns[i].innerText;
             btns[i].innerHTML = "";
             // 
@@ -213,3 +217,81 @@ function makeNavigation(mode) {
     return container;
 }
 // 
+function makeOrdonanceForm(idValue, classValue) {
+    var _DATE = "01/01/1010",
+        _PATIENT = "Ali Hmims",
+        _DOCTOR = "Sanaa Saadoune";
+    // 
+    var formBg = document.createElement('div');
+    formBg.setAttribute('class', 'ordoBoxBg');
+    formBg.addEventListener('click', (e) => {
+        if (e.target == formBg)
+            formBg.remove();
+    });
+    var form = document.createElement('div');
+    form.setAttribute('class', 'ordoBox');
+    // 
+    var formRow = document.createElement('div');
+    formRow.setAttribute('class', 'font-f-Gilroy vertical margin-b-26');
+    // 
+    var formTitle = document.createElement('span');
+    formTitle.innerText = "Ordonnance";
+    formTitle.setAttribute('class', 'font-s-38 txt-c-D font-w-b');
+    var formDate = document.createElement('span');
+    formDate.innerText = `Le : ${_DATE}`;
+    formDate.setAttribute('class', 'font-s-20 txt-c-FD font-w-n align-right');
+    var formDesti = document.createElement('span');
+    formDesti.innerText = `Pour : ${_PATIENT}`;
+    formDesti.setAttribute('class', 'font-s-24 txt-c-D font-w-m');
+    // 
+    var formsubRow = document.createElement('div');
+    formsubRow.setAttribute('class', 'horizontal width-100');
+    formsubRow.appendChild(formDesti);
+    formsubRow.appendChild(formDate);
+    // 
+    formRow.appendChild(formTitle);
+    formRow.appendChild(formsubRow);
+    // 
+    //
+    //  
+    var inputsCont = document.createElement('div');
+    inputsCont.setAttribute('class', 'ordoInputsCont');
+    var inputformRow = document.createElement('div');
+    inputformRow.setAttribute('class', 'margin-b-10');
+    var medicamInput = document.createElement('input');
+    medicamInput.setAttribute('placeholder', 'Médicament 1');
+    medicamInput.setAttribute('class', 'ordoMedicamInput');
+    var dosageInput = document.createElement('input');
+    dosageInput.setAttribute('placeholder', 'Dosage');
+    dosageInput.setAttribute('class', 'ordoDosageInput');
+    // 
+    inputformRow.appendChild(medicamInput);
+    inputformRow.appendChild(dosageInput);
+    // 
+    var addBtn = document.createElement('button');
+    addBtn.setAttribute('class', 'ordoAddMedi');
+    var txtBtn = document.createElement('span');
+    txtBtn.appendChild(document.createTextNode('Ajouter médicament'));
+    var iconBtn = document.createElement('img');
+    iconBtn.setAttribute('src', '../icon/plus.svg');
+    // 
+    addBtn.appendChild(iconBtn);
+    addBtn.appendChild(txtBtn);
+    // 
+    // 
+    inputsCont.appendChild(inputformRow);
+    inputsCont.appendChild(addBtn);
+
+
+
+
+
+
+    form.appendChild(formRow);
+    form.appendChild(inputsCont);
+    formBg.appendChild(form);
+    // 
+    // 
+    document.getElementById('container').appendChild(formBg);
+
+}

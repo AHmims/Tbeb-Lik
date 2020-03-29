@@ -66,6 +66,7 @@ body {
 
     // 
     #container {
+        position: relative;
         flex: 1;
         box-sizing: border-box;
         padding: 40px;
@@ -596,6 +597,60 @@ body {
                 }
             }
         }
+
+        // 
+        // 
+        // 
+        .ordoBoxBg {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            @include display.flex(column, center, center);
+            background: radial-gradient(rgba(0, 0, 0, 0.1), transparent);
+            backdrop-filter: blur(10px);
+
+            .ordoBox {
+                padding: 40px;
+                width: 600px;
+                height: fit-content;
+                @include display.flex(column, unset, unset);
+                background-color: colors.$white;
+                border-radius: values.$bRadius;
+
+                .ordoInputsCont {
+                    @include display.flex(column, unset, unset);
+
+                    input {
+                        border: none;
+                        background: none;
+                        background-color: colors.$form;
+                        border: 1px solid colors.$form-dark;
+                        font-family: 'Roboto';
+                        font-size: 16px;
+                        padding: 5px 10px;
+                        border-radius: values.$bRadius-2;
+
+                        &::placeholder {
+                            font-style: italic;
+                            color: colors.$form-dark;
+                        }
+                    }
+
+                    .ordoMedicamInput {
+                        width: 300px;
+                    }
+
+                    .ordoDosageInput {
+                        width: 100px;
+                        margin-left: 20px;
+                    }
+                }
+            }
+
+        }
+
     }
 
     // 
@@ -655,6 +710,26 @@ body {
     font-size: 28px;
 }
 
+.font-s-30 {
+    font-size: 30px;
+}
+
+.font-s-32 {
+    font-size: 32px;
+}
+
+.font-s-34 {
+    font-size: 34px;
+}
+
+.font-s-36 {
+    font-size: 36px;
+}
+
+.font-s-38 {
+    font-size: 38px;
+}
+
 // 
 .font-w-b {
     font-weight: 700;
@@ -666,6 +741,11 @@ body {
 
 .font-w-n {
     font-weight: 400;
+}
+
+// 
+.font-f-Gilroy {
+    font-family: 'Gilroy';
 }
 
 // 
@@ -722,4 +802,14 @@ body {
 
 .margin-b-0 {
     margin-bottom: 0px !important;
+}
+
+// 
+// 
+.width-50 {
+    width: 50%;
+}
+
+.width-100 {
+    width: 100%;
 }
