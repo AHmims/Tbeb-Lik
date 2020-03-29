@@ -101,6 +101,7 @@ body {
         }
 
         .tableHead {
+            flex: none;
             width: 100%;
             height: 62px;
             box-sizing: border-box;
@@ -382,14 +383,88 @@ body {
         }
 
         .innerTable {
+            flex: 1;
+            max-height: -webkit-fill-available;
+            width: 100%;
             box-sizing: border-box;
-            padding: 10px;
-            @include display.flex(row, flex-start, flex-start);
-            flex-wrap: wrap;
+            padding: 15px 10px;
+            @include display.flex(column, flex-start, flex-start);
+            // flex-wrap: wrap;
+            overflow-y: auto;
 
-            * {
-                margin-right: 5px;
+            .messageContainer {
+                width: 100%;
+                height: fit-content;
+                @include display.flex(row, unset, center);
+
+                span {
+                    padding: 10px;
+                    font-size: 20px;
+                    font-family: 'Roboto', sans-serif;
+                    border-radius: values.$bRadius-2;
+                    max-width: 350px;
+                }
+
+                &:not(:last-of-type) {
+                    margin-bottom: 10px;
+                }
             }
+
+            .sentMessage {
+                flex-direction: row-reverse;
+
+                span {
+                    background-color: colors.$accent;
+                    color: colors.$white;
+                }
+            }
+
+            .receivedMessage {
+                span {
+                    background-color: colors.$form-mid;
+                    color: colors.$dark;
+                }
+            }
+
+        }
+
+        .bottomTable {
+            flex: none;
+            height: 70px;
+            width: 100%;
+            border-top: 1px solid colors.$form-mid;
+            box-sizing: border-box;
+            padding: 0 15px;
+            // 
+            @include display.flex(row, unset, center);
+
+            // 
+            .bottomTable-msgInput {
+                flex: 1;
+                padding: 9px;
+                border: none;
+                background: colors.$form;
+                border-radius: values.$bRadius-2;
+                font-size: 17px;
+                outline: none;
+                font-family: 'Roboto';
+                color: colors.$dark;
+
+                &:focus {
+                    border: 1px solid colors.$form-dark;
+                }
+
+                &::placeholder {
+                    font-style: italic;
+                    color: colors.$form-dark;
+                }
+            }
+
+            .bottomTable-msgSend {
+                margin-left: 26px;
+                cursor: pointer;
+            }
+
         }
 
         .patientRow {

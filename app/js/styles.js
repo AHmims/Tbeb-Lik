@@ -116,6 +116,24 @@ window.onload = () => {
             cont[i].appendChild(icon);
         }
     }
+    if (dgclass('bottomTable').length > 0) {
+        var bottom = dgclass('bottomTable');
+        for (var i = 0; i < bottom.length; i++) {
+            var input = document.createElement('input');
+            var iconSend = document.createElement('img');
+            // 
+            input.setAttribute('type', "text");
+            input.setAttribute('class', 'bottomTable-msgInput');
+            input.setAttribute('id', bottom[i].getAttribute('data-idInput'));
+            input.setAttribute('placeholder', "Votre message text...");
+            iconSend.setAttribute('src', '../icon/send2.svg');
+            iconSend.setAttribute('class', 'bottomTable-msgSend');
+            iconSend.setAttribute('id', bottom[i].getAttribute('data-idSend'));
+            // 
+            bottom[i].appendChild(input);
+            bottom[i].appendChild(iconSend);
+        }
+    }
     // 
     // 
     flatpickr('.box-rndv-date-input', {
