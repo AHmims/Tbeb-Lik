@@ -3,7 +3,7 @@ class Database{
 
 
 private static $dbHost = "localhost";
-private static $dbname = "";
+private static $dbname = "telemedecine";
 private static $dbUser = "root";
 private static $dbUserPassword = "";
 private static $connection = null;
@@ -30,4 +30,6 @@ public static function disconnect(){
     self::$connection = null;
 }
 }
+
+Database::connect();
 ?>
