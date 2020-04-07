@@ -160,7 +160,7 @@ body {
   align-items: unset;
   font-family: "Roboto", sans-serif;
   color: #004348;
-  border-radius: 5px;
+  border-radius: 10px;
   overflow: hidden;
   user-select: none;
   cursor: pointer;
