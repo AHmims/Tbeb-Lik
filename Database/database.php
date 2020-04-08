@@ -3,7 +3,7 @@ class Database{
 
 
 private static $dbHost = "localhost";
-private static $dbname = "telemedecine";
+private static $dbname = "telemedecine2";
 private static $dbUser = "root";
 private static $dbUserPassword = "";
 private static $connection = null;
