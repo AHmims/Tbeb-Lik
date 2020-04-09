@@ -287,6 +287,194 @@ body {
   margin: auto;
 }
 
+
+
+.partContact{
+width:80%;
+margin: auto;
+height: 700px;
+display: flex;
+margin-top: 60px;
+margin-bottom: 60px;
+}
+.appel{
+  height: 100%;
+  width:65%;
+  background-color: #004348;
+  border-bottom-left-radius: 15px;
+  border-top-left-radius: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.imUser{  
+  width: 100%;
+  height: 100%;
+  align-items: center;
+  justify-content: center;
+  justify-content: center;
+}
+.imgUser{
+  height:200px;
+  width: 170px;
+  position: relative;
+	top:50%;
+	left:50%;
+	margin-top:-100px;	
+	margin-left:-95px;
+}
+.Imgs{
+  display: flex;
+  width: 100%;
+  height: 100px;
+}
+.Imgs div{
+  width: 33%;
+}
+.Imgs .icons{
+  display: flex;
+  justify-content: space-between;
+  height: 100px;
+  width: 30%;
+  margin: auto;
+  
+}
+.icons div{
+  height:60px;
+  width: 60px;
+  background-color: rgba(0,0,0,0.2);
+  border-radius: 40px;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  cursor: pointer;
+}
+.icons div:hover{
+  background-color: rgba(255, 255, 255, 0.2);
+}
+.icons img{
+  height:35px;
+  width: 25px;
+  position: relative;
+  top:50%;
+  left:50%;
+  margin-top: -20px;
+  margin-left: -12px;
+}
+#video{
+  height:23px;
+  width: 33px;
+  margin-top: -30px;
+  margin-left: -14px;
+  margin-bottom: 3px;
+}
+.icons .divApp{
+  height:65px;
+  width: 80px;
+  background-color: rgb(255, 17, 57);
+  border-radius: 20px;
+  align-items: center;
+  justify-content: center;
+  justify-items: center;
+  cursor: pointer;
+  margin-top: -5px;
+}
+.icons #appel{
+  height:60px;
+  width: 65px;
+  margin-top: -28px;
+  margin-left: -30px;
+}
+.popup{
+  height: 100px;
+  justify-content: right;
+  width: 25%;
+}
+.popup img{
+  width: 230px;
+  height: 170px;
+  float: right;
+  border-radius: 10px;
+  margin-top:-90px;
+  margin-right: 10px;
+}
+
+.message{
+  font-family: "Gilroy", sans-serif;
+  height: 100%;
+  width: 35%;
+  background-color: rgb(255, 255, 255);
+  border: 1px solid #c4c4c4;
+  box-sizing: border-box;
+}
+.medInfos{
+  display: flex;
+  height: 70px;
+  border-bottom: 1px solid #c4c4c4;
+  padding-left: 10px;
+}
+.medInfos img{
+  margin:4px;
+}
+.infos{
+  display: flex;
+  flex-direction: column;
+  margin:9px;
+}
+.infos span:first-of-type{
+  font-weight: bold;
+  font-size: 20px;
+  margin-bottom: 5px;
+}
+.msgs{
+ height: 570px;
+ overflow-y: scroll;
+ scroll-behavior: auto;
+}
+.msgs p {
+  background-color: #F6F9FC;
+  height:fit-content;
+  border-radius: 10px;
+  padding:10px;
+  font-size: 18px;
+  width: fit-content;
+  margin-left: 5px;
+  margin-right: 5px;
+  clear: right;
+  margin-bottom: -13px;
+  max-width: 55%;
+}
+.msgs .msgUser{
+  background-color:#1FDBAE;
+  float: right;
+  color:white;
+  margin-bottom: 1px;
+ 
+}
+.writeMsg{
+  display: flex;
+  width: 98%;
+  margin: auto;
+  margin-top:5px;
+  
+}
+#write{
+  width: 320px;
+  background-color: #F6F9FC;
+  color: rgb(129, 129, 129);
+  height: 45px;
+  border-radius: 23px;
+  font-size: 18px;
+  border-style: none;
+  padding:10px;
+  box-sizing: border-box;
+}
+.writeMsg button{
+  background-color: white;
+  border-style: none;
+  cursor: pointer;
+}
+
 @media screen and (max-width: 1200px) {
   .formulaire{
     flex-direction: column;
@@ -343,7 +531,69 @@ body {
   #form_patient textarea{
     width:100%;
   }
+
+
+  
+.partContact{
+  width:90%;
+  flex-direction: column;
+  margin-bottom: 500px;
+  }
+  .appel{
+    height: 400px;
+    width:100%;
+    border-top-right-radius: 15px;
+    border-top-left-radius: 15px;
+    border-bottom-left-radius: 0px;
+    border-bottom-right-radius: 0px;
+  }
+  .Imgs div{
+    width: 450px;
+  }
+  .icons div{
+    height:50px;
+    width: 50px;
+  }
+  .icons img{
+    height:25px;
+    width: 15px;
+    margin-top: -20px;
+    margin-left: -8px;
+  }
+  #video{
+    height:15px;
+    width: 23px;
+    margin-top: -80px;
+    margin-left: -10px;
+    margin-bottom: 3px;
+  }
+  .icons .divApp{
+    height:55px;
+    width: 60px;
+  }
+  .icons #appel{
+    height:40px;
+    width: 35px;
+    margin-top: -20px;
+    margin-left: -18px;
+  }
+  .popup{
+    width: 35%;
+  }
+  .popup img{
+    width: 130px;
+    height: 170px;
+    margin-top:-290px;
+    margin-right: 10px;
+  }
+  
+  
+  .message{
+    width: 100%;
+    margin: auto;
+  }
 }
+
 
 
 /*# sourceMappingURL=patient_1_OCP.css.map */
