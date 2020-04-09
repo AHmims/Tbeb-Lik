@@ -199,5 +199,151 @@ body {
   font-family: "Gilroy", sans-serif;
   font-weight: 400;
 }
+.formulaire{
+  display: flex;
+  width:90%;
+  margin:auto;
+}
+#form_patient{
+  font-family: "Gilroy", sans-serif;
+  margin-left: 50px;
+  padding: 50px;
+  box-sizing: border-box;
+  width:48%;
+  margin:auto;
+  display :flex;
+  flex-direction: column;
+}
+#form_patient div{
+  display:flex;
+  margin-top:40px;
+  margin-right: 30px;
+  align-items: center;
+}
+#form_patient div div{
+  margin-top:0px;
+  margin-right:40px;
+}
+#form_patient div label{
+  font-size: 20px;
+  font-weight: bold;
+  width: max-content;
+  margin-right: 15px;
+}
+#form_patient input{
+  font-size: 20px;
+  background-color: #F6F9FF;
+  border-radius: 8px;
+  height: 40px;
+  width:250px;
+  border-style: none;
+  padding:10px;
+  box-sizing: border-box;
+}
+#form_patient textarea{
+  font-family: "Gilroy", sans-serif;
+  font-size: 20px;
+  background-color: #F6F9FF;
+  border-radius: 8px;
+  height: 60px;
+  width:300px;
+  border-style: none;
+  padding:4px;
+}
+#form_patient h2{
+  margin-top: 60px;
+  margin-bottom: -10px;
+  font-size:31px;
+  color:#004348;
+}
+#form_patient input[type="file"]{
+  display: inline-block;
+  padding: 6px 12px;
+  cursor: pointer;
+  font-size: 15px;
+  width:290px;
+}
+#form_patient button{
+  background-color:#1FDBAE;
+  border-style: none;
+  width:180px;
+  margin: auto;
+  height:40px;
+  border-radius: 15px;
+  color:white;
+  font-weight: bold;
+  font-size: 20px;
+  cursor: pointer;
+  margin-bottom: 40px;
+  text-align: center;
+}
+#form_patient button:hover{
+  background-color: rgb(201, 201, 201);
+  color: rgb(255, 255, 255);
+}
+.formulaire img{
+  width:500px;
+  height:500px;
+  margin: auto;
+}
+
+@media screen and (max-width: 1200px) {
+  .formulaire{
+    flex-direction: column;
+    width: 98%;
+    margin: auto;
+  }
+  #form_patient{
+    width: 90%;
+    margin: auto;
+    margin-left: 0px;
+  padding: 0px;
+  }
+  .formulaire img{
+    width:450px;
+  }
+  #form_patient div{
+    width:85%;
+    margin: auto;
+    display:flex;
+    margin-right: 0px;
+  }
+  #form_patient h2{
+    text-align: center;
+  }
+  #form_patient div label{
+    font-size: 18px;
+    font-weight: bold;
+    width: max-content;
+    margin-right: 15px;
+    margin-bottom: 10px;
+  }
+  #form_patient div{
+    display:flex;
+    flex-direction: column;
+    margin-top:40px;
+    margin-right: 30px;
+    align-items: flex-start;
+  }
+  #form_patient div div{
+    margin-left:-5px;
+    margin-top:40px;
+    margin-right: 0px;
+    width:100%;
+  }
+  #form_patient h2:first-of-type{
+    margin-bottom:-50px;
+  }
+  #form_patient div div input{
+    width:100%;
+  }
+  #form_patient input{
+    width:100%;
+  }
+  #form_patient textarea{
+    width:100%;
+  }
+}
+
 
 /*# sourceMappingURL=patient_1_OCP.css.map */
