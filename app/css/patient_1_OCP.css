@@ -441,8 +441,9 @@ margin-bottom: 60px;
   margin-left: 5px;
   margin-right: 5px;
   clear: right;
-  margin-bottom: -13px;
   max-width: 55%;
+  word-wrap: break-word;
+  margin-bottom: -15px;
 }
 .msgs .msgUser{
   background-color:#1FDBAE;
