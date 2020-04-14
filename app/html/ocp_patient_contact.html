@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/patient_1_OCP.css">
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
-    <title>Formulaire</title>
+    <title>Contact</title>
 </head>
 
 <body>
@@ -31,7 +31,7 @@
         <section>
             <div class="partContact">
                 <div class="appel">
-                    <div class="imUser">><img src="../img/User.png" alt="user" class="imgUser"></div>
+                    <div class="imUser"><img src="../img/User.png" alt="user" class="imgUser"></div>
                     <div class="Imgs">
                         <div></div>
                             <div class="icons">
@@ -65,6 +65,26 @@
                 </div>
             </div>
         </section>
+                <script>
+                        var button = document.getElementById("btnAdd");
+                        var input = document.getElementById("write");
+                        var msgs = document.querySelector(".msgs");
+                        var elements = document.querySelectorAll(".msgs p")
+
+                    function inputlength(){
+                        return input.value.length;
+                    }
+
+                        button.addEventListener("click",function(){
+                            if(inputlength()>0) 
+                        {
+                            var p =document.createElement("p");
+                            p.appendChild(document.createTextNode(input.value));
+                            msgs.appendChild(p); 
+                            input.value="";
+                        }
+                    });
+                </script>
 
         <div id="footer">
             <span>@Copyright 2020. All right reserved.</span>
