@@ -8,7 +8,8 @@ const __PATH = require('path');
 
 //GLOBAL VARIABLES
 const __PORT = 8080;
-let chatters = [];
+let chatters = [],
+    rooms = [];
 //MIDDLEWARES
 __APP.use(__EXPRESS.static(__PATH.join(__dirname, 'public')));
 //TRAITMENT
@@ -24,19 +25,74 @@ const __CHAT = __IO.of('/chat');
 __CHAT.on('connection', socket => {
     console.log('Chat in');
     // 
-    socket.on('setUser', data => {
-        chatters.push({
-            userId: data[0],
-            type: data[1],
-            socket: socket.id
-        });
-        console.log(chatters);
+
+    // 
+    socket.on('setPatient', patientId => {
+        let userData = setUserSocket('Patient', socket, patientId);
+        // THE MEDECIN HE WILL BE CONNECTED TO
+        userData.linkedMedecin = 'TbebLik';
+        // CHANGE THIS ROOM ID LATER WITH A BETTER RANDOM GENERATED ONE
+        userData.roomId = generateRoomId();
+        // 
+        let exsists = false;
+        for (let i = 0; i < chatters.length; i++) {
+            if (chatters[i].userId == userData.userId) {
+                chatters[i].socket = socket.id;
+                exsists = true;
+                socket.join(chatters[i].roomId);
+                chatters[i].online = true;
+                break;
+            }
+        }
+        if (!exsists) {
+            chatters.push(userData);
+            // __IO.sockets.in(userData.roomId).on('connection', () => {
+            //     console.log('connection to ' + userData.roomId);
+            // });
+            socket.join(userData.roomId);
+            rooms.push({
+                id: userData.roomId,
+                patient: patientId,
+                medecin: userData.linkedMedecin
+            });
+        }
+
+    });
+    // 
+    socket.on('setMedecin', medecinId => {
+        let userData = setUserSocket('Medecin', socket, medecinId);
+        // 
+        let exsists = false;
+        for (let i = 0; i < chatters.length; i++) {
+            if (chatters[i].userId == userData.userId) {
+                chatters[i].socket = socket.id;
+                exsists = true;
+                chatters[i].online = true;
+                break;
+            }
+        }
+        // 
+        if (!exsists) {
+            chatters.push(userData);
+        }
     });
     // 
     socket.on('disconnect', () => {
+        //DELETE A MEDECIN FROM A THE ARRAY [TO BE REWORKED LATER]
         chatters = chatters.filter(chatter => {
-            return chatter.socket != socket.id;
+            if (chatter.type == 'Medecin') {
+                return chatter.socket != socket.id;
+            }
+            return true;
         });
+        // WHEN A PATIENT DISCONNECTS SEND A REQUEST TO REFRESH THE CORRESPONDING
+        // MEDECIN PATIENTS LIST 
+        for (let i = 0; i < chatters.length; i++) {
+            if (chatters[i].type == 'Patient') {
+                if (chatters[i].socket == socket.id)
+                    getPatientList(chatters[i].linkedMedecin);
+            }
+        }
         // 
         console.log(chatters);
     });
@@ -46,12 +102,55 @@ __CHAT.on('connection', socket => {
     });
     // 
     socket.on('msgSent', (data) => {
-        socket.to('alibaba').emit('msgReceived', data);
+        // Socket.to => all clients except sender
+        // io.to => all clients including sender
+        __IO.to('alibaba').emit('msgReceived', data);
     });
+    // 
+    function setUserSocket(type, socket, id) {
+        return {
+            userId: id,
+            type: type,
+            socket: socket.id,
+            online: true
+        }
+    }
+    // 
+    function generateRoomId() {
+        let exists = true;
+        let id = '';
+        while (exists) {
+            exists = false;
+            id = `cRoom-${Math.floor(Math.random()*100000)}`;
+            for (let i = 0; i < chatters.length; i++) {
+                if (chatters[i].roomId == id)
+                    exists = true;
+            }
+        }
+        // 
+        return id;
+    }
+    // 
+    function getPatientList(medecinId) {
+        let patientByMedecin = chatters.filter(element => {
+            if (element.type == 'Patient')
+                return element.linkedMedecin == medecinId;
+            else
+                return false;
+        });
+        // 
+        let medecinSocketId = null;
+        chatters.forEach(element => {
+            if (element.userId == medecinId)
+                medecinSocketId = element.socket;
+        });
+        // SEND DATA TO A SPECEFIC SOCKET
+        socket.broadcast.to(medecinSocketId).emit('p_liste', patientByMedecin);
+    }
 });
 // ROUTES
 __APP.get('/', (req, res) => {
-    res.send('<h1>Hello</h1>');
+    res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_login.html'));
 });
 __APP.get('/m', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'medecin.html'));

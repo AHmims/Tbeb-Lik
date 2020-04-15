@@ -1,6 +1,6 @@
 const __SOCKET = io('/chat');
 __SOCKET.on('connect', () => {
-    __SOCKET.emit('setUser', [sessionStorage.getItem('id'), sessionStorage.getItem('type')]);
+    __SOCKET.emit('setPatient', sessionStorage.getItem('patient_M'));
 });
 // 
 document.getElementById('btn-send').addEventListener('click', () => {
@@ -16,3 +16,4 @@ __SOCKET.on('msgReceived', data => {
 document.getElementById('btn-join').addEventListener('click', () => {
     __SOCKET.emit('joinRoom');
 });
+// 
