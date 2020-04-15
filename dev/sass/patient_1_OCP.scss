@@ -188,14 +188,14 @@ body {
         }
     }
 
-    #footer {
-        width: 100%;
-        height: 75px;
-        background-color: colors.$dark;
-        @include display.flex(column, center, center);
-        color: colors.$white;
-        font-size: 18px;
-        font-family: 'Gilroy', sans-serif;
-        font-weight: 400;
-    }
+    // #footer {
+    //     width: 100%;
+    //     height: 75px;
+    //     background-color: colors.$dark;
+    //     @include display.flex(column, center, center);
+    //     color: colors.$white;
+    //     font-size: 18px;
+    //     font-family: 'Gilroy', sans-serif;
+    //     font-weight: 400;
+    // }
 }

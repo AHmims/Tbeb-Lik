@@ -260,7 +260,7 @@ body {
 #content #navBar #navBarIn #navBarNavText #logout img {
   margin-right: 5px;
 }
-#content #footer {
+/* #content #footer {
   width: 100%;
   height: 75px;
   background-color: #004348;
@@ -273,5 +273,42 @@ body {
   font-family: "Gilroy", sans-serif;
   font-weight: 400;
 }
+ */
+
+footer{
+  margin-top:50px;
+}
+footer img {
+  padding: -100px 0px -116px -133px;
+  font-size: 3rem;
+  height: 88px;
+  width: 258px;
+}
+.footer-bottom-text{
+  padding: 6px;
+  text-align: center;
+  background: black;
+  line-height: 25px;
+  color: #fff;
+  font-family: 'Courgette', cursive;
+  font-size: 1.9vh;
+  letter-spacing: 2px;
+}
+
+.footer-bottom-text span{  
+background-image: url('../img/vert.png');
+-webkit-background-clip: text;
+background-clip: text;
+-webkit-text-fill-color: transparent;
+-webkit-animation: fire 2s linear infinite;
+animation: fire 2s linear infinite;
+-webkit-backface-visibility: hidden;
+backface-visibility: hidden;
+}
+@keyframes fire{
+  0%{background-position: 0% -50%;}
+  0%{background-position: 100% -50%;}
+}
+
 
 /*# sourceMappingURL=patient_playground_OCP.css.map */
