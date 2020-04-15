@@ -39,8 +39,13 @@ __CHAT.on('connection', socket => {
             if (chatters[i].userId == userData.userId) {
                 chatters[i].socket = socket.id;
                 exsists = true;
+                // 
                 socket.join(chatters[i].roomId);
+                // 
                 chatters[i].online = true;
+                // 
+                getPatientList(chatters[i].linkedMedecin);
+                // 
                 break;
             }
         }
@@ -50,6 +55,8 @@ __CHAT.on('connection', socket => {
             //     console.log('connection to ' + userData.roomId);
             // });
             socket.join(userData.roomId);
+            getPatientList(userData.linkedMedecin);
+            // 
             rooms.push({
                 id: userData.roomId,
                 patient: patientId,
@@ -75,26 +82,22 @@ __CHAT.on('connection', socket => {
         if (!exsists) {
             chatters.push(userData);
         }
+        console.log(chatters);
     });
     // 
     socket.on('disconnect', () => {
-        //DELETE A MEDECIN FROM A THE ARRAY [TO BE REWORKED LATER]
-        chatters = chatters.filter(chatter => {
-            if (chatter.type == 'Medecin') {
-                return chatter.socket != socket.id;
-            }
-            return true;
-        });
-        // WHEN A PATIENT DISCONNECTS SEND A REQUEST TO REFRESH THE CORRESPONDING
-        // MEDECIN PATIENTS LIST 
         for (let i = 0; i < chatters.length; i++) {
+            // IF A USER DISCONNECTS SET THEIR STATUS TO OFFLINE
+            if (chatters[i].socket == socket.id)
+                chatters[i].online = false;
+            // WHEN A PATIENT DISCONNECTS SEND A REQUEST TO REFRESH THE CORRESPONDING
+            // MEDECIN PATIENTS LIST 
             if (chatters[i].type == 'Patient') {
                 if (chatters[i].socket == socket.id)
                     getPatientList(chatters[i].linkedMedecin);
             }
         }
         // 
-        console.log(chatters);
     });
     // 
     socket.on('joinRoom', () => {
