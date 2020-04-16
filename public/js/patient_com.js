@@ -4,9 +4,9 @@ __SOCKET.on('connect', () => {
 });
 // 
 document.getElementById('btn-send').addEventListener('click', () => {
-    __SOCKET.emit('msgSent', {
-        msg: document.getElementById('txt-field').value
-    });
+    __SOCKET.emit('msgSent',
+        document.getElementById('txt-field').value
+    );
 });
 // 
 __SOCKET.on('msgReceived', data => {

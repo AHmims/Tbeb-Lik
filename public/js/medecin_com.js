@@ -16,3 +16,8 @@ document.getElementById('btn-join').addEventListener('click', () => {
 __SOCKET.on('p_liste', data => {
     console.log(data);
 });
+// 
+__SOCKET.on('msgReceived', data => {
+    console.log(data);
+    document.getElementById('remote').innerText += data.msg + '\n';
+});

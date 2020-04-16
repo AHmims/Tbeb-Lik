@@ -45,6 +45,7 @@ __CHAT.on('connection', socket => {
                 chatters[i].online = true;
                 // 
                 getPatientList(chatters[i].linkedMedecin);
+                updateRooms(userData.userId);
                 // 
                 break;
             }
@@ -57,6 +58,9 @@ __CHAT.on('connection', socket => {
             socket.join(userData.roomId);
             getPatientList(userData.linkedMedecin);
         }
+        // UPDATE THE ROOMS USER SOCKETID #IF EXISTS
+        //BY THE NEW ONE
+        updateRooms();
 
     });
     // 
@@ -69,6 +73,7 @@ __CHAT.on('connection', socket => {
                 chatters[i].socket = socket.id;
                 exsists = true;
                 chatters[i].online = true;
+                updateRooms(userData.userId);
                 break;
             }
         }
@@ -77,6 +82,9 @@ __CHAT.on('connection', socket => {
             chatters.push(userData);
         }
         console.log(chatters);
+        // 
+        // UPDATE THE ROOMS USER SOCKETID #IF EXISTS
+        //BY THE NEW ONE
     });
     // 
     socket.on('disconnect', () => {
@@ -159,7 +167,8 @@ __CHAT.on('connection', socket => {
         // 
         console.log(roomId);
         // 
-        socket.to(roomId).emit('msgReceived', msg);
+        // socket.to(roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
+        __CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
     });
     // 
     function setUserSocket(type, socket, id) {
@@ -201,6 +210,15 @@ __CHAT.on('connection', socket => {
         });
         // SEND DATA TO A SPECEFIC SOCKET
         socket.broadcast.to(medecinSocketId).emit('p_liste', patientByMedecin);
+    }
+    // 
+    function updateRooms(userId) {
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].patient.id == userId)
+                rooms[i].patient.socketId = socket.id;
+            if (rooms[i].medecin.id == userId)
+                rooms[i].medecin.socketId = socket.id;
+        }
     }
 });
 // ROUTES
