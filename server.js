@@ -260,6 +260,13 @@ __APP.get('/m', (req, res) => {
 __APP.get('/p', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'patient.html'));
 });
+// 
+__APP.get('/medecin/notifications', (req, res) => {
+    res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_medecin_page1.html'));
+});
+__APP.get('/patient/home', (req, res) => {
+    res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_patient_formulaire.html'));
+});
 //START SERVER
 __HTTP.listen(__PORT, () => {
     console.log(`Server started...\nListening on port ${__PORT}`);

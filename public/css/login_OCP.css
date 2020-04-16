@@ -1,22 +1,26 @@
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700&display=swap");
+
 @font-face {
   font-family: "Gilroy";
   src: url("../../app/font/Gilroy-Bold.ttf");
   font-weight: 700;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Gilroy";
   src: url("../../app/font/Gilroy-Medium.ttf");
   font-weight: 500;
   font-style: normal;
 }
+
 @font-face {
   font-family: "Gilroy";
   src: url("../../app/font/Gilroy-Regular.ttf");
   font-weight: 400;
   font-style: normal;
 }
+
 html,
 body {
   margin: 0;
@@ -36,6 +40,7 @@ body {
   justify-content: unset;
   align-items: center;
 }
+
 #content #form {
   margin-top: 77px;
   font-family: "Montserrat", sans-serif;
@@ -45,6 +50,7 @@ body {
   justify-content: unset;
   align-items: center;
 }
+
 #content #form h1 {
   margin: 0;
   color: #57E4C2;
@@ -52,6 +58,7 @@ body {
   font-weight: 700;
   margin-bottom: 23px;
 }
+
 #content #form .inputCont {
   display: flex;
   flex-direction: column;
@@ -59,11 +66,13 @@ body {
   align-items: unset;
   margin-bottom: 20px;
 }
+
 #content #form .inputCont span {
   font-weight: 500;
   color: #004348;
   margin-bottom: 10px;
 }
+
 #content #form .inputCont input {
   width: 368px;
   height: 35px;
@@ -75,6 +84,7 @@ body {
   border-radius: 5px;
   color: #004348;
 }
+
 #content #form #btnLogin {
   padding: 10px 40px;
   background: #1FDBAE;
@@ -84,6 +94,12 @@ body {
   border: none;
   border-radius: 10px;
   cursor: pointer;
+}
+
+#userSelect {
+  position: absolute;
+  left: 20px;
+  top: 20px;
 }
 
 /*# sourceMappingURL=login_OCP.css.map */

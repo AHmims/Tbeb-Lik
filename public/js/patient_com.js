@@ -1,7 +1,7 @@
 const globSocket = io();
 const __SOCKET = io('/chat');
 __SOCKET.on('connect', () => {
-    __SOCKET.emit('setPatient', sessionStorage.getItem('patient_M'));
+    __SOCKET.emit('setPatient', sessionStorage.getItem('user_M'));
 });
 // 
 document.getElementById('btn-send').addEventListener('click', () => {
