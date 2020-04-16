@@ -1,3 +1,4 @@
+const globSocket = io();
 const __SOCKET = io('/chat');
 __SOCKET.on('connect', () => {
     __SOCKET.emit('setPatient', sessionStorage.getItem('patient_M'));
@@ -9,12 +10,12 @@ document.getElementById('btn-send').addEventListener('click', () => {
     );
 });
 // 
-__SOCKET.on('msgReceived', data => {
-    console.log(data);
-    document.getElementById('remote').innerText += data.msg + '\n';
+__SOCKET.on('msgReceived', msg => {
+    console.log(msg);
+    document.getElementById('remote').innerText += msg.content + '\n';
 });
 // 
-document.getElementById('btn-join').addEventListener('click', () => {
-    __SOCKET.emit('joinRoom');
+document.getElementById('btn-notif').addEventListener('click', () => {
+    globSocket.emit('newNotif', Math.random().toString());
 });
 // 

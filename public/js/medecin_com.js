@@ -6,9 +6,7 @@ __SOCKET.on('connect', () => {
 });
 // 
 document.getElementById('btn-send').addEventListener('click', () => {
-    __SOCKET.emit('msgSent', {
-        msg: document.getElementById('txt-field').value
-    });
+    __SOCKET.emit('msgSent', document.getElementById('txt-field').value);
 });
 //  
 document.getElementById('btn-join').addEventListener('click', () => {
@@ -19,9 +17,9 @@ __SOCKET.on('p_liste', data => {
     console.log(data);
 });
 // 
-__SOCKET.on('msgReceived', data => {
-    console.log(data);
-    document.getElementById('remote').innerText += data.msg + '\n';
+__SOCKET.on('msgReceived', msg => {
+    console.log(msg);
+    document.getElementById('remote').innerText += msg.content + '\n';
 });
 // 
 __HUB_SOCKET.on('newNotif', data => {

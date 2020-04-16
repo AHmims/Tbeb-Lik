@@ -15,17 +15,21 @@ __APP.use(__EXPRESS.static(__PATH.join(__dirname, 'public')));
 //TRAITMENT
 __IO.on('connection', socket => {
     // console.log('Socket connected!');
+    socket.on('newNotif', data => {
+        __HUB.emit('newNotif', data);
+    });
     socket.on('disconnect', () => {
         // console.log('Socket off');
     });
     // 
 });
-// CHAT
+// NAMEPSACES
 const __CHAT = __IO.of('/chat');
+const __HUB = __IO.of('/medecinHub');
+// 
+// CHAT
 __CHAT.on('connection', socket => {
     console.log('Chat in');
-    // 
-
     // 
     socket.on('setPatient', patientId => {
         let userData = setUserSocket('Patient', socket, patientId);
@@ -157,6 +161,7 @@ __CHAT.on('connection', socket => {
         });
         // 
         console.log(roomId);
+        msg = getMsgAdditionalData(msg, 'Text');
         // socket.to(roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
         __CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
     });
@@ -210,9 +215,35 @@ __CHAT.on('connection', socket => {
                 rooms[i].medecin.socketId = socket.id;
         }
     }
+    // 
+    function getMsgAdditionalData(msgTxt, type) {
+        let msgObject = {
+            date: new Date(Date.now()),
+            content: msgTxt,
+            type: type,
+            room: {
+                id: null,
+                sender: null,
+                receiver: null
+            }
+        }
+        // 
+        rooms.forEach(room => {
+            if (room.patient.socketId == socket.id) {
+                msgObject.room.id = room.id;
+                msgObject.room.sender = room.patient.id;
+                msgObject.room.receiver = room.medecin.id;
+            } else if (room.medecin.socketId == socket.id) {
+                msgObject.room.id = room.id;
+                msgObject.room.sender = room.medecin.id;
+                msgObject.room.receiver = room.patient.id;
+            }
+        });
+        // 
+        return msgObject;
+    }
 });
 // NOTIICATION SYSTEM
-const __HUB = __IO.of('/medecinHub');
 __HUB.on('connection', socket => {
     console.log('___MEDECIN ON___' + socket.id);
     setTimeout(() => {
