@@ -56,12 +56,6 @@ __CHAT.on('connection', socket => {
             // });
             socket.join(userData.roomId);
             getPatientList(userData.linkedMedecin);
-            // 
-            rooms.push({
-                id: userData.roomId,
-                patient: patientId,
-                medecin: userData.linkedMedecin
-            });
         }
 
     });
@@ -100,14 +94,72 @@ __CHAT.on('connection', socket => {
         // 
     });
     // 
-    socket.on('joinRoom', () => {
-        socket.join('alibaba');
+    socket.on('joinRoom', roomId => {
+        socket.join(roomId);
+        // 
+        let roomInstance = {
+            id: roomId,
+            patient: {
+                id: null,
+                socketId: null
+            },
+            medecin: {
+                id: null,
+                socketId: null
+            }
+        }
+        // 
+        var medecinId = null;
+        chatters.forEach(element => {
+            if (element.socket == socket.id) {
+                medecinId = element.userId;
+                roomInstance.medecin.id = element.userId;
+                roomInstance.medecin.socketId = element.socket;
+            }
+        });
+        // 
+        for (let i = 0; i < chatters.length; i++) {
+            if (chatters[i].type == 'Patient') {
+                if (chatters[i].roomId == roomId) {
+                    chatters[i].linkedMedecin = medecinId;
+                    roomInstance.patient.id = chatters[i].userId;
+                    roomInstance.patient.socketId = chatters[i].socket;
+                }
+            }
+        }
+        // CHECK FOR DUPS
+        let roomExists = false;
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].id == roomInstance.id) {
+                rooms[i] == roomInstance // IF THE ROOM ALREADY EXISTS UPDATE IT'S INFOS
+                roomExists = true;
+            }
+        }
+        if (!roomExists)
+            rooms.push(roomInstance);
     });
     // 
-    socket.on('msgSent', (data) => {
+    socket.on('msgSent', (msg) => {
         // Socket.to => all clients except sender
         // io.to => all clients including sender
-        __IO.to('alibaba').emit('msgReceived', data);
+
+        // __IO.to('alibaba').emit('msgReceived', data);
+        // 
+        let roomId = null;
+        console.log(socket.id);
+        rooms.forEach(element => {
+            console.log(element);
+            if (element.patient.socketId == socket.id || element.medecin.socketId == socket.id)
+                roomId = element.id;
+            // else {
+            //     if (element.medecin.socket == socket.id)
+            //         roomId = element.id;
+            // }
+        });
+        // 
+        console.log(roomId);
+        // 
+        socket.to(roomId).emit('msgReceived', msg);
     });
     // 
     function setUserSocket(type, socket, id) {

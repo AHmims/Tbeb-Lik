@@ -10,6 +10,7 @@ document.getElementById('btn-send').addEventListener('click', () => {
 });
 // 
 __SOCKET.on('msgReceived', data => {
+    console.log(data);
     document.getElementById('remote').innerText += data.msg + '\n';
 });
 // 
