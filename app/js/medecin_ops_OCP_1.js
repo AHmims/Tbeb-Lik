@@ -129,3 +129,72 @@ function creationCardConsultation(data) {
 function makeElement(type) {
     return document.createElement(type);
 }
+//Historique patient click
+
+var patientRow = document.getElementsByClassName('patientRow');
+
+
+for(var i=0;i<patientRow.length;i++)
+{
+    patientRow[i].addEventListener("click",()=>{
+        if( document.querySelector('.fitBox_Customized').style.display == "block")
+        {
+           document.querySelector('.fitBox_Customized').style.display="none";
+        }
+        else
+        {
+           document.querySelector('.fitBox_Customized').style.display="block";
+        }
+
+    })
+}
+
+//Page contact send message 
+
+var Btn_send = document.getElementById('msgSend');
+
+Btn_send.addEventListener('click',()=>{
+  
+   var t = document.getElementsByClassName('sentMessage');
+ 
+
+   var msg = document.getElementById('msgInput');
+   // if(msg.value.length>1)
+   // {
+       
+       var node = document.createElement("span");
+        
+       var textnode = document.createTextNode(msg.value);   
+       t[0].appendChild(textnode);     
+
+   // }
+   // else
+   // {
+   //     alert('message vide');
+   // }
+
+    
+})
+
+//video call 
+var btn_video = document.getElementsByClassName('call_click');
+
+btn_video[0].addEventListener('click',()=>{
+    var video_call = document.getElementsByClassName('bigBoxPhoneCall');
+     
+    video_call[0].style.display="block";
+})
+var btn_video = document.getElementsByClassName('hangout');
+
+btn_video[0].addEventListener('click',()=>{
+    var video_call = document.getElementsByClassName('bigBoxPhoneCall');
+     
+    video_call[0].style.display="none";
+})
+// php actions 
+
+var Btn_AgeFilter = document.getElementById('id_ageFilter');
+
+Btn_AgeFilter.addEventListener('click',()=>{
+   
+})
