@@ -148,25 +148,15 @@ __CHAT.on('connection', socket => {
     });
     // 
     socket.on('msgSent', (msg) => {
-        // Socket.to => all clients except sender
-        // io.to => all clients including sender
-
-        // __IO.to('alibaba').emit('msgReceived', data);
-        // 
         let roomId = null;
         console.log(socket.id);
         rooms.forEach(element => {
             console.log(element);
             if (element.patient.socketId == socket.id || element.medecin.socketId == socket.id)
                 roomId = element.id;
-            // else {
-            //     if (element.medecin.socket == socket.id)
-            //         roomId = element.id;
-            // }
         });
         // 
         console.log(roomId);
-        // 
         // socket.to(roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
         __CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
     });
@@ -220,6 +210,14 @@ __CHAT.on('connection', socket => {
                 rooms[i].medecin.socketId = socket.id;
         }
     }
+});
+// NOTIICATION SYSTEM
+const __HUB = __IO.of('/medecinHub');
+__HUB.on('connection', socket => {
+    console.log('___MEDECIN ON___' + socket.id);
+    setTimeout(() => {
+        __HUB.emit('newNotif', 'Notifications here!');
+    }, 1000);
 });
 // ROUTES
 __APP.get('/', (req, res) => {

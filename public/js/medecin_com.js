@@ -1,4 +1,6 @@
 const __SOCKET = io('/chat');
+const __HUB_SOCKET = io('/medecinHub');
+//
 __SOCKET.on('connect', () => {
     __SOCKET.emit('setMedecin', 'TbebLik');
 });
@@ -20,4 +22,8 @@ __SOCKET.on('p_liste', data => {
 __SOCKET.on('msgReceived', data => {
     console.log(data);
     document.getElementById('remote').innerText += data.msg + '\n';
+});
+// 
+__HUB_SOCKET.on('newNotif', data => {
+    console.log(data);
 });
