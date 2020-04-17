@@ -16,6 +16,8 @@ __SOCKET.on('msgReceived', msg => {
 });
 // 
 document.getElementById('btn-notif').addEventListener('click', () => {
-    globSocket.emit('newNotif', Math.random().toString());
+    globSocket.emit('newNotif', {
+        name: Math.random().toString()
+    });
 });
 // 

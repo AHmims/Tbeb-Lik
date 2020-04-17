@@ -9,14 +9,32 @@ const __PATH = require('path');
 //GLOBAL VARIABLES
 const __PORT = 8080;
 let chatters = [],
-    rooms = [];
+    rooms = [],
+    notifications = [];
 //MIDDLEWARES
 __APP.use(__EXPRESS.static(__PATH.join(__dirname, 'public')));
 //TRAITMENT
 __IO.on('connection', socket => {
     // console.log('Socket connected!');
     socket.on('newNotif', data => {
-        __HUB.emit('newNotif', data);
+        chatters.forEach(user => {
+            // console.log(user.socket, socket.id);
+            if (user.socket == `/chat#${socket.id}`) {
+                console.log('___________________________________________');
+                data.matricule = user.userId // this is key
+            }
+        });
+        // 
+        let notifData = {
+            index: `NOTIF-${notifications.length + 1}`,
+            data: data,
+            medecin: null,
+            resolved: false
+        }
+        // 
+        notifications.push(notifData);
+        // 
+        __HUB.emit('getNotifs', notifications);
     });
     socket.on('disconnect', () => {
         // console.log('Socket off');
@@ -34,7 +52,7 @@ __CHAT.on('connection', socket => {
     socket.on('setPatient', patientId => {
         let userData = setUserSocket('Patient', socket, patientId);
         // THE MEDECIN HE WILL BE CONNECTED TO
-        userData.linkedMedecin = 'TbebLik';
+        userData.linkedMedecin = null;
         // CHANGE THIS ROOM ID LATER WITH A BETTER RANDOM GENERATED ONE
         userData.roomId = generateRoomId();
         // 
@@ -86,9 +104,18 @@ __CHAT.on('connection', socket => {
             chatters.push(userData);
         }
         console.log(chatters);
-        // 
-        // UPDATE THE ROOMS USER SOCKETID #IF EXISTS
-        //BY THE NEW ONE
+        //JOIN THE FIRST ROOM IF THE DOCTOR IS A PART OF ON
+        for (let i = 0; i < notifications.length; i++) {
+            if (notifications[i].medecin == medecinId) {
+                let functionData = joiningRoom(notifications[i].index);
+                let roomId = functionData.roomId;
+                // 
+                socket.join(roomId);
+                break;
+            }
+
+        }
+
     });
     // 
     socket.on('disconnect', () => {
@@ -106,7 +133,10 @@ __CHAT.on('connection', socket => {
         // 
     });
     // 
-    socket.on('joinRoom', roomId => {
+    socket.on('joinRoom', notificationId => {
+        let functionData = joiningRoom(notificationId);
+        let roomId = functionData.roomId;
+        // 
         socket.join(roomId);
         // 
         let roomInstance = {
@@ -130,6 +160,9 @@ __CHAT.on('connection', socket => {
             }
         });
         // 
+        notifications[functionData.arrayIndex].medecin = medecinId;
+        // notifications[functionData.arrayIndex].resolved = true;
+        // 
         for (let i = 0; i < chatters.length; i++) {
             if (chatters[i].type == 'Patient') {
                 if (chatters[i].roomId == roomId) {
@@ -152,6 +185,7 @@ __CHAT.on('connection', socket => {
     });
     // 
     socket.on('msgSent', (msg) => {
+        console.log('_______________\n' + msg + '\n__________');
         let roomId = null;
         console.log(socket.id);
         rooms.forEach(element => {
@@ -162,8 +196,8 @@ __CHAT.on('connection', socket => {
         // 
         console.log(roomId);
         msg = getMsgAdditionalData(msg, 'Text');
-        // socket.to(roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
-        __CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
+        socket.to(roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
+        //__CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
     });
     // 
     function setUserSocket(type, socket, id) {
@@ -242,13 +276,37 @@ __CHAT.on('connection', socket => {
         // 
         return msgObject;
     }
+    // 
+    function joiningRoom(nId) {
+        let retData = {
+            roomId: null,
+            arrayIndex: -1
+        }
+        // 
+        for (let i = 0; i < notifications.length; i++) {
+            if (notifications[i].index == nId) {
+                let patient = notifications[i].data.matricule;
+                chatters.forEach(user => {
+                    if (user.userId == patient)
+                        retData.roomId = user.roomId;
+                });
+                notifications[i].resolved = true;
+                retData.arrayIndex = i;
+            }
+        }
+        // 
+        return retData;
+    }
 });
 // NOTIICATION SYSTEM
 __HUB.on('connection', socket => {
     console.log('___MEDECIN ON___' + socket.id);
-    setTimeout(() => {
-        __HUB.emit('newNotif', 'Notifications here!');
-    }, 1000);
+    socket.on('updateNotif', () => {
+        // SOME SHIT HERE
+        // AND BY SHIT I MEAN SEND SOME DATA TO ALL DOCTORS TO INFORM THEM 
+        // THAT THIS ORDER IS NO LONGER ACTIVE
+        __IO.emit('notifAccepted', 'SOME DATA');
+    });
 });
 // ROUTES
 __APP.get('/', (req, res) => {
@@ -264,8 +322,14 @@ __APP.get('/p', (req, res) => {
 __APP.get('/medecin/notifications', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_medecin_page1.html'));
 });
-__APP.get('/patient/home', (req, res) => {
+__APP.get('/medecin/contact', (req, res) => {
+    res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_medecin_page2.html'));
+});
+__APP.get('/patient/form', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_patient_formulaire.html'));
+});
+__APP.get('/patient/contact', (req, res) => {
+    res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_patient_contact.html'));
 });
 //START SERVER
 __HTTP.listen(__PORT, () => {

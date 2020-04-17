@@ -1,19 +1,20 @@
-var data = {
-    name: "dkqsdjl",
-    date: "qslkdjlqsk",
-    matricule: "qsldkmlsq",
-    age: "qs",
-    numeroTel: "4203948",
-    motif: "qsdmqskmldqksmldkqsldmqslkdmlqksdmlqksmdlkqsml",
-    atcds: "qsdmkqskdjqslkdjlqksjdlkqjldkjqslkd",
-    nbJourApporte: "99",
-    files: ["nomfichier.ext", "nomfichier.ext"]
-}
-creationCardConsultation(data);
+// var data = {
+//     name: "dkqsdjl",
+//     date: "qslkdjlqsk",
+//     matricule: "qsldkmlsq",
+//     age: "qs",
+//     numeroTel: "4203948",
+//     motif: "qsdmqskmldqksmldkqsldmqslkdmlqksdmlqksmdlkqsml",
+//     atcds: "qsdmkqskdjqslkdjlqksjdlkqjldkjqslkd",
+//     nbJourApporte: "99",
+//     files: ["nomfichier.ext", "nomfichier.ext"]
+// }
+// creationCardConsultation(data);
 
-function creationCardConsultation(data) {
+function creationCardConsultation(data, boxId) {
     // 🎲
     var container = makeElement('div');
+    container.setAttribute('id', boxId);
     container.setAttribute('class', 'box-notif space-between-15px');
     // //
     var cont1 = makeElement('div');
@@ -110,6 +111,7 @@ function creationCardConsultation(data) {
     btn2.innerText = 'Accepter';
     btn2.addEventListener('click', function () {
         console.log('Accepter');
+        notificationAccepted(boxId);
     });
     cont7.appendChild(btn1);
     cont7.appendChild(btn2);

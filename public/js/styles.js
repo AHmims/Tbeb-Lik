@@ -54,6 +54,29 @@ if (dgclass('btn-send').length > 0) {
         btns[i].innerHTML = `${str} <img src="../icon/send1.svg"/>`;
     }
 }
+if (dgclass('box-notif').length > 0) {
+    var boxes = dgclass('box-notif');
+    for (let i = 0; i < boxes.length; i++) {
+        var icon = document.createElement('img');
+        icon.setAttribute('class', 'box-notif-switch');
+        icon.setAttribute('src', '../icon/switch.svg');
+        // 
+        icon.addEventListener('click', () => {
+            var icons = dgclass('box-notif-switch');
+            var extension = dgclass('box-notif-ext');
+            var state = extension[i].style.display;
+            // 
+            if (state == "flex")
+                icons[i].classList.remove("trans-flip");
+            else
+                icons[i].classList.add("trans-flip");
+            // 
+            extension[i].style.display = state == "flex" ? "none" : "flex";
+        });
+        // 
+        boxes[i].appendChild(icon);
+    }
+}
 if (dgclass('box-rndv-date').length > 0) {
     var txt = dgclass('box-rndv-date');
     for (let i = 0; i < txt.length; i++) {

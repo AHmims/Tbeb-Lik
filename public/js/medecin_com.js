@@ -19,9 +19,12 @@ __SOCKET.on('p_liste', data => {
 // 
 __SOCKET.on('msgReceived', msg => {
     console.log(msg);
-    document.getElementById('remote').innerText += msg.content + '\n';
+    // document.getElementById('remote').innerText += msg.content + '\n';
 });
 // 
-__HUB_SOCKET.on('newNotif', data => {
+__HUB_SOCKET.on('getNotifs', data => {
     console.log(data);
+    // 
+    // 
+    // __HUB_SOCKET.emit('requestValidated',)
 });
