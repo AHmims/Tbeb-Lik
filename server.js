@@ -1,8 +1,13 @@
 //PACKAGES DECLARATION
+const __FS = require('fs');
 const __EXPRESS = require('express');
 const __APP = __EXPRESS();
-const __HTTP = require('http').Server(__APP);
-const __IO = require('socket.io')(__HTTP);
+const __SERVER = require('https').createServer({
+    key: __FS.readFileSync('./key.pem'),
+    cert: __FS.readFileSync('./cert.pem'),
+    passphrase: 'tbeblik'
+}, __APP);
+const __IO = require('socket.io')(__SERVER);
 const __PATH = require('path');
 //IMPORTED MODULES
 
@@ -137,6 +142,8 @@ __CHAT.on('connection', socket => {
         let functionData = joiningRoom(notificationId);
         let roomId = functionData.roomId;
         // 
+        // 
+        socket.leaveAll();
         socket.join(roomId);
         // 
         let roomInstance = {
@@ -186,19 +193,41 @@ __CHAT.on('connection', socket => {
     // 
     socket.on('msgSent', (msg) => {
         console.log('_______________\n' + msg + '\n__________');
-        let roomId = null;
-        console.log(socket.id);
-        rooms.forEach(element => {
-            console.log(element);
-            if (element.patient.socketId == socket.id || element.medecin.socketId == socket.id)
-                roomId = element.id;
-        });
+        let roomId = getRoomIdFromSocket();
         // 
         console.log(roomId);
         msg = getMsgAdditionalData(msg, 'Text');
         socket.to(roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
         //__CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
     });
+    // 
+    // VIDEO
+    socket.on('hostStreamInit', () => {
+        let roomId = getRoomIdFromSocket();
+        // 
+        socket.to(roomId).emit('streamStartAttempt', socket.id);
+    });
+    // 
+    socket.on('streamStartSucces', () => {
+        console.log('accepted~~~~~~~~~~');
+        socket.emit('streamStartSuccess', socket.id);
+    });
+    socket.on('streamStartFailure', () => {
+        console.log('refused~~~~~~~~~~~~');
+    });
+    // 
+    socket.on('candidate', (id, candidate) => {
+        socket.to(id).emit('candidate', socket.id, candidate);
+    });
+    // 
+    socket.on('streamOffre', (id, description) => {
+        socket.to(id).emit('streamOffre', socket.id, description);
+    });
+    // 
+    socket.on('streamAnswer', (id, description) => {
+        socket.to(id).emit('streamAnswer', socket.id, description);
+    });
+    // 
     // 
     function setUserSocket(type, socket, id) {
         return {
@@ -295,7 +324,19 @@ __CHAT.on('connection', socket => {
             }
         }
         // 
+        console.log(retData);
         return retData;
+    }
+    // 
+    function getRoomIdFromSocket() {
+        let roomId = null;
+        console.log(socket.id);
+        rooms.forEach(element => {
+            console.log(element);
+            if (element.patient.socketId == socket.id || element.medecin.socketId == socket.id)
+                roomId = element.id;
+        });
+        return roomId;
     }
 });
 // NOTIICATION SYSTEM
@@ -332,6 +373,6 @@ __APP.get('/patient/contact', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_patient_contact.html'));
 });
 //START SERVER
-__HTTP.listen(__PORT, () => {
+__SERVER.listen(__PORT, () => {
     console.log(`Server started...\nListening on port ${__PORT}`);
 });
