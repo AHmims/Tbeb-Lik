@@ -25,55 +25,31 @@ document.getElementById('btn-notif').addEventListener('click', () => {
 // 
 // 
 // 
-let peerConnection;
-const config = {
-    iceServers: [{
-        urls: ["stun:stun.l.google.com:19302"]
-    }]
-};
-
-// const __SOCKET = io.connect(window.location.origin);
-const video = document.getElementById('remoteVideo');
-
-__SOCKET.on("offer", (id, description) => {
-    peerConnection = new RTCPeerConnection(config);
-    console.log('55');
-    peerConnection
-        .setRemoteDescription(description)
-        .then(() => peerConnection.createAnswer())
-        .then(sdp => peerConnection.setLocalDescription(sdp))
-        .then(() => {
-            __SOCKET.emit("answer", id, peerConnection.localDescription);
-        });
-    peerConnection.ontrack = event => {
-        console.log('ff');
-        console.log(event.streams);
-        video.srcObject = event.streams[0];
-    };
-    peerConnection.onicecandidate = event => {
-        if (event.candidate) {
-            __SOCKET.emit("candidate", id, event.candidate);
-        }
-    };
+// 
+let peer;
+// 
+__SOCKET.on('patientLink', async () => {
+    const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true
+    });
+    // 
+    document.getElementById('clientVideo').srcObject = stream;
+    // 
+    peer = new SimplePeer({
+        initiator: false,
+        stream: stream,
+        trickle: false
+    })
+    peer.on('stream', function (stream) {
+        document.getElementById('remoteVideo').srcObject = stream;
+    });
+    // 
+    peer.on('signal', function (data) {
+        console.log(data);
+        __SOCKET.emit('Answer', data);
+    });
 });
-
-__SOCKET.on("candidate", (id, candidate) => {
-    peerConnection
-        .addIceCandidate(new RTCIceCandidate(candidate))
-        .catch(e => console.error(e));
+__SOCKET.on('BackOffer', offer => {
+    peer.signal(offer);
 });
-
-__SOCKET.on("connect", () => {
-    // console.log('55');
-    // __SOCKET.emit("watcher");
-});
-
-__SOCKET.on("broadcaster", () => {
-    console.log('cc');
-    __SOCKET.emit("watcher");
-});
-
-
-window.onunload = window.onbeforeunload = () => {
-    __SOCKET.close();
-};

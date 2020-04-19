@@ -202,36 +202,22 @@ __CHAT.on('connection', socket => {
     });
     // 
     // VIDEO
-    // let broadcaster = null;
-    socket.on("broadcaster", () => {
-        // broadcaster = socket.id;
-        // console.log('*************');
-        // console.log(broadcaster);
-        socket.broadcast.emit("broadcaster");
+    socket.on('liveStreamInit', () => {
+        let roomId = getRoomIdFromSocket();
+        socket.to(roomId).emit('patientLink');
     });
-    socket.on("watcher", () => {
-        // console.log('*************');
-        // console.log(broadcaster);
-        let broadcaster = getRoomIdFromSocket();
-        // rooms.forEach(room => {
-        //     if (room.id == broadcaster)
-        //         broadcaster = room.medecin.socketId;
-        // });
-        // console.log('**************');
-        // console.log(broadcaster);
-        socket.to(broadcaster).emit("watcher", socket.id);
+    socket.on('Offer', (data) => {
+        let roomId = getRoomIdFromSocket();
+        socket.to(roomId).emit('BackOffer', data);
     });
-    socket.on("offer", (id, message) => {
-        socket.to(id).emit("offer", socket.id, message);
+    socket.on('Answer', data => {
+        let roomId = getRoomIdFromSocket();
+        socket.to(roomId).emit('BackAnswer', data);
     });
-    socket.on("answer", (id, message) => {
-        socket.to(id).emit("answer", socket.id, message);
-    });
-    socket.on("candidate", (id, message) => {
-        socket.to(id).emit("candidate", socket.id, message);
-    });
-
     //
+    // 
+    // 
+    // 
     // 
     //  
     // 
@@ -379,6 +365,6 @@ __APP.get('/patient/contact', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_patient_contact.html'));
 });
 //START SERVER
-__SERVER.listen(__PORT, () => {
+__SERVER.listen(__PORT, '0.0.0.0', () => {
     console.log(`Server started...\nListening on port ${__PORT}`);
 });
