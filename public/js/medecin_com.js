@@ -1,5 +1,6 @@
 const __SOCKET = io('/chat');
 const __HUB_SOCKET = io('/medecinHub');
+let peer = null;
 // 
 //
 __SOCKET.on('connect', () => {
@@ -12,6 +13,12 @@ document.getElementById('btn-send').addEventListener('click', () => {
 //  
 document.getElementById('btn-join').addEventListener('click', () => {
     __SOCKET.emit('joinRoom', document.getElementById('roomId').value);
+    // 
+    if (peer != null) {
+        peer.destroy();
+        document.getElementById('clientVideo').srcObject = null;
+        document.getElementById('remoteVideo').srcObject = null;
+    }
 });
 // 
 __SOCKET.on('p_liste', data => {
@@ -33,7 +40,6 @@ __HUB_SOCKET.on('getNotifs', data => {
 // 
 // 
 // 
-let peer;
 // 
 document.getElementById('btn-video').addEventListener('click', async () => {
     const stream = await navigator.mediaDevices.getUserMedia({
@@ -56,11 +62,19 @@ document.getElementById('btn-video').addEventListener('click', async () => {
     // 
     peer.on('signal', function (data) {
         console.log(data);
-        __SOCKET.emit('Offer', data);
+        __SOCKET.emit('liveStreamLink', data);
     });
     // 
-
+    console.log(peer);
 });
-__SOCKET.on('BackAnswer', data => {
-    peer.signal(data);
+// 
+__SOCKET.on('liveStreamDataFlux', answer => {
+    peer.signal(answer);
 });
+// 
+__SOCKET.on('patientLinkFailed', () => {
+    peer.destroy();
+    document.getElementById('clientVideo').srcObject = null;
+    console.log(peer);
+});
+// 

@@ -109,7 +109,7 @@ __CHAT.on('connection', socket => {
             chatters.push(userData);
         }
         console.log(chatters);
-        //JOIN THE FIRST ROOM IF THE DOCTOR IS A PART OF ON
+        //JOIN THE FIRST ROOM IF THE DOCTOR IS A PART OF ONE
         for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].medecin == medecinId) {
                 let functionData = joiningRoom(notifications[i].index);
@@ -143,7 +143,7 @@ __CHAT.on('connection', socket => {
         let roomId = functionData.roomId;
         // 
         // 
-        socket.leaveAll();
+        removeMeFromEveryInstanceSoThatThingsWontBreakLater();
         socket.join(roomId);
         // 
         let roomInstance = {
@@ -167,28 +167,33 @@ __CHAT.on('connection', socket => {
             }
         });
         // 
-        notifications[functionData.arrayIndex].medecin = medecinId;
-        // notifications[functionData.arrayIndex].resolved = true;
-        // 
-        for (let i = 0; i < chatters.length; i++) {
-            if (chatters[i].type == 'Patient') {
-                if (chatters[i].roomId == roomId) {
-                    chatters[i].linkedMedecin = medecinId;
-                    roomInstance.patient.id = chatters[i].userId;
-                    roomInstance.patient.socketId = chatters[i].socket;
+        if (medecinId != null) {
+            if (notifications[functionData.arrayIndex]) {
+                notifications[functionData.arrayIndex].medecin = medecinId;
+                // notifications[functionData.arrayIndex].resolved = true;
+                // 
+                for (let i = 0; i < chatters.length; i++) {
+                    if (chatters[i].type == 'Patient') {
+                        if (chatters[i].roomId == roomId) {
+                            chatters[i].linkedMedecin = medecinId;
+                            roomInstance.patient.id = chatters[i].userId;
+                            roomInstance.patient.socketId = chatters[i].socket;
+                        }
+                    }
                 }
+                // CHECK FOR DUPS
+                let roomExists = false;
+                for (let i = 0; i < rooms.length; i++) {
+                    if (rooms[i].id == roomInstance.id) {
+                        rooms[i] = roomInstance; // IF THE ROOM ALREADY EXISTS UPDATE IT'S INFOS
+                        console.log(roomInstance)
+                        roomExists = true;
+                    }
+                }
+                if (!roomExists)
+                    rooms.push(roomInstance);
             }
         }
-        // CHECK FOR DUPS
-        let roomExists = false;
-        for (let i = 0; i < rooms.length; i++) {
-            if (rooms[i].id == roomInstance.id) {
-                rooms[i] == roomInstance // IF THE ROOM ALREADY EXISTS UPDATE IT'S INFOS
-                roomExists = true;
-            }
-        }
-        if (!roomExists)
-            rooms.push(roomInstance);
     });
     // 
     socket.on('msgSent', (msg) => {
@@ -206,13 +211,15 @@ __CHAT.on('connection', socket => {
         let roomId = getRoomIdFromSocket();
         socket.to(roomId).emit('patientLink');
     });
-    socket.on('Offer', (data) => {
+    // 
+    socket.on('liveStreamInitFail', () => {
         let roomId = getRoomIdFromSocket();
-        socket.to(roomId).emit('BackOffer', data);
+        socket.to(roomId).emit('patientLinkFailed');
     });
-    socket.on('Answer', data => {
+    // 
+    socket.on('liveStreamLink', (data) => {
         let roomId = getRoomIdFromSocket();
-        socket.to(roomId).emit('BackAnswer', data);
+        socket.to(roomId).emit('liveStreamDataFlux', data);
     });
     //
     // 
@@ -329,6 +336,22 @@ __CHAT.on('connection', socket => {
                 roomId = element.id;
         });
         return roomId;
+    }
+    // 
+    function removeMeFromEveryInstanceSoThatThingsWontBreakLater() {
+        socket.leaveAll();
+        // REMOVE TRACE FROM THE ROOMS
+        for (let i = 0; i < rooms.length; i++) {
+            if (rooms[i].medecin.socketId == socket.id) {
+                rooms[i].medecin = {
+                    id: "",
+                    socketId: ""
+                }
+                // STOP STREAM FLUX
+                socket.to(rooms[i].id).emit('liveStreamTerminated');
+            }
+        }
+        // 
     }
 });
 // NOTIICATION SYSTEM
