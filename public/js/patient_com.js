@@ -25,78 +25,55 @@ document.getElementById('btn-notif').addEventListener('click', () => {
 // 
 // 
 // 
-let peerConnections = {},
-    peerConnection;
+let peerConnection;
 const config = {
     iceServers: [{
         urls: ["stun:stun.l.google.com:19302"]
     }]
 };
-// 
-__SOCKET.on('streamStartAttempt', async (medecinId) => {
-    let connectionResponse = confirm('Votre medecin ve se connecter avec vous.');
-    if (connectionResponse) {
-        __SOCKET.emit('streamStartSucces');
-        // 
-        try {
-            const constraints = {
-                'video': true,
-                'audio': true
-            };
-            const stream = await navigator.mediaDevices.getUserMedia(constraints);
-            //
-            var localVideo = document.getElementById('clientVideo');
-            localVideo.srcObject = stream;
-            window.stream = stream;
-            // 
-            const peerConnection = new RTCPeerConnection(config);
-            peerConnections[medecinId] = peerConnection;
-            // 
-            stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-            // 
-            peerConnection.onicecandidate = event => {
-                if (event.candidate) {
-                    __SOCKET.emit("candidate", medecinId, event.candidate);
-                }
-            };
-            // 
-            let sdp = await peerConnection.createOffer();
-            await peerConnection.setLocalDescription(sdp);
-            __SOCKET.emit('streamOffre', medecinId, peerConnection.localDescription);
-        } catch (error) {
-            console.error('Error accessing media devices.', error);
-        }
-    } else {
-        __SOCKET.emit('streamStartFailure');
-    }
-});
-// 
-__SOCKET.on('candidate', (medecinId, candidate) => {
-    peerConnections[medecinId].addIceCandidate(new RTCIceCandidate(candidate));
-});
-// 
-__SOCKET.on('streamOffre', async (medecinId, remoteDescription) => {
-    peerConnections[medecinId] = new RTCPeerConnection(config);
-    await peerConnections[medecinId].setRemoteDescription(remoteDescription);
-    let sdp = await peerConnections[medecinId].createAnswer();
-    await peerConnections[medecinId].setLocalDescription(sdp);
-    __SOCKET.emit('streamAnswer', medecinId, peerConnections[medecinId].localDescription);
-    // 
-    let remoteVideo = document.getElementById('remoteVideo');
-    // 
-    peerConnections[medecinId].ontrack = event => {
-        remoteVideo.srcObject = event.streams[0];
-    };
-    // 
-    peerConnections[medecinId].onicecandidate = event => {
-        if (event.candidate) {
-            socket.emit("candidate", medecinId, event.candidate);
-        }
-    };
-    // 
 
+// const __SOCKET = io.connect(window.location.origin);
+const video = document.getElementById('remoteVideo');
+
+__SOCKET.on("offer", (id, description) => {
+    peerConnection = new RTCPeerConnection(config);
+    console.log('55');
+    peerConnection
+        .setRemoteDescription(description)
+        .then(() => peerConnection.createAnswer())
+        .then(sdp => peerConnection.setLocalDescription(sdp))
+        .then(() => {
+            __SOCKET.emit("answer", id, peerConnection.localDescription);
+        });
+    peerConnection.ontrack = event => {
+        console.log('ff');
+        console.log(event.streams);
+        video.srcObject = event.streams[0];
+    };
+    peerConnection.onicecandidate = event => {
+        if (event.candidate) {
+            __SOCKET.emit("candidate", id, event.candidate);
+        }
+    };
 });
-// 
-__SOCKET.on('streamAnswer', (medecinId, remoteDescription) => {
-    peerConnections[medecinId].setRemoteDescription(remoteDescription);
+
+__SOCKET.on("candidate", (id, candidate) => {
+    peerConnection
+        .addIceCandidate(new RTCIceCandidate(candidate))
+        .catch(e => console.error(e));
 });
+
+__SOCKET.on("connect", () => {
+    // console.log('55');
+    // __SOCKET.emit("watcher");
+});
+
+__SOCKET.on("broadcaster", () => {
+    console.log('cc');
+    __SOCKET.emit("watcher");
+});
+
+
+window.onunload = window.onbeforeunload = () => {
+    __SOCKET.close();
+};

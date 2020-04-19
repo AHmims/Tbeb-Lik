@@ -32,22 +32,15 @@ __HUB_SOCKET.on('getNotifs', data => {
 // 
 // 
 // 
-let peerConnections = {},
-    peerConnection;
+const peerConnections = {};
 const config = {
     iceServers: [{
         urls: ["stun:stun.l.google.com:19302"]
     }]
 };
+let videoElement = document.querySelector('video');
 // 
 document.getElementById('btn-video').addEventListener('click', async () => {
-    // IF THERE IS ALREADY A STREAM STOP IT
-    /*if (window.stream) {
-        window.stream.getTracks().forEach(track => {
-            track.stop();
-        });
-    }*/
-    // 
     try {
         const constraints = {
             'video': true,
@@ -58,7 +51,8 @@ document.getElementById('btn-video').addEventListener('click', async () => {
         document.getElementById('clientVideo').srcObject = stream;
         window.stream = stream;
         // 
-        __SOCKET.emit('hostStreamInit');
+        __SOCKET.emit("broadcaster");
+
 
     } catch (error) {
         console.error('Error accessing media devices.', error);
@@ -66,52 +60,40 @@ document.getElementById('btn-video').addEventListener('click', async () => {
 
 });
 // 
-__SOCKET.on('streamStartSuccess', async (patientId) => {
+__SOCKET.on("answer", (id, description) => {
+    peerConnections[id].setRemoteDescription(description);
+});
+
+__SOCKET.on("watcher", id => {
+    console.log('8888');
     const peerConnection = new RTCPeerConnection(config);
-    peerConnections[patientId] = peerConnection;
-    // 
-    var localVideo = document.getElementById('clientVideo');
-    let stream = localVideo.srcObject;
-    // 
-    stream.getTracks().forEach(track => peerConnection.addTrack(track, stream));
-    // 
+    peerConnections[id] = peerConnection;
+
+    let stream = videoElement.srcObject;
+    stream.getTracks().forEach(track => {
+        console.log({
+            track,
+            stream
+        });
+        peerConnection.addTrack(track, stream);
+    });
+
     peerConnection.onicecandidate = event => {
         if (event.candidate) {
-            __SOCKET.emit("candidate", patientId, event.candidate);
+            __SOCKET.emit("candidate", id, event.candidate);
         }
     };
-    // 
-    let sdp = await peerConnection.createOffer();
-    await peerConnection.setLocalDescription(sdp);
-    __SOCKET.emit('streamOffre', patientId, peerConnection.localDescription);
-});
-// 
-__SOCKET.on('candidate', (patientId, candidate) => {
-    peerConnections[patientId].addIceCandidate(new RTCIceCandidate(candidate));
-})
-// 
-__SOCKET.on('streamOffre', async (patientId, remoteDescription) => {
-    peerConnections[patientId] = new RTCPeerConnection(config);
-    await peerConnections[patientId].setRemoteDescription(remoteDescription);
-    let sdp = await peerConnections[patientId].createAnswer();
-    await peerConnections[patientId].setLocalDescription(sdp);
-    __SOCKET.emit('streamAnswer', patientId, peerConnections[patientId].localDescription);
-    // 
-    let remoteVideo = document.getElementById('remoteVideo');
-    // 
-    peerConnections[patientId].ontrack = event => {
-        remoteVideo.srcObject = event.streams[0];
-    };
-    // 
-    peerConnections[patientId].onicecandidate = event => {
-        if (event.candidate) {
-            socket.emit("candidate", patientId, event.candidate);
-        }
-    };
-    // 
+    console.log('99999');
 
+    peerConnection
+        .createOffer()
+        .then(sdp => peerConnection.setLocalDescription(sdp))
+        .then(() => {
+            console.log('99');
+            __SOCKET.emit("offer", id, peerConnection.localDescription);
+        });
 });
-// 
-__SOCKET.on('streamAnswer', (patientId, remoteDescription) => {
-    peerConnections[patientId].setRemoteDescription(remoteDescription);
+
+__SOCKET.on("candidate", (id, candidate) => {
+    peerConnections[id].addIceCandidate(new RTCIceCandidate(candidate));
 });

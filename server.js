@@ -202,32 +202,38 @@ __CHAT.on('connection', socket => {
     });
     // 
     // VIDEO
-    socket.on('hostStreamInit', () => {
-        let roomId = getRoomIdFromSocket();
-        // 
-        socket.to(roomId).emit('streamStartAttempt', socket.id);
+    // let broadcaster = null;
+    socket.on("broadcaster", () => {
+        // broadcaster = socket.id;
+        // console.log('*************');
+        // console.log(broadcaster);
+        socket.broadcast.emit("broadcaster");
     });
+    socket.on("watcher", () => {
+        // console.log('*************');
+        // console.log(broadcaster);
+        let broadcaster = getRoomIdFromSocket();
+        // rooms.forEach(room => {
+        //     if (room.id == broadcaster)
+        //         broadcaster = room.medecin.socketId;
+        // });
+        // console.log('**************');
+        // console.log(broadcaster);
+        socket.to(broadcaster).emit("watcher", socket.id);
+    });
+    socket.on("offer", (id, message) => {
+        socket.to(id).emit("offer", socket.id, message);
+    });
+    socket.on("answer", (id, message) => {
+        socket.to(id).emit("answer", socket.id, message);
+    });
+    socket.on("candidate", (id, message) => {
+        socket.to(id).emit("candidate", socket.id, message);
+    });
+
+    //
     // 
-    socket.on('streamStartSucces', () => {
-        console.log('accepted~~~~~~~~~~');
-        socket.emit('streamStartSuccess', socket.id);
-    });
-    socket.on('streamStartFailure', () => {
-        console.log('refused~~~~~~~~~~~~');
-    });
-    // 
-    socket.on('candidate', (id, candidate) => {
-        socket.to(id).emit('candidate', socket.id, candidate);
-    });
-    // 
-    socket.on('streamOffre', (id, description) => {
-        socket.to(id).emit('streamOffre', socket.id, description);
-    });
-    // 
-    socket.on('streamAnswer', (id, description) => {
-        socket.to(id).emit('streamAnswer', socket.id, description);
-    });
-    // 
+    //  
     // 
     function setUserSocket(type, socket, id) {
         return {
