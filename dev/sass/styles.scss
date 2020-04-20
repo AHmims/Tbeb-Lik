@@ -97,6 +97,339 @@ body {
             @include display.flex(column, flex-start, flex-start);
         }
 
+        .roblox {
+            width: 100%;
+            height: 100%;
+            background-color: colors.$white;
+            @include display.flex(row, flex-start, flex-start);
+
+            #patientsList {
+                flex: none;
+                @include display.flex(column, flex-start, center);
+                box-sizing: border-box;
+                padding: 10px;
+                // width: 230px;
+                height: 100%;
+                overflow: hidden;
+                border-right: 1px solid colors.$form-mid;
+
+                // 
+                .patientContact {
+                    width: 100%;
+                    height: 65px;
+                    @include display.flex(row, flex-start, center);
+                    box-sizing: border-box;
+                    padding: 5px;
+                    border-radius: 15px;
+                    user-select: none;
+                    cursor: pointer;
+                    background-color: colors.$white;
+
+                    &:hover {
+                        background-color: colors.$form;
+                    }
+
+                    &:not(:last-of-type) {
+                        margin-bottom: 10px;
+                    }
+
+                    .patientContactAvatar {
+                        width: 55px;
+                        height: 55px;
+                        border-radius: 15px;
+                        background-color: colors.$form-mid;
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        position: relative;
+                        background-image: url('../icon/avatarChat.svg');
+
+                        .patientContactStatus {
+                            position: absolute;
+                            top: -3px;
+                            right: -3px;
+                            width: 15px;
+                            height: 15px;
+                            border-radius: 9999px;
+                            background-color: colors.$dark;
+                            border: 3px solid colors.$white;
+                        }
+
+                        .statusOnline {
+                            background-color: colors.$accent;
+                        }
+
+                        .statusOffline {
+                            background-color: colors.$red;
+                        }
+                    }
+
+                    .patientContactInformations {
+                        margin-left: 10px;
+                        @include display.flex(column, flex-start, flex-start);
+                        font-family: 'Gilroy', sans-serif;
+                        color: colors.$dark;
+                        letter-spacing: 1px;
+
+                        @media screen and (max-width:850px) {
+                            display: none;
+                        }
+
+                        .patientContactName {
+                            font-size: 20px;
+                            font-weight: 700;
+                            text-transform: capitalize;
+                            white-space: nowrap;
+                            overflow: hidden;
+                            text-overflow: ellipsis;
+                            max-width: 130px;
+                        }
+
+                        .patientContactMatricule {
+                            font-size: 18px;
+                            font-weight: 500;
+                            text-transform: capitalize;
+                        }
+                    }
+                }
+
+                // 
+                .patientSelected {
+                    border: 1px solid colors.$accent;
+                    box-shadow: 0px 0px 10px rgba(31, 219, 174, 0.2);
+                }
+
+                // 
+                @media screen and (max-width:850px) {
+                    width: fit-content;
+                }
+            }
+
+            #chatSection {
+                position: relative;
+                flex: 1;
+                height: 100%;
+                @include display.flex(column, flex-start, flex-start);
+
+                // background-color: red;
+                .chatSectionMessages {
+                    flex: auto;
+                    width: 100%;
+                    height: 1px;
+                    @include display.flex(column, flex-start, flex-start);
+                    box-sizing: border-box;
+                    padding: 10px;
+                    overflow-y: auto;
+                }
+
+                .chatSectionControls {
+                    flex: none;
+                    height: 65px;
+                    width: 100%;
+                    border-top: 1px solid colors.$form-mid;
+                }
+
+                // 
+                .submitPopupBg {
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    // 
+                    bottom: 0;
+                    right: 0;
+                    display: flex;
+                    @include display.flex(column, center, center);
+                    // background: radial-gradient(white, transparent);
+                    backdrop-filter: blur(5px);
+                    display: none;
+
+                    // 
+                    .submitPopup {
+                        background-color: colors.$white;
+                        border-radius: 20px;
+                        padding: 20px;
+                        min-width: 450px;
+                        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.05);
+                        @include display.flex(column, flex-start, flex-start);
+
+                        .submitPopupTitle {
+                            font-weight: 700;
+                            text-transform: capitalize;
+                            font-size: 26px;
+                            margin-bottom: 25px;
+                            color: colors.$dark;
+                        }
+
+                        // 
+                        .submitPopupBox {
+                            @include display.flex(column, flex-start, flex-start);
+                            width: 100%;
+                            margin-bottom: 20px;
+
+                            .submitPopupInputCont {
+                                width: 100%;
+                                @include display.flex(row, space-between, center);
+
+                                .submitPopupInputLabel {
+                                    font-weight: 500;
+                                    color: colors.$dark;
+                                    text-transform: capitalize;
+                                    font-size: 20px;
+                                    font-size: 16px;
+                                    letter-spacing: initial;
+                                }
+
+                                // 
+                                .submitPopupInput {
+                                    border: 1px solid colors.$form-mid;
+                                    outline: none;
+                                    background-color: colors.$form;
+                                    border-radius: 5px;
+                                    height: 26px;
+                                    width: 250px;
+                                    padding: 1px 5px;
+                                    box-sizing: border-box;
+                                    color: #506070;
+                                    font-size: 15px;
+
+                                    &:disabled {
+                                        background-color: #eff4f8;
+                                        cursor: not-allowed;
+                                    }
+
+                                    &:focus {
+                                        border-color: colors.$form-dark;
+                                    }
+                                }
+
+                                // 
+                                &:not(:last-of-type) {
+                                    margin-bottom: 10px;
+                                }
+                            }
+                        }
+
+                        #popup-btnSubmit {
+                            align-self: flex-end;
+                            background-color: colors.$accent;
+                            border-radius: 5px;
+                            color: colors.$white;
+                            border: none;
+                            cursor: pointer;
+                            text-transform: capitalize;
+                            font-weight: 700;
+                            font-size: 16px;
+                            padding: 5px 10px;
+                        }
+                    }
+                }
+            }
+
+            #videoSection {
+                flex: 1;
+                height: 100%;
+                background-color: colors.$dark;
+                position: relative;
+                display: none;
+
+                #videoSectionBody {
+                    width: 100%;
+                    height: 100%;
+                    padding: 30px;
+                    box-sizing: border-box;
+                    @include display.flex(column, flex-end, center);
+                    position: relative;
+
+                    #videoSectionHost {
+                        position: absolute;
+                        right: 30px;
+                        width: 285px;
+                        height: 220px;
+                        background-color: colors.$form;
+                        border-radius: 20px;
+
+                        // 
+                        #hostVideoPoster {
+                            width: 100%;
+                            height: 100%;
+                            background-image: url('../icon/avatarVideoHost.svg');
+                            background-position: center;
+                            background-repeat: no-repeat;
+                        }
+                    }
+
+                    #videoChatControls {
+                        @include display.flex(row, flex-end, center);
+
+                        div {
+                            cursor: pointer;
+                            @include display.flex(row, center, center);
+                        }
+
+                        .videoControlBtn {
+                            width: 60px;
+                            height: 60px;
+                            background-color: rgba(0, 0, 0, 0.15);
+                            border-radius: 999px;
+                            transition: background-color 100ms ease-in-out;
+
+                            img {
+                                width: 25px;
+                            }
+
+                            &:not(:last-of-type) {
+                                margin-right: 15px;
+                            }
+
+                            &:hover {
+                                background-color: rgba(0, 0, 0, 0.3);
+                            }
+
+                        }
+
+                        #videoControl-btnEnd {
+                            background-color: colors.$red;
+
+                            img {
+                                transform: rotate(137deg);
+                                margin-bottom: -4px;
+                            }
+                        }
+
+                    }
+                }
+
+                // 
+                .videoCorrection {
+                    width: 100%;
+                    height: 100%;
+                    transform: scaleX(-1);
+                    position: absolute;
+                }
+
+                // 
+                #remoteVideoPoster {
+                    width: 100%;
+                    height: 100%;
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    @include display.flex(column, center, center);
+
+                    #remoteVideoPosterImage {
+                        width: 275px;
+                        height: 275px;
+                        // background-color: rgba(255, 255, 255, 0.05);
+                        background-image: url('../icon/avatarVideoRemote.svg');
+                        background-position: center;
+                        background-repeat: no-repeat;
+                        border-radius: 9999px;
+                        // 
+                        // border: 15px solid rgba(255, 255, 255, 0.05);
+                    }
+                }
+            }
+        }
+
         .table {
             padding: 0;
         }
@@ -393,47 +726,13 @@ body {
             // flex-wrap: wrap;
             overflow-y: auto;
 
-            .messageContainer {
-                width: 100%;
-                height: fit-content;
-                @include display.flex(row, unset, center);
-
-                span {
-                    padding: 10px;
-                    font-size: 20px;
-                    font-family: 'Roboto', sans-serif;
-                    border-radius: values.$bRadius-2;
-                    max-width: 350px;
-                }
-
-                &:not(:last-of-type) {
-                    margin-bottom: 10px;
-                }
-            }
-
-            .sentMessage {
-                flex-direction: row-reverse;
-
-                span {
-                    background-color: colors.$accent;
-                    color: colors.$white;
-                }
-            }
-
-            .receivedMessage {
-                span {
-                    background-color: colors.$form-mid;
-                    color: colors.$dark;
-                }
-            }
-
         }
 
         .bottomTable {
             flex: none;
             height: 70px;
             width: 100%;
-            border-top: 1px solid colors.$form-mid;
+            // border-top: 1px solid colors.$form-mid;
             box-sizing: border-box;
             padding: 0 15px;
             // 
@@ -461,9 +760,41 @@ body {
                 }
             }
 
-            .bottomTable-msgSend {
-                margin-left: 26px;
+            .bottomTableBtn {
+                // margin-left: 26px;
                 cursor: pointer;
+
+                &:not(:last-of-type) {
+                    margin-right: 10px;
+                }
+            }
+
+            .bottomTable-btnVideo {
+                background-color: colors.$accent;
+                padding: 7px;
+                border-radius: 10px;
+                display: flex;
+                justify-content: center;
+                text-transform: uppercase;
+                font-weight: 700;
+                color: white;
+
+                span {
+                    margin-left: 5px;
+                }
+            }
+
+            .bottomTable-btnSubmit {
+                background-color: colors.$accent;
+                padding: 7px;
+                border-radius: 10px;
+                font-weight: 700;
+                color: white;
+                text-transform: uppercase;
+            }
+
+            &>:nth-child(3) {
+                margin-left: 20px;
             }
 
         }
@@ -660,6 +991,42 @@ body {
         font-size: 24px;
         color: colors.$dark;
     }
+
+    // 
+    .messageContainer {
+        width: 100%;
+        height: fit-content;
+        @include display.flex(row, unset, center);
+
+        span {
+            padding: 10px;
+            font-size: 20px;
+            font-family: 'Roboto', sans-serif;
+            border-radius: values.$bRadius-2;
+            max-width: 350px;
+        }
+
+        &:not(:last-of-type) {
+            margin-bottom: 10px;
+        }
+    }
+
+    .sentMessage {
+        flex-direction: row-reverse;
+
+        span {
+            background-color: colors.$accent;
+            color: colors.$white;
+        }
+    }
+
+    .receivedMessage {
+        span {
+            background-color: colors.$form-mid;
+            color: colors.$dark;
+        }
+    }
+
 }
 
 .radiusRight {
@@ -812,4 +1179,15 @@ body {
 
 .width-100 {
     width: 100%;
+}
+
+// 
+// 
+.padding-0 {
+    padding: 0 !important;
+}
+
+// 
+.border-b {
+    border-bottom: 1px solid colors.$form-mid
 }

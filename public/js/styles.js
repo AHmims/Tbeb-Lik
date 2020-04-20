@@ -131,12 +131,40 @@ if (dgclass('bottomTable').length > 0) {
         input.setAttribute('id', bottom[i].getAttribute('data-idInput'));
         input.setAttribute('placeholder', "Votre message text...");
         iconSend.setAttribute('src', '../icon/send2.svg');
-        iconSend.setAttribute('class', 'bottomTable-msgSend');
+        iconSend.setAttribute('class', 'bottomTable-msgSend bottomTableBtn');
         iconSend.setAttribute('id', bottom[i].getAttribute('data-idSend'));
         // 
         bottom[i].appendChild(input);
         bottom[i].appendChild(iconSend);
     }
+}
+// 
+if (dgclass('bottomTableMedecin').length > 0) {
+    var bottom = dgclass('bottomTable');
+    for (var i = 0; i < bottom.length; i++) {
+        var iconDoc = document.createElement('img');
+        var btnVideo = document.createElement('div');
+        var btnVideoTxt = document.createElement('span');
+        var btnVideoIcon = document.createElement('img');
+        // 
+        iconDoc.setAttribute('src', '../icon/doc2.svg');
+        iconDoc.setAttribute('class', 'bottomTable-btnDoc bottomTableBtn');
+        iconDoc.setAttribute('id', bottom[i].getAttribute('data-idDoc'));
+        // 
+        btnVideoTxt.innerText = 'appeler';
+        btnVideoIcon.setAttribute('src', '../icon/phone.svg');
+        btnVideo.setAttribute('id', bottom[i].getAttribute('data-idVideo'));
+        btnVideo.setAttribute('class', 'bottomTable-btnVideo bottomTableBtn');
+        // 
+        btnVideo.appendChild(btnVideoIcon);
+        btnVideo.appendChild(btnVideoTxt);
+        // bottom[i].appendChild(iconDoc);
+        bottom[i].insertBefore(btnVideo, document.getElementById('msgInput'));
+        bottom[i].insertBefore(iconDoc, document.getElementById('msgSend'));
+        // bottom[i].appendChild(iconSend);
+        document.getElementById('msgInput').style = "margin: 0 15px;";
+    }
+
 }
 // 
 // 

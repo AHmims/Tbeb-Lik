@@ -15,7 +15,7 @@ const __PATH = require('path');
 const __PORT = 8080;
 let chatters = [],
     rooms = [],
-    notifications = [];
+    notifications = []; // .reolves => true / false / complete
 //MIDDLEWARES
 __APP.use(__EXPRESS.static(__PATH.join(__dirname, 'public')));
 //TRAITMENT
