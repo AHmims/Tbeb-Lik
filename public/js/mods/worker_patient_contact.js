@@ -1,10 +1,10 @@
-document.getElementById('btnAdd').addEventListener('click', () => {
+document.getElementById('msgSend').addEventListener('click', () => {
     // console.log('click');
-    sendMsg(document.getElementById('write').value);
+    sendMsg(document.getElementById('msgInput').value);
     // 
     let msg = {
         date: new Date(Date.now()),
-        content: document.getElementById('write').value,
+        content: document.getElementById('msgInput').value,
         type: 'Text',
         room: {
             id: null,
@@ -12,17 +12,21 @@ document.getElementById('btnAdd').addEventListener('click', () => {
             receiver: null
         }
     }
-    createMsgBox(msg, 'msgUser');
+    createMsgBox(msg, 'sentMessage');
+    // 
+    document.getElementById('msgInput').value = "";
 });
 // 
 function displayReceivedMsg(msg) {
-    createMsgBox(msg, '');
+    createMsgBox(msg, 'receivedMessage');
 }
 // 
 function createMsgBox(msg, type) {
-    var msgBox = document.createElement('p');
-    msgBox.setAttribute('class', type);
-    msgBox.innerText = msg.content;
+    var container = document.createElement('div');
+    container.setAttribute('class', `messageContainer ${type}`);
+    var txt = document.createElement('span');
+    txt.innerText = msg.content;
     // 
-    document.getElementsByClassName('msgs')[0].appendChild(msgBox);
+    container.appendChild(txt);
+    document.getElementsByClassName('chatSectionMessages')[0].appendChild(container);
 }

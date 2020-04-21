@@ -1,4 +1,5 @@
 //PACKAGES DECLARATION
+var _ = require('lodash');
 const __FS = require('fs');
 const __EXPRESS = require('express');
 const __APP = __EXPRESS();
@@ -17,6 +18,10 @@ let chatters = [],
     rooms = [],
     notifications = []; // .reolves => true / false / complete
 //MIDDLEWARES
+__APP.use(__EXPRESS.urlencoded({
+    extended: true
+}));
+__APP.use(__EXPRESS.json());
 __APP.use(__EXPRESS.static(__PATH.join(__dirname, 'public')));
 //TRAITMENT
 __IO.on('connection', socket => {
@@ -37,6 +42,7 @@ __IO.on('connection', socket => {
             resolved: false
         }
         // 
+        console.log(notifData);
         notifications.push(notifData);
         // 
         __HUB.emit('getNotifs', notifications);
@@ -100,7 +106,10 @@ __CHAT.on('connection', socket => {
                 chatters[i].socket = socket.id;
                 exsists = true;
                 chatters[i].online = true;
+                // 
                 updateRooms(userData.userId);
+                // getPatientList(chatters[i].userId);
+                // 
                 break;
             }
         }
@@ -133,7 +142,8 @@ __CHAT.on('connection', socket => {
             if (chatters[i].type == 'Patient') {
                 if (chatters[i].socket == socket.id)
                     getPatientList(chatters[i].linkedMedecin);
-            }
+            } else
+                removeMeFromEveryInstanceSoThatThingsWontBreakLater();
         }
         // 
     });
@@ -260,13 +270,31 @@ __CHAT.on('connection', socket => {
                 return false;
         });
         // 
+        for (let i = 0; i < patientByMedecin.length; i++) {
+            let refinedObject = _.pick(patientByMedecin[i], ["userId", "online"]);
+            // console.log(refinedObject);
+            // 
+            refinedObject.notifId = null;
+            // 
+            notifications.forEach(notif => {
+                if (notif.data.matricule == patientByMedecin[i].userId)
+                    refinedObject.notifId = notif.index;
+            });
+            // 
+            patientByMedecin[i] = refinedObject;
+            // console.log(patientByMedecin[i]);
+        } // 
+        // console.log(patientByMedecin);
         let medecinSocketId = null;
         chatters.forEach(element => {
             if (element.userId == medecinId)
                 medecinSocketId = element.socket;
         });
         // SEND DATA TO A SPECEFIC SOCKET
-        socket.broadcast.to(medecinSocketId).emit('p_liste', patientByMedecin);
+        console.log('###################');
+        console.log(medecinSocketId);
+        console.log('###################');
+        socket.to(medecinSocketId).emit('p_liste', patientByMedecin);
     }
     // 
     function updateRooms(userId) {
@@ -386,6 +414,31 @@ __APP.get('/patient/form', (req, res) => {
 });
 __APP.get('/patient/contact', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_patient_contact.html'));
+});
+// 
+// 
+__APP.post('/getActivePatients', (req, res) => {
+    let medecinId = req.body.medecinId;
+    let patientByMedecin = chatters.filter(element => {
+        if (element.type == 'Patient')
+            return element.linkedMedecin == medecinId;
+        else
+            return false;
+    });
+    // 
+    for (let i = 0; i < patientByMedecin.length; i++) {
+        let refinedObject = _.pick(patientByMedecin[i], ["userId", "online"]);
+        refinedObject.notifId = null;
+        // 
+        notifications.forEach(notif => {
+            if (notif.data.matricule == patientByMedecin[i].userId)
+                refinedObject.notifId = notif.index;
+        });
+        // 
+        patientByMedecin[i] = refinedObject;
+    } // 
+    // 
+    res.end(JSON.stringify(patientByMedecin));
 });
 //START SERVER
 __SERVER.listen(__PORT, '0.0.0.0', () => {

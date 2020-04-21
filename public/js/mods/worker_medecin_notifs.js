@@ -14,7 +14,7 @@ function notifMiddleMan(data) {
             motif: "[Motif]",
             atcds: "[ATCDs]",
             nbJourApporte: "[Nb]",
-            files: "[fichier.ext]"
+            files: ["fichier.ext"]
         }
         // 
         creationCardConsultation(bluePrint, element.index);

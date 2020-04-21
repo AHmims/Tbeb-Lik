@@ -31,7 +31,7 @@ body {
 #content {
     width: 100%;
     height: 100%;
-    @include display.flex(column, space-between, unset);
+    @include display.flex(column, space-between, center);
 
     // 
     #navBar {
@@ -130,63 +130,394 @@ body {
         }
     }
 
-    #main {
-        flex: 1;
-        @include display.flex(column, unset, center);
+    #smallblox {
+        width: 1600px;
+        max-width: 1600px;
+        height: 850px;
+        margin: auto;
+        // background-color: red;
+        @include display.flex(row, unset, unset);
 
-        lottie-player {
-            width: 500px;
-            height: fit-content;
-        }
+        #videoSection {
+            flex: 1;
+            height: 100%;
+            background-color: colors.$dark;
+            position: relative;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            // display: none;
 
-        // 
-        #form {
-            @include display.flex(column, unset, center);
+            #videoSectionBody {
+                width: 100%;
+                height: 100%;
+                padding: 30px;
+                box-sizing: border-box;
+                @include display.flex(column, flex-end, center);
+                position: relative;
 
-            h1 {
-                font-family: 'Gilroy', sans-serif;
-                font-weight: 700;
-                color: colors.$dark;
-                font-size: 36px;
-                margin: 0;
-                margin-bottom: 15px;
-            }
-
-            #formDropDown {
-                width: 550px;
-                border: 2px solid colors.$form-dark;
-                @include display.flex(column, unset, unset);
-                font-family: 'Roboto', sans-serif;
-                color: colors.$dark;
-                border-radius: 10px;
-                overflow: hidden;
-                user-select: none;
-                cursor: pointer;
-
-                #formDropDownSelected {
-                    font-size: 28px;
-                    background-color: colors.$white;
-                    color: colors.$dark;
-                }
-
-                .formDropDownItem {
-                    padding: 7.5px 15px;
-                    @include display.flex(row, space-between, center);
-                    font-size: 26px;
-                    color: colors.$form-dark;
+                #videoSectionHost {
+                    position: absolute;
+                    right: 30px;
+                    width: 285px;
+                    height: 220px;
                     background-color: colors.$form;
+                    border-radius: 20px;
 
-                    &:hover {
-                        background-color: colors.$white;
+                    // 
+                    #hostVideoPoster {
+                        width: 100%;
+                        height: 100%;
+                        background-image: url('../icon/avatarVideoHost.svg');
+                        background-position: center;
+                        background-repeat: no-repeat;
                     }
                 }
 
-                #formDropDownExtension {
-                    height: 0;
+                #videoChatControls {
+                    @include display.flex(row, flex-end, center);
+
+                    div {
+                        cursor: pointer;
+                        @include display.flex(row, center, center);
+                    }
+
+                    .videoControlBtn {
+                        width: 60px;
+                        height: 60px;
+                        background-color: rgba(0, 0, 0, 0.15);
+                        border-radius: 999px;
+                        transition: background-color 100ms ease-in-out;
+
+                        img {
+                            width: 25px;
+                        }
+
+                        &:not(:last-of-type) {
+                            margin-right: 15px;
+                        }
+
+                        &:hover {
+                            background-color: rgba(0, 0, 0, 0.3);
+                        }
+
+                    }
+
+                    #videoControl-btnEnd {
+                        background-color: colors.$red;
+
+                        img {
+                            transform: rotate(137deg);
+                            margin-bottom: -4px;
+                        }
+                    }
+
+                }
+            }
+
+            // 
+            .videoCorrection {
+                width: 100%;
+                height: 100%;
+                transform: scaleX(-1);
+                position: absolute;
+            }
+
+            // 
+            #remoteVideoPoster {
+                width: 100%;
+                height: 100%;
+                position: absolute;
+                top: 0;
+                left: 0;
+                @include display.flex(column, center, center);
+
+                #remoteVideoPosterImage {
+                    width: 275px;
+                    height: 275px;
+                    // background-color: rgba(255, 255, 255, 0.05);
+                    background-image: url('../icon/avatarVideoRemote.svg');
+                    background-position: center;
+                    background-repeat: no-repeat;
+                    border-radius: 9999px;
+                    // 
+                    // border: 15px solid rgba(255, 255, 255, 0.05);
                 }
             }
         }
+
+        #chatSection {
+            position: relative;
+            flex: none;
+            height: 100%;
+            width: 475px;
+            @include display.flex(column, flex-start, flex-start);
+            border: 1px solid colors.$form-mid;
+            border-left: none;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+
+            .chatMedecinInfos {
+                width: 100%;
+                height: 66px;
+                flex: none;
+                @include display.flex(row, flex-start, center);
+                box-sizing: border-box;
+                padding: 0px 10px;
+                border-bottom: 1px solid colors.$form-mid;
+
+                // 
+                .medecinAvatar {
+                    width: 41px;
+                    height: 41px;
+                    border-radius: 10px;
+                    background-color: colors.$form-mid;
+                    background-position: center;
+                    background-repeat: none;
+                    background-image: url('../icon/avatarChat.svg');
+                    background-repeat: no-repeat;
+                }
+
+                .medecinInformations {
+                    @include display.flex(column, flex-start, flex-start);
+                    font-family: 'Gilroy', sans-serif;
+                    margin-left: 10px;
+
+                    .medecinContactName {
+                        font-size: 20px;
+                        font-weight: 700;
+                        color: colors.$dark;
+                        text-transform: capitalize;
+                    }
+
+                    .medecinContactSpacia {
+                        color: colors.$form-dark;
+                        font-size: 18px;
+                        font-weight: 500;
+                        text-transform: capitalize;
+                    }
+                }
+            }
+
+            // background-color: red;
+            .chatSectionMessages {
+                flex: auto;
+                width: 100%;
+                height: 1px;
+                @include display.flex(column, flex-start, flex-start);
+                box-sizing: border-box;
+                padding: 10px;
+                overflow-y: auto;
+
+                .messageContainer {
+                    width: 100%;
+                    height: fit-content;
+                    @include display.flex(row, unset, center);
+
+                    span {
+                        padding: 10px;
+                        font-size: 20px;
+                        font-family: 'Roboto', sans-serif;
+                        border-radius: values.$bRadius-2;
+                        max-width: 350px;
+                    }
+
+                    &:not(:last-of-type) {
+                        margin-bottom: 10px;
+                    }
+                }
+
+                .sentMessage {
+                    flex-direction: row-reverse;
+
+                    span {
+                        background-color: colors.$accent;
+                        color: colors.$white;
+                    }
+                }
+
+                .receivedMessage {
+                    span {
+                        background-color: colors.$form-mid;
+                        color: colors.$dark;
+                    }
+                }
+
+            }
+
+            .bottomTable {
+                flex: none;
+                height: 70px;
+                width: 100%;
+                // border-top: 1px solid colors.$form-mid;
+                box-sizing: border-box;
+                padding: 0 15px;
+                // 
+                @include display.flex(row, unset, center);
+
+                // 
+                .bottomTable-msgInput {
+                    flex: 1;
+                    padding: 9px;
+                    border: none;
+                    background: colors.$form;
+                    border-radius: values.$bRadius-2;
+                    font-size: 17px;
+                    outline: none;
+                    font-family: 'Roboto';
+                    color: colors.$dark;
+
+                    &:focus {
+                        border: 1px solid colors.$form-dark;
+                    }
+
+                    &::placeholder {
+                        font-style: italic;
+                        color: colors.$form-dark;
+                    }
+                }
+
+                .bottomTableBtn {
+                    // margin-left: 26px;
+                    cursor: pointer;
+
+                    &:not(:last-of-type) {
+                        margin-right: 10px;
+                    }
+                }
+
+                .bottomTable-btnVideo {
+                    background-color: colors.$accent;
+                    padding: 7px;
+                    border-radius: 10px;
+                    display: flex;
+                    justify-content: center;
+                    text-transform: uppercase;
+                    font-weight: 700;
+                    color: white;
+
+                    span {
+                        margin-left: 5px;
+                    }
+                }
+
+                .bottomTable-btnSubmit {
+                    background-color: colors.$accent;
+                    padding: 7px;
+                    border-radius: 10px;
+                    font-weight: 700;
+                    color: white;
+                    text-transform: uppercase;
+                }
+
+                &>:nth-child(3) {
+                    margin-left: 20px;
+                }
+
+            }
+
+            // 
+        }
     }
+
+    .formulaire {
+        display: flex;
+        width: 90%;
+        margin: auto;
+    }
+
+    #form_patient {
+        font-family: "Gilroy", sans-serif;
+        margin-left: 50px;
+        padding: 50px;
+        box-sizing: border-box;
+        width: 48%;
+        margin: auto;
+        display: flex;
+        flex-direction: column;
+    }
+
+    #form_patient div {
+        display: flex;
+        margin-top: 40px;
+        margin-right: 30px;
+        align-items: center;
+    }
+
+    #form_patient div div {
+        margin-top: 0px;
+        margin-right: 40px;
+    }
+
+    #form_patient div label {
+        font-size: 20px;
+        font-weight: bold;
+        width: max-content;
+        margin-right: 15px;
+    }
+
+    #form_patient input {
+        font-size: 20px;
+        background-color: #F6F9FF;
+        border-radius: 8px;
+        height: 40px;
+        width: 250px;
+        border-style: none;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+    #form_patient textarea {
+        font-family: "Gilroy", sans-serif;
+        font-size: 20px;
+        background-color: #F6F9FF;
+        border-radius: 8px;
+        height: 60px;
+        width: 300px;
+        border-style: none;
+        padding: 4px;
+    }
+
+    #form_patient h2 {
+        margin-top: 60px;
+        margin-bottom: -10px;
+        font-size: 31px;
+        color: #004348;
+    }
+
+    #form_patient input[type="file"] {
+        display: inline-block;
+        padding: 6px 12px;
+        cursor: pointer;
+        font-size: 15px;
+        width: 290px;
+    }
+
+    #form_patient button {
+        background-color: #1FDBAE;
+        border-style: none;
+        width: 180px;
+        margin: auto;
+        height: 40px;
+        border-radius: 15px;
+        color: white;
+        font-weight: bold;
+        font-size: 20px;
+        cursor: pointer;
+        margin-bottom: 40px;
+        text-align: center;
+    }
+
+    #form_patient button:hover {
+        background-color: rgb(201, 201, 201);
+        color: rgb(255, 255, 255);
+    }
+
+    .formulaire img {
+        width: 500px;
+        height: 500px;
+        margin: auto;
+    }
+
 
     #footer {
         width: 100%;

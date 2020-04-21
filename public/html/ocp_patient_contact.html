@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/patient_1_OCP.css">
     <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/simplepeer.min.js"></script>
     <!-- <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script> -->
     <title>Contact</title>
 </head>
@@ -28,50 +29,67 @@
                 </div>
             </div>
         </header>
-
-        <section>
-            <div class="partContact">
-                <div class="appel">
-                    <div class="imUser"><img src="../img/User.png" alt="user" class="imgUser"></div>
-                    <div class="Imgs">
-                        <div></div>
-                        <div class="icons">
-                            <div><img src="../img/micro.png" alt="micro" id="micro"></div>
-                            <div class="divApp"><img src="../img/phone.png" alt="appel" id="appel"></div>
-                            <div><img src="../img/video.png" alt="vid" id="video"></div>
-                        </div>
-                        <div class="popup"> <img src="../img/popup.jpg"></div>
+        <div id="smallblox">
+            <div id="videoSection">
+                <video id="remoteVideo" autoplay class="videoCorrection"></video>
+                <div id="remoteVideoPoster">
+                    <div id="remoteVideoPosterImage">
                     </div>
                 </div>
-                <div class="message">
-                    <div class="medInfos">
-                        <img src="../img/medecin.png" width="60px" alt="medecin">
-                        <div class="infos">
-                            <span> Nom médecin </span>
-                            <span> Spécialité </span>
+                <div id="videoSectionBody">
+                    <div id="videoSectionHost">
+                        <video id="clientVideo" autoplay class="videoCorrection"></video>
+                        <div id="hostVideoPoster">
                         </div>
                     </div>
-                    <div class="msgs">
-                        <p> Lorem ipsum dolor sit amet consectetur adipisicing elit. </p>
-                        <p> lorem ipsum </p>
-                        <p class="msgUser"> Lorem ipsum dolor sit!</p>
-                        <p> Ok </p>
-                        <p class="msgUser"> document.pdf </p>
-                    </div>
-                    <div class="writeMsg">
-                        <input type="text" id="write" placeholder="Votre texte ici ...">
-                        <button id="envoyer"> <img src="../img/Envoyer.jpg"></button>
-                        <button id="btnAdd"> <img src="../img/File.jpg"> </button>
+                    <div id="videoChatControls">
+                        <div class="videoControlBtn">
+                            <img src="../icon/mic-on.svg" alt="mic-on">
+                        </div>
+                        <div class="videoControlBtn" id="videoControl-btnEnd">
+                            <img src="../icon/phone.svg" alt="hangup">
+                        </div>
+                        <div class="videoControlBtn">
+                            <img src="../icon/camera-on.svg" alt="camera-on">
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
-        <footer>
-            <div class="footer-bottom-text ">
-                <div>Powered By YouCode-Safi.</div>
-                <span>Copyright © 2020. All rights reserved.</span>
+            <div id="chatSection">
+                <div class="chatMedecinInfos">
+                    <div class="medecinAvatar">
+                    </div>
+                    <div class="medecinInformations">
+                        <span class="medecinContactName">
+                            Nom Médecin
+                        </span>
+                        <span class="medecinContactSpacia">
+                            Proféssion
+                        </span>
+                    </div>
+                </div>
+                <!--  -->
+                <div class="chatSectionMessages">
+                    <div class="messageContainer sentMessage">
+                        <span>
+                            Bonjour mr Nom patient comment vous vous sentez à présent ?
+                        </span>
+                    </div>
+                    <div class="messageContainer receivedMessage">
+                        <span>
+                            pas bien ..
+                        </span>
+                    </div>
+                </div>
+                <!-- <div class="chatSectionControls"> -->
+                <div class="bottomTable bottomTableMedecin">
+                    <input type="text" class="bottomTable-msgInput" id="msgInput" placeholder="Votre message text..."
+                        style="margin: 0px 15px;">
+                    <img src="../icon/doc2.svg" class="bottomTable-btnDoc bottomTableBtn" id="msgDoc">
+                    <img src="../icon/send2.svg" class="bottomTable-msgSend bottomTableBtn" id="msgSend">
+                </div>
             </div>
-        </footer>
+        </div>
     </div>
     <script src="../js/mods/worker_patient_contact.js"></script>
     <script src="../js/mods/socket_patient.js"></script>

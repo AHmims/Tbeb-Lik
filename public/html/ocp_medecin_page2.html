@@ -6,7 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="../css/mods/seeme.css">
-    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="../js/simplepeer.min.js"></script>
     <!-- <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css"> -->
     <!-- <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.11.2/css/all.css"> -->
     <!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" /> -->
@@ -26,7 +27,7 @@
         <div id="container" class="padding-0">
             <div class="roblox">
                 <div id="patientsList" class="">
-                    <div class="patientContact">
+                    <!-- <div class="patientContact">
                         <div class="patientContactAvatar">
                             <div class="patientContactStatus statusOnline"></div>
                         </div>
@@ -64,7 +65,7 @@
                                 matricule
                             </span>
                         </div>
-                    </div>
+                    </div> -->
                 </div>
                 <div id="chatSection">
                     <div class="chatSectionMessages">
@@ -153,9 +154,11 @@
                 </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.5.0.min.js"
+            integrity="sha256-xNzN2a4ltkB44Mc/Jz3pT4iU1cmeR0FkXs4pru/JxaQ=" crossorigin="anonymous"></script>
         <script src="../js/styles.js"></script>
         <script src="../js/medecin_ops_OCP_1.js"></script>
-        <!-- <script src="../js/mods/socket_medecin.js"></script> -->
+        <script src="../js/mods/socket_medecin.js"></script>
         <script src="../js/mods/worker_medecin_contact.js"></script>
 </body>
 
