@@ -34,8 +34,10 @@
             <form id="form_patient" method="post">
                 <h2> Informations personnelles : </h2>
                 <div> 
-                    <div><label for="nom"> Nom complet : </label> 
+                    <div><label for="nom"> Nom  : </label> 
                     <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION['nom'] ?>"></div>
+                    <div><label for="prenom"> Prénom : </label> 
+                    <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION['prenom'] ?>"></div>
                 </div>
                 <div>
                     <label for="matricule"> Matricule : </label> 

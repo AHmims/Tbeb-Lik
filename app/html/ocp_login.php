@@ -48,9 +48,10 @@
                 {
                     $lmdp = $resultat->PASSWORD;
                     $_SESSION['nom'] = $resultat->NOM_PAT;
+                    $_SESSION['prenom'] = $resultat->Prenom_PAT;
                     $_SESSION['matricule'] = $resultat->MATRICULE_PAT;
-                    $_SESSION['daten'] = $resultat->DATE_NAISS;
-                    $_SESSION['tel'] = $resultat->TEL;
+                    $_SESSION['daten'] = $resultat->Date_Naissence;
+                    $_SESSION['tel'] = $resultat->Tel;
                     if($mdp == $lmdp){
                         header('Location: ./ocp_patient_formulaire.php'); 
                     }

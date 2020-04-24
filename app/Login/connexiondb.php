@@ -1,6 +1,6 @@
 <?php
 try {
-    $db = new PDO('mysql:dbname=bd_telemedecine;host=localhost', 'root');
+    $db = new PDO('mysql:dbname=bd_telemedecine3;host=localhost', 'root');
     
     $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
