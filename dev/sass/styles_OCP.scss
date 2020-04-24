@@ -862,3 +862,68 @@ body {
         margin-bottom: 15px;
     }
 }
+
+// 
+// 
+.box-notif-datePickerBoxBg {
+    top: 0;
+    left: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backdrop-filter: blur(5px);
+    @include display.flex(row, center, center);
+
+    .box-notif-datePickerBox {
+        background-color: colors.$white;
+        border-radius: 20px;
+        box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        @include display.flex(column, flex-start, flex-start);
+
+        &>*:not(:last-child) {
+            margin-bottom: 20px;
+        }
+
+        // 
+        .box-notif-datePickerBoxTxt {
+            font-family: 'Gilroy', sans-serif;
+            font-size: 20px;
+            color: colors.$dark;
+            font-weight: 700;
+        }
+
+        // 
+        .box-notif-datePickerBtnBox {
+            width: 100%;
+            @include display.flex(row-reverse, flex-start, flex-end);
+
+            input {
+                font-size: 16px;
+                border: none;
+                background: none;
+                padding: 2px 5px;
+                border-radius: 5px;
+                font-family: 'Gilroy', sans-serif;
+                font-weight: 500;
+                cursor: pointer;
+            }
+
+            // 
+            .box-notif-datePickerBtn {
+                background-color: colors.$accent;
+                color: colors.$white;
+                text-transform: capitalize;
+                padding: 3px 6px;
+            }
+
+            .box-notif-datePickerBtnNo {
+                background: transparent;
+                border: 1px solid colors.$accent;
+                text-transform: capitalize;
+                color: colors.$accent;
+                margin-right: 5px;
+            }
+        }
+    }
+}

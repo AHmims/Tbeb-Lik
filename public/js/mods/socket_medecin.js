@@ -40,10 +40,10 @@ __HUB_SOCKET.on('getNotifs', data => {
 // 
 // 
 // 
-function notificationAccepted(notifId) {
+function notificationAccepted(notifId, date) {
     // console.log(notifId);
-    __SOCKET.emit('joinRoom', notifId);
-    __HUB_SOCKET.emit('updateNotif');
+    __SOCKET.emit('joinRoom', notifId, date);
+    __HUB_SOCKET.emit('updateNotif', notifId);
 }
 
 function sendMsg(msg) {

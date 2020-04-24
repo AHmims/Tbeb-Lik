@@ -39,6 +39,7 @@ __IO.on('connection', socket => {
             index: `NOTIF-${notifications.length + 1}`,
             data: data,
             medecin: null,
+            date: null,
             resolved: false
         }
         // 
@@ -148,8 +149,8 @@ __CHAT.on('connection', socket => {
         // 
     });
     // 
-    socket.on('joinRoom', notificationId => {
-        let functionData = joiningRoom(notificationId);
+    socket.on('joinRoom', (notificationId, date) => {
+        let functionData = joiningRoom(notificationId, date);
         let roomId = functionData.roomId;
         // 
         // 
@@ -180,6 +181,7 @@ __CHAT.on('connection', socket => {
         if (medecinId != null) {
             if (notifications[functionData.arrayIndex]) {
                 notifications[functionData.arrayIndex].medecin = medecinId;
+                notifications[functionData.arrayIndex].date = date;
                 // notifications[functionData.arrayIndex].resolved = true;
                 // 
                 for (let i = 0; i < chatters.length; i++) {
@@ -333,7 +335,7 @@ __CHAT.on('connection', socket => {
         return msgObject;
     }
     // 
-    function joiningRoom(nId) {
+    function joiningRoom(nId, date = null) {
         let retData = {
             roomId: null,
             arrayIndex: -1
@@ -346,12 +348,16 @@ __CHAT.on('connection', socket => {
                     if (user.userId == patient)
                         retData.roomId = user.roomId;
                 });
+                //
+                if (notifications[i].resolved == false && retData.roomId != null)
+                    socket.to(retData.roomId).emit('newNotification', date, true);
+                // 
                 notifications[i].resolved = true;
                 retData.arrayIndex = i;
             }
         }
         // 
-        console.log(retData);
+        console.log('joiningRoom()', retData);
         return retData;
     }
     // 
@@ -385,11 +391,11 @@ __CHAT.on('connection', socket => {
 // NOTIICATION SYSTEM
 __HUB.on('connection', socket => {
     console.log('___MEDECIN ON___' + socket.id);
-    socket.on('updateNotif', () => {
+    socket.on('updateNotif', (notifId) => {
         // SOME SHIT HERE
         // AND BY SHIT I MEAN SEND SOME DATA TO ALL DOCTORS TO INFORM THEM 
         // THAT THIS ORDER IS NO LONGER ACTIVE
-        __IO.emit('notifAccepted', 'SOME DATA');
+        socket.emit('notifAccepted', notifId);
     });
 });
 // ROUTES

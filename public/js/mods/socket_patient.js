@@ -42,7 +42,8 @@ __SOCKET.on('patientLink', async () => {
     }
 });
 __SOCKET.on('liveStreamDataFlux', offer => {
-    __PEER.signal(offer);
+    if (__PEER != null)
+        __PEER.signal(offer);
 });
 // 
 __SOCKET.on('liveStreamTerminated', () => {
@@ -57,9 +58,11 @@ __SOCKET.on('liveStreamTerminated', () => {
 });
 // 
 // 
-globSocket.on('notifAccepted', data => {
-    sessionStorage.setItem('smtg', JSON.stringify(data));
-    window.location.href = "/patient/contact";
+__SOCKET.on('newNotification', (date, state) => {
+    // sessionStorage.setItem('smtg', JSON.stringify(data));
+    // window.location.href = "/patient/contact";
+    console.log(date);
+    addNotification(date, state);
 });
 // 
 // 
@@ -74,3 +77,41 @@ function sendMsg(msg) {
 }
 // 
 // 
+function addNotification(date, state) {
+    let cont = document.createElement('div');
+    let contClass = 'notification';
+    if (state != true)
+        contClass += ' notif-inactive';
+    cont.setAttribute('class', contClass);
+    // 
+    let iconbox = document.createElement('div');
+    let icon = document.createElement('img');
+    iconbox.setAttribute('class', 'iconBox');
+    icon.setAttribute('src', '../icon/Calendar3.svg');
+    iconbox.appendChild(icon);
+    // 
+    let txtCont = document.createElement('div');
+    txtCont.setAttribute('class', 'notifText');
+    let txtTitle = document.createElement('span');
+    txtTitle.setAttribute('class', 'notifTitle');
+    txtTitle.innerText = "Votre demande à été accepte";
+    let txtDesc = document.createElement('span');
+    txtDesc.setAttribute('class', 'notifiDesc');
+    txtDesc.innerText = "Une réunion était prévue pour le ";
+    let txtDescDate = document.createElement('span');
+    txtDescDate.setAttribute('class', 'notifDate');
+    date = date.split(" ");
+    txtDescDate.innerText = `${date[0]} à ${date[1]}`;
+    // 
+    txtDesc.appendChild(txtDescDate);
+    // 
+    txtCont.appendChild(txtTitle);
+    txtCont.appendChild(txtDesc);
+    // 
+    cont.appendChild(iconbox);
+    cont.appendChild(txtCont);
+    // 
+    document.getElementById('notifBoxBody').appendChild(cont);
+    // 
+    document.getElementById('btnNotif').setAttribute('class', 'notifActive');
+}

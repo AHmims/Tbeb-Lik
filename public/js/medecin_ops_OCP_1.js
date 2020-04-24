@@ -111,7 +111,59 @@ function creationCardConsultation(data, boxId) {
     btn2.innerText = 'Accepter';
     btn2.addEventListener('click', function () {
         console.log('Accepter');
-        notificationAccepted(boxId);
+        // notificationAccepted(boxId);
+        let boxBg = document.createElement('div');
+        let box = document.createElement('div');
+        let txt = document.createElement('span');
+        let date = document.createElement('input');
+        date.setAttribute('type', 'button');
+        date.setAttribute('placeholder', 'choisire une date');
+        let btn = document.createElement('input');
+        btn.setAttribute('type', "button");
+        btn.setAttribute('value', "Envoyer");
+        let btn2 = document.createElement('input');
+        btn2.setAttribute('type', "button");
+        btn2.setAttribute('value', "Anuller");
+        // 
+        boxBg.setAttribute('class', 'box-notif-datePickerBoxBg');
+        box.setAttribute('class', 'box-notif-datePickerBox');
+        txt.setAttribute('class', 'box-notif-datePickerBoxTxt');
+        txt.innerText = "Saisire une date :";
+        date.setAttribute('class', 'box-notif-datePicker');
+        let btnBox = document.createElement('div');
+        btnBox.setAttribute('class', 'box-notif-datePickerBtnBox');
+        btn.setAttribute('class', 'box-notif-datePickerBtn');
+        btn2.setAttribute('class', 'box-notif-datePickerBtnNo');
+        // 
+        btn2.addEventListener('click', () => {
+            boxBg.remove();
+        });
+        // 
+        btn.addEventListener('click', () => {
+            notificationAccepted(boxId, date.value);
+            console.log(date.value);
+        });
+        // 
+        box.appendChild(txt);
+        box.appendChild(date);
+        btnBox.appendChild(btn);
+        btnBox.appendChild(btn2);
+        box.appendChild(btnBox);
+        // 
+        boxBg.appendChild(box);
+        // 
+        flatpickr(date, {
+            enableTime: true,
+            dateFormat: "Y-m-d H:i",
+            time_24hr: true
+        });
+        // 
+        document.getElementById('container').appendChild(boxBg);
+        // 
+        let DTSDQS = document.getElementsByClassName('box-notif-datePickerBtn');
+        Array.from(DTSDQS).forEach(elem => {
+            DTSDQS.type = "date";
+        });
     });
     cont7.appendChild(btn1);
     cont7.appendChild(btn2);
@@ -127,7 +179,7 @@ function creationCardConsultation(data, boxId) {
     document.getElementById('container').appendChild(container);
 }
 // 
-
+// 
 function makeElement(type) {
     return document.createElement(type);
 }
