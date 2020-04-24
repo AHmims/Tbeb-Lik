@@ -477,38 +477,117 @@ margin-bottom: 60px;
 }
 footer{
   margin-top:50px;
-}
-footer img {
-  padding: -100px 0px -116px -133px;
-  font-size: 3rem;
-  height: 88px;
-  width: 258px;
-}
-.footer-bottom-text{
-  padding: 6px;
-  text-align: center;
-  background: black;
-  line-height: 25px;
-  color: #fff;
   font-family: 'Gilroy';
-  font-size: 1.9vh;
+}
+
+.part1{
+  height:440px;
+  width: 100%;
+  background-image: url('../img/docts.png');
+  background-position: center;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+.part1 .parags{
+  display: flex;
+  width:80%;
+  padding-top: 100px;
+  padding-bottom: 100px;
+  margin:auto;
+  justify-content: space-between;
+}
+.part1 .parags .parag1{
+  width:350px;
+  
+}
+.part1 .parags .parag2{
+  width:350px;
+}
+
+.part1 .parags .parag3{
+  width:350px;
+  letter-spacing: 0.5px;
+}
+.part1 .parags h1{
+  text-align: center;
+  color: white;
+}
+
+.part1 .parags h1:hover{
+  color:#1FDBAE ;
+  cursor: pointer;
+}
+
+.part1 .parags hr{
+  width: 180px;
+  margin:auto;
+  height: 1.5px;
+  background-color: #1FDBAE;
+  border: none;
+  margin-bottom:30px;
+  margin-top:-15px;
+}
+
+.part1 .parags p{
+  color:#DDDDDD;
+  font-size: 16px;
+  text-align: center;
+  line-height: 26px;
+}
+
+.part1 .parags .parag1 ul{
+  padding-left: 40px;
+  font-size: 16px;
+  color:rgb(172, 172, 172);
+  margin-top: -8px;
+}
+
+.part1 .parags .parag1 ul li{
+  margin-bottom: 2px;
   letter-spacing: 2px;
 }
 
-.footer-bottom-text span{  
-background-image: url('../img/vert.png');
--webkit-background-clip: text;
-background-clip: text;
--webkit-text-fill-color: transparent;
--webkit-animation: fire 2s linear infinite;
-animation: fire 2s linear infinite;
--webkit-backface-visibility: hidden;
-backface-visibility: hidden;
+.part1 .parags .parag2 div{
+  display: flex;
+  align-items: center;
+  width: 60%;
+  margin: auto;
+  margin-bottom: 10px;
+  font-size: 16px;
+  color:rgb(172, 172, 172);
 }
-@keyframes fire{
-  0%{background-position: 0% -50%;}
-  0%{background-position: 100% -50%;}
+.part1 .parags .parag2 div img{
+  margin-right: 10px;
+  cursor: pointer;
 }
+
+
+  .part2{
+    padding: 6px;
+    text-align: center;
+    background: #004348;
+    line-height: 25px;
+    color: #fff;
+    font-family: 'Gilroy';
+    font-size: 15px;
+    letter-spacing: 2px;
+  }
+  
+  .part2 span{  
+  background-image: url('../img/vert.png');
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -webkit-animation: fire 2s linear infinite;
+  animation: fire 2s linear infinite;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  }
+  @keyframes fire{
+    0%{background-position: 0% -50%;}
+    0%{background-position: 100% -50%;}
+  }
+  
 
 
 @media screen and (max-width: 1200px) {
@@ -568,6 +647,8 @@ backface-visibility: hidden;
     width:100%;
   }
 
+  
+
 
   
 .partContact{
@@ -625,6 +706,26 @@ backface-visibility: hidden;
   .message{
     width: 100%;
     margin: auto;
+  }
+
+
+  
+  .part1{
+    height:100%;
+    width: 100%;
+    padding-bottom: 100px;
+  }
+  .part1 .parags{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding-top: 0px;
+    padding-bottom: 20px;
+  }
+  .part1 .parags div{
+    width: 100%;
+    margin: auto;
+    margin-bottom:-40px;
   }
 }
 

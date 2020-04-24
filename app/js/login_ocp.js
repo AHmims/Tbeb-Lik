@@ -1,3 +1,3 @@
-document.getElementById('btnLogin').addEventListener('click', () => {
-    alert('login_OCP.js');
-});
+// document.getElementById('btnLogin').addEventListener('click', () => {
+//     alert('login_OCP.js');
+// });
