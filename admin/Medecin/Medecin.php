@@ -122,7 +122,7 @@
              $db = Database::connect();
             if($status){
               try{
-              $statement = $db->prepare("select MATRICULE,NOM_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE from medecin,specialites where medecin.NOM_MED = ? or MATRICULE = ? ");
+              $statement = $db->prepare("select MATRICULE,NOM_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE from medecin,specialites where  medecin.ID_SPEC = specialites.ID_SPEC And  medecin.NOM_MED = ? or MATRICULE = ?");
               $statement->execute(array($search,$search));
               while($item = $statement->fetch())
               {
@@ -151,7 +151,7 @@
                 die('Erreur : ' . $e->getMessage());
             }    
               }else{ 
-              $statement = $db->query("select MATRICULE,NOM_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE from medecin,specialites");
+              $statement = $db->query("select MATRICULE,NOM_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE from medecin,specialites where medecin.ID_SPEC = specialites.ID_SPEC ");
               while($item = $statement->fetch())
               {
                 if($item["DISPONIBLE"] == true){

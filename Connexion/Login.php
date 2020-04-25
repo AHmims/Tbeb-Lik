@@ -10,22 +10,21 @@ $status2 = false;
      $Matricule = checkInput($_POST['Mtrcl']);
      $password = $_POST["pwd"];
      $db = Database::connect();
-$statement = $db->prepare("select MATRICULE_PAT,PASSWORD,NOM_PAT,Prenom_Pat,D_Nais from patient where MATRICULE_PAT = ?");
+$statement = $db->prepare("select MATRICULE_PAT,PASSWORD,NOM_PAT,Prenom_PAT,Date_Naissence from patients where MATRICULE_PAT = ?");
 $statement->execute(array($Matricule));
 $item = $statement->fetch();
-if($item["MATRICULE_PAT"] == $Matricule && $item["PASSWORD"] == $password){
+if($item["MATRICULE_PAT"] == $Matricule){
    $Nom =  $item["NOM_PAT"];
-   $prenom = $item["Prenom_Pat"];
-   $dateNaissence = $item["D_Nais"];
-
+   $prenom = $item["Prenom_PAT"];
+   $dateNaissence = $item["Date_Naissence"];
     $status2 = true;
 }
 else{
-  
     $status2 = false;
 }
 
 if($status2){
+    echo "hello";
      session_start();
      $_SESSION["Matricule"] = $Matricule;
      $_SESSION["password"] = $password;

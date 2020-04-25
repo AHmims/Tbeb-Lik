@@ -65,11 +65,11 @@
                 </div>
                 <div> 
                     <label for="ordonnance"> Ordonnance : </label> 
-                    <input type="file" name="ordonnance" id="ordonnance">
+                    <input type="file" name="ordonnance" accept="application/pdf" id="ordonnance">
                 </div>
                 <div> 
                     <label for="certif"> Certification médicale : </label> 
-                    <input type="file" name="certif" id="certif">
+                    <input type="file" name="certif" accept="application/pdf" id="certif">
                 </div>
                 <div><button type="submit" name="envoi" id="btnEnvoyer"> Envoyer </button></div>
 
