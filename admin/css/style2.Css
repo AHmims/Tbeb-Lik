@@ -23,6 +23,12 @@
    
 
 }
+.admin{
+  margin-top: 62px;
+}
+.help-inline{
+  color: red;;
+}
 form{
   margin-left: 50px;
 }
@@ -40,7 +46,8 @@ form{
     color: #FFFFFF;
     font-size: 18px;
     font-family: "Gilroy", sans-serif;
-    font-weight: 400
+    font-weight: 400;
+    margin-top: 38px;
 }
 .LOGO{
     display: block;

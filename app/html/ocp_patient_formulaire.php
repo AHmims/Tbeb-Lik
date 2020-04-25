@@ -1,7 +1,6 @@
 <?php session_start() ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -35,21 +34,21 @@
                 <h2> Informations personnelles : </h2>
                 <div> 
                     <div><label for="nom"> Nom  : </label> 
-                    <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION['nom'] ?>"></div>
+                    <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION["NOM_PAT"] ?>"></div>
                     <div><label for="prenom"> Prénom : </label> 
-                    <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION['prenom'] ?>"></div>
+                    <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION["Prenom_PAT"] ?>"></div>
                 </div>
                 <div>
                     <label for="matricule"> Matricule : </label> 
-                    <input type="text" name="matricule" id="matricule" value="<?php echo $_SESSION['matricule'] ?>" disabled>
+                    <input type="text" name="matricule" id="matricule" value="<?php echo  $_SESSION["Matricule"]  ?>" disabled>
                 </div>
                 <div>
                     <label for="date_naiss"> Date de naissance : </label> 
-                    <input type="text" id="date_naiss"  value="<?php echo $_SESSION['daten']?>"  disabled>
+                    <input type="text" id="date_naiss"  value="<?php echo $_SESSION["D_Nais"]?>"  disabled>
                 </div>
                 <div>
                     <label for="numero"> Numéro de téléphone : </label> 
-                    <input type="text" name="tel" id="numero" value="<?php echo $_SESSION['tel'] ?>" disabled>
+                    <input type="number" name="tel" id="numero">
                 </div>
                 <h2> Détails de maladie : </h2>
                 <div> 
