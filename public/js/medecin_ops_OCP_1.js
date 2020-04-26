@@ -141,7 +141,7 @@ function creationCardConsultation(data, boxId) {
         // 
         btn.addEventListener('click', () => {
             notificationAccepted(boxId, date.value);
-            console.log(date.value);
+            boxBg.remove();
         });
         // 
         box.appendChild(txt);

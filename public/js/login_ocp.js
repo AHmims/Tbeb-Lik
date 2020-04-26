@@ -7,6 +7,7 @@ document.getElementById('btnLogin').addEventListener('click', () => {
     // sessionStorage.setItem('patient_P', inputs[1].value);
     // 
     var pages = ["/patient/form", "/medecin/notifications"];
+    // var pages = ["/p", "/m"];
 
     window.location.href = pages[userType];
 });

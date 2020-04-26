@@ -46,7 +46,11 @@ __IO.on('connection', socket => {
         console.log(notifData);
         notifications.push(notifData);
         // 
-        __HUB.emit('getNotifs', notifications);
+        let toSendNotifs = notifications.filter(element => {
+            return element.resolved == false;
+        });
+        // 
+        __HUB.emit('getNotifs', toSendNotifs);
     });
     socket.on('disconnect', () => {
         // console.log('Socket off');
@@ -219,25 +223,24 @@ __CHAT.on('connection', socket => {
     });
     // 
     // VIDEO
-    socket.on('liveStreamInit', () => {
-        let roomId = getRoomIdFromSocket();
-        socket.to(roomId).emit('patientLink');
-    });
+    // socket.on('liveStreamInit', () => {
+    //     let roomId = getRoomIdFromSocket();
+    //     console.log('liveStreamInit()');
+    //     socket.to(roomId).emit('patientLink');
+    // });
     // 
     socket.on('liveStreamInitFail', () => {
         let roomId = getRoomIdFromSocket();
+        console.log('liveStreamInitFail()');
         socket.to(roomId).emit('patientLinkFailed');
     });
     // 
     socket.on('liveStreamLink', (data) => {
         let roomId = getRoomIdFromSocket();
+        console.log('liveStreamLink()');
         socket.to(roomId).emit('liveStreamDataFlux', data);
     });
     //
-    // 
-    // 
-    // 
-    // 
     //  
     // 
     function setUserSocket(type, socket, id) {

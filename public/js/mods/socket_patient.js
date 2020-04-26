@@ -12,7 +12,7 @@ __SOCKET.on('msgReceived', msg => {
 });
 // 
 // 
-__SOCKET.on('patientLink', async () => {
+__SOCKET.on('liveStreamDataFlux', async (offer) => {
     // let status = ;
     if (confirm('Votre medecin est entrain de vous appelle.')) {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -27,23 +27,23 @@ __SOCKET.on('patientLink', async () => {
             stream: stream,
             trickle: false
         })
+        // 
+        // 
         __PEER.on('stream', function (stream) {
             document.getElementById('remoteVideo').srcObject = stream;
             document.getElementById('remoteVideoPoster').style.display = "none";
-            console.log(stream);
+            console.log('Stream()');
         });
         // 
         __PEER.on('signal', function (data) {
-            console.log(data);
+            console.log('signal()');
             __SOCKET.emit('liveStreamLink', data);
         });
+        // 
+        __PEER.signal(offer);
     } else {
         __SOCKET.emit('liveStreamInitFail');
     }
-});
-__SOCKET.on('liveStreamDataFlux', offer => {
-    if (__PEER != null)
-        __PEER.signal(offer);
 });
 // 
 __SOCKET.on('liveStreamTerminated', () => {
@@ -53,7 +53,7 @@ __SOCKET.on('liveStreamTerminated', () => {
         document.getElementById('remoteVideo').srcObject = null;
         // 
         document.getElementById('remoteVideoPoster').style.display = "flex";
-        console.log('ss');
+        console.log('ended');
     }
 });
 // 
@@ -64,7 +64,6 @@ __SOCKET.on('newNotification', (date, state) => {
     console.log(date);
     addNotification(date, state);
 });
-// 
 // 
 // 
 // 
@@ -110,6 +109,10 @@ function addNotification(date, state) {
     // 
     cont.appendChild(iconbox);
     cont.appendChild(txtCont);
+    // 
+    cont.addEventListener('click', () => {
+        window.location.href = "/patient/contact";
+    });
     // 
     document.getElementById('notifBoxBody').appendChild(cont);
     // 

@@ -1,6 +1,6 @@
 const __SOCKET = io('/chat');
 const __HUB_SOCKET = io('/medecinHub');
-let __PEER;
+let __PEER, ready = false;
 //
 __SOCKET.on('connect', () => {
     console.log('ff');
@@ -18,13 +18,13 @@ __SOCKET.on('p_liste', patients => {
 // 
 // 
 __SOCKET.on('liveStreamDataFlux', answer => {
+    ready = true;
     __PEER.signal(answer);
 });
 // 
 __SOCKET.on('patientLinkFailed', () => {
     __PEER.destroy();
     document.getElementById('clientVideo').srcObject = null;
-    console.log(__PEER);
 });
 
 // 
@@ -62,6 +62,8 @@ function switchUser(notifId) {
 // 
 // 
 async function streaminit() {
+    ready = false;
+    // 
     const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
         audio: true
@@ -74,17 +76,17 @@ async function streaminit() {
         stream: stream,
         trickle: false
     })
+    // __SOCKET.emit('liveStreamInit');
+    // 
+    __PEER.on('signal', function (data) {
+        if (!ready)
+            __SOCKET.emit('liveStreamLink', data);
+    });
+    // 
     __PEER.on('stream', function (stream) {
+        console.log('stream()');
         document.getElementById('remoteVideo').srcObject = stream;
         document.getElementById('remoteVideoPoster').style.display = "none";
     });
     // 
-    __SOCKET.emit('liveStreamInit');
-    // 
-    __PEER.on('signal', function (data) {
-        console.log(data);
-        __SOCKET.emit('liveStreamLink', data);
-    });
-
 }
-// 

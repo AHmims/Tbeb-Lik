@@ -26,9 +26,10 @@ document.getElementById('btn-notif').addEventListener('click', () => {
 // 
 // 
 // 
+let ready = false;
 let peer = null;
 // 
-__SOCKET.on('patientLink', async () => {
+__SOCKET.on('liveStreamDataFlux', async (offer) => {
     // let status = ;
     if (confirm('Votre medecin est entrain de vous appelle.')) {
         const stream = await navigator.mediaDevices.getUserMedia({
@@ -42,26 +43,31 @@ __SOCKET.on('patientLink', async () => {
             initiator: false,
             stream: stream,
             trickle: false
-        })
+        });
+        // 
         peer.on('stream', function (stream) {
             document.getElementById('remoteVideo').srcObject = stream;
         });
         // 
         peer.on('signal', function (data) {
-            console.log(data);
             __SOCKET.emit('liveStreamLink', data);
         });
+        // 
+        peer.signal(offer);
     } else {
         __SOCKET.emit('liveStreamInitFail');
     }
 });
 __SOCKET.on('liveStreamDataFlux', offer => {
-    peer.signal(offer);
+    // if (peer != null)
+    // console.log('qshdkjqhsdkjqhksdjhkqjs');
+    // ready = true;
+    // peer.signal(offer);
 });
 // 
 __SOCKET.on('liveStreamTerminated', () => {
     if (peer != null) {
-        peer.destroy();
+        // peer.destroy();
         document.getElementById('clientVideo').srcObject = null;
         document.getElementById('remoteVideo').srcObject = null;
     }
