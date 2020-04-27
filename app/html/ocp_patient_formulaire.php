@@ -42,21 +42,29 @@
                 <h2> Informations personnelles : </h2>
                 <div> 
                     <div><label for="nom"> Nom  : </label> 
-                    <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION['nom'] ?>"></div>
+                    <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION["NOM_PAT"] ?>"></div>
                     <div><label for="prenom"> Prénom : </label> 
-                    <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION['prenom'] ?>"></div>
+                    <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION["Prenom_PAT"] ?>"></div>
                 </div>
                 <div>
                     <label for="matricule"> Matricule : </label> 
+<<<<<<< HEAD
                     <input type="text" name="matricule" id="matricule" value="<?php echo  $_SESSION['matricule']  ?>" disabled>
+=======
+                    <input type="text" name="matricule" id="matricule" value="<?php echo  $_SESSION["Matricule"]  ?>" disabled>
+>>>>>>> 7bc27770bd1b2f69797a3ddd3d9d0e6cbfe2fd51
                 </div>
                 <div>
                     <label for="date_naiss"> Date de naissance : </label> 
-                    <input type="text" id="date_naiss"  value="<?php echo $_SESSION['daten']?>"  disabled>
+                    <input type="text" id="date_naiss"  value="<?php echo $_SESSION["D_Nais"]?>"  disabled>
                 </div>
                 <div>
                     <label for="numero"> Numéro de téléphone : </label> 
+<<<<<<< HEAD
                     <input type="number" name="tel" id="numero" >
+=======
+                    <input type="number" name="tel" id="numero">
+>>>>>>> 7bc27770bd1b2f69797a3ddd3d9d0e6cbfe2fd51
                 </div>
                 <h2> Détails de maladie : </h2>
                 <div> 
@@ -73,11 +81,11 @@
                 </div>
                 <div> 
                     <label for="ordonnance"> Ordonnance : </label> 
-                    <input type="file" name="ordonnance" id="ordonnance">
+                    <input type="file" name="ordonnance" accept="application/pdf" id="ordonnance">
                 </div>
                 <div> 
                     <label for="certif"> Certification médicale : </label> 
-                    <input type="file" name="certif" id="certif">
+                    <input type="file" name="certif" accept="application/pdf" id="certif">
                 </div>
                 <div><button type="submit" name="envoi" id="btnEnvoyer"> Envoyer </button></div>
               
