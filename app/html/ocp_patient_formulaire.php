@@ -1,7 +1,8 @@
-<?php session_start() ?>
+<?php session_start();
+   
+    ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,10 +29,16 @@
                 </div>
             </div>
         </header>
-        <section class="formulaire">
-            <img src="../img/doctor1.svg" alt="back">
+        
 
+        <section class="formulaire">
+            <div style="margin-top:200px;">
+                <h2 style="color:#02A2AF; font-family: Gilroy;font-size:30px;text-align:center">  Veuillez remplir ce formulaire pour votre 
+                <br> <?php echo $_POST['name_selectedOption']; ?> </h2>
+                <img src="../img/doctor1.svg" alt="back">
+            </div>
             <form id="form_patient" method="post">
+ 
                 <h2> Informations personnelles : </h2>
                 <div> 
                     <div><label for="nom"> Nom  : </label> 
@@ -41,7 +48,7 @@
                 </div>
                 <div>
                     <label for="matricule"> Matricule : </label> 
-                    <input type="text" name="matricule" id="matricule" value="<?php echo $_SESSION['matricule'] ?>" disabled>
+                    <input type="text" name="matricule" id="matricule" value="<?php echo  $_SESSION['matricule']  ?>" disabled>
                 </div>
                 <div>
                     <label for="date_naiss"> Date de naissance : </label> 
@@ -49,7 +56,7 @@
                 </div>
                 <div>
                     <label for="numero"> Numéro de téléphone : </label> 
-                    <input type="text" name="tel" id="numero" value="<?php echo $_SESSION['tel'] ?>" disabled>
+                    <input type="number" name="tel" id="numero" >
                 </div>
                 <h2> Détails de maladie : </h2>
                 <div> 
@@ -73,6 +80,7 @@
                     <input type="file" name="certif" id="certif">
                 </div>
                 <div><button type="submit" name="envoi" id="btnEnvoyer"> Envoyer </button></div>
+              
 
             </form>
             </section>
