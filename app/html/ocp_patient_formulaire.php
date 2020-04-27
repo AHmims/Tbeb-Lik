@@ -1,4 +1,6 @@
-<?php session_start() ?>
+<?php session_start();
+   echo $_POST['name_selectedOption']; 
+    ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -31,24 +33,25 @@
             <img src="../img/doctor1.svg" alt="back">
 
             <form id="form_patient" method="post">
+ 
                 <h2> Informations personnelles : </h2>
                 <div> 
                     <div><label for="nom"> Nom  : </label> 
-                    <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION["NOM_PAT"] ?>"></div>
+                    <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION['nom'] ?>"></div>
                     <div><label for="prenom"> Prénom : </label> 
-                    <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION["Prenom_PAT"] ?>"></div>
+                    <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION['prenom'] ?>"></div>
                 </div>
                 <div>
                     <label for="matricule"> Matricule : </label> 
-                    <input type="text" name="matricule" id="matricule" value="<?php echo  $_SESSION["Matricule"]  ?>" disabled>
+                    <input type="text" name="matricule" id="matricule" value="<?php echo  $_SESSION['matricule']  ?>" disabled>
                 </div>
                 <div>
                     <label for="date_naiss"> Date de naissance : </label> 
-                    <input type="text" id="date_naiss"  value="<?php echo $_SESSION["D_Nais"]?>"  disabled>
+                    <input type="text" id="date_naiss"  value="<?php echo $_SESSION['daten']?>"  disabled>
                 </div>
                 <div>
                     <label for="numero"> Numéro de téléphone : </label> 
-                    <input type="number" name="tel" id="numero">
+                    <input type="number" name="tel" id="numero"  value="<?php echo $_SESSION['tel']?>"  disabled>
                 </div>
                 <h2> Détails de maladie : </h2>
                 <div> 
@@ -72,6 +75,7 @@
                     <input type="file" name="certif" id="certif">
                 </div>
                 <div><button type="submit" name="envoi" id="btnEnvoyer"> Envoyer </button></div>
+              
 
             </form>
             </section>

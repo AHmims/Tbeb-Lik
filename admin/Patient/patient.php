@@ -22,6 +22,7 @@ $password = "";
        if(!in_array($fileExtension,$allowedType)){
         $error = true;
        }else{
+         echo $fileTmpname;
         $db = Database::connect();      
 try{
   // echo $fileTmpname;

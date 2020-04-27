@@ -151,7 +151,7 @@
                 die('Erreur : ' . $e->getMessage());
             }    
               }else{ 
-              $statement = $db->query("select MATRICULE,NOM_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE from medecin,specialites");
+              $statement = $db->query("select  MATRICULE,NOM_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE from medecin,specialites");
               while($item = $statement->fetch())
               {
                 if($item["DISPONIBLE"] == true){
@@ -174,9 +174,10 @@
              echo    '</td>';
              
              echo '</tr>';     
-                 
+                 print_r($item);
                   
               }
+               
             }
                 
                 
