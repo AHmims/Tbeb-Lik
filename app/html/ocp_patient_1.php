@@ -85,10 +85,12 @@
     <script>
         var input = document.getElementById('formDropDownExtension');
         var hiddenInput = document.getElementById('hiddenInput');
+        hiddenInput.value=document.getElementsByName('selectedOption')[0].innerText;
         input.addEventListener('click',()=>{
               hiddenInput.value=document.getElementsByName('selectedOption')[0].innerText;
+            
             }
-        })
+        )
     </script>
    
 </body>

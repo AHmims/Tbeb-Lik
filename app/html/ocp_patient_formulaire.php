@@ -117,7 +117,7 @@ if($status)
         <section class="formulaire">
             <div style="margin-top:200px;">
                     <h2 style="color:#02A2AF; font-family: Gilroy;font-size:30px;text-align:center">  Veuillez remplir ce formulaire pour votre 
-                    <br> Repos maladie </h2>
+                    <br> <?php echo $_POST['name_selectedOption']?> </h2>
                     <img src="../img/doctor1.svg" alt="back">
             </div>
 
