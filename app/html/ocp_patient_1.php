@@ -87,9 +87,10 @@
         var hiddenInput = document.getElementById('hiddenInput');
         input.addEventListener('click',()=>{
               hiddenInput.value=document.getElementsByName('selectedOption')[0].innerText;
-         
+            }
         })
     </script>
+   
 </body>
  
 </html>

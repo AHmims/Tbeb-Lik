@@ -16,27 +16,27 @@ if($_SESSION['matricule'] == null){
     $filenamecertif   =   $_FILES['certif']['name'];
     $filenameordennance = $_FILES['ordonnance']['name'];
         if(empty($nombre_jrs)){
-            $nombrjourerror = "ce champs ne peut pas etre vide";
+            $nombrjourerror = "Ce champ ne peut pas être vide";
              $status = false;
         }
         if(empty($motif)){
-            $motiferror = "ce champs ne peut pas etre vide";
+            $motiferror = "Ce champ ne peut pas être vide";
             $status = false;
         }
         if(empty($ATCDS)){
-            $ATCDSerror = "ce champs ne peut pas etre vide";
+            $ATCDSerror = "Ce champ ne peut pas être vide";
             $status = false;
         }
         if(empty($Tele)){
-            $Teleerror = "ce champs ne peut pas etre vide";
+            $Teleerror = "Ce champ ne peut pas être vide";
             $status = false;
         }
         if(empty($filenamecertif)){
-            $filenamecertiferror = "ce champs ne peut pas etre vide";
+            $filenamecertiferror = "Ce champ ne peut pas être vide";
             $status = false;
         }
         if(empty($filenameordennance)){
-            $filenameordennanceerror = "ce champs ne peut pas etre vide";
+            $filenameordennanceerror = "Ce champ ne peut pas être vide";
             $status = false;
         }
         $destination = 'uploads/'.$filenamecertif;
@@ -46,16 +46,16 @@ if($_SESSION['matricule'] == null){
         $file = $_FILES['certif']['tmp_name'];
         $fileordannace = $_FILES['ordonnance']['tmp_name'];
         if(strlen($Tele)!=10){
-            $Teleerror = "ce champs il 'est incorrect";
+            $Teleerror = "Ce champ est incorrect";
             $status = false;
         }
 if (!in_array($extension,['pdf', 'docx'])){
     $status = false;
-    $filenamecertiferror = "error dans l'extension de la fichier il doit etre soit pdf ou docs";
+    $filenamecertiferror = "Erreur dans l'extension du fichier, elle doit être soit pdf ou docs";
 }
 if(!in_array($extensionordannace,['pdf', 'docx'])){
     $status = false;
-    $filenameordennanceerror = "error dans l'extension de la fichier il doit etre soit pdf ou docs";
+    $filenameordennanceerror = "Erreur dans l'extension du fichier, elle doit être soit pdf ou docs";
 }
 if($status)
 {
@@ -115,7 +115,11 @@ if($status)
             </div>
         </header>
         <section class="formulaire">
-            <img src="../img/doctor1.svg" alt="back">
+            <div style="margin-top:200px;">
+                    <h2 style="color:#02A2AF; font-family: Gilroy;font-size:30px;text-align:center">  Veuillez remplir ce formulaire pour votre 
+                    <br> Repos maladie </h2>
+                    <img src="../img/doctor1.svg" alt="back">
+            </div>
 
             <form id="form_patient" enctype="multipart/form-data" method="post">
                 <h2> Informations personnelles : </h2>
