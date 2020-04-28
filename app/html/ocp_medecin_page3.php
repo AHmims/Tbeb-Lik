@@ -1,3 +1,4 @@
+ 
 <!DOCTYPE html>
 <html lang="en">
 
@@ -20,56 +21,116 @@
     <div class="medecin" id="navBar">
     </div>
     <div id="content">
+    <form action="<?php echo $_SERVER['PHP_SELF']?>" method="POST">
         <div id="header">
            <div  class="header_left">
             <span class="title">Historique des patients</span>
            </div>
            <div class="header_right">
                <div class="header_right_componant">
-                <div class="small-inputs">
-                    <button id="id_ageFilter"><i class="fas fa-sort-amount-down"></i> Age</button>
-                  </div>
-                <div class="small-inputs">
-                    <button><i class="fas fa-sort-amount-down"></i> Matricule</button>
-                  </div>
-                <div>
-                    <select id="id_select" class="mdb-select md-form">
-                        <option value="" disabled selected>Sexe</option>
-                        <option value="1">Homme</option>
-                        <option value="2">Femme</option>
-                         
-                      </select>
+              
                   
+                
+                
+                <div class="small-inputs">
+                    <button name="BTN_SORT_AGE" id="id_ageFilter"><i class="fas fa-sort-amount-down"></i> Age</button>
                   </div>
-                  <div>
-                    <input type="date" placeholder="Date de consulation" class="box-rndv-date-input"><button><i class="fas fa-caret-down"></i></button>
+                   
+                <div class="small-inputs">
+                    <button name="BTN_SORT_MATRICULE"><i class="fas fa-sort-amount-down"></i> Matricule</button>
+                  </div>
+                 
+                  <div class="small-inputs">
+                    <button id="BTN_SEXEH" name="SELECT_HOMME"><i class="fas fa-mars"></i> </button>
+                  </div>
+                  <div class="small-inputs">
+                    <button id="BTN_SEXEF" name="SELECT_FEMME"> <i class="fas fa-venus"></i>  </button>
+                  </div>
+                 
+                  
+                  <div class="small-inputs">
+                    <input type="date" placeholder="Date de consulation" name="SELECTED_DATE" class="box-rndv-date-input"><button name="SELECT_DATE" ><i class="fas fa-caret-down"></i></button>
                   </div>
                 
-                  <div>
-                    <button><i class="fas fa-search"></i></button><input type="text" name="" id="">
+                  <div class="small-inputs">
+                    <button name="BTN_SEARCH"><i class="fas fa-search"></i></button><input type="text" name="inputSearch" id="">
                   </div>
                
                </div>
+               
         
 
            </div>
         </div>
+        </form>
         <div id="container" class="f-direction-row">
             <div class="fitBox">
                
                 <?php
+                 
+                 
+                 
+             
+                
+                
+               
+               
+                $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT
+                ORDER BY `patients`.`MATRICULE_PAT`  ASC LIMIT 0, 10';
+
+                if(isset($_POST['BTN_SORT_AGE']))
+                {
+                    $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT
+                     ORDER BY AGE DESC LIMIT 0, 10';
+                }
+                else if(isset($_POST['BTN_SORT_MATRICULE']))
+                {
+                     
+                    $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT
+                ORDER BY `patients`.`MATRICULE_PAT`  DESC LIMIT 0, 10';
+                }
+               else if(isset($_POST['BTN_SEARCH']))
+                {
+                      
+                    $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT  and NOM_PAT LIKE "%'.$_POST['inputSearch'].'%" or Prenom_PAT LIKE "%'.$_POST['inputSearch'].'%" or patients.MATRICULE_PAT LIKE "%'.$_POST['inputSearch'].'%" LIMIT 1 ';
+                }
+
+                else if(isset($_POST['SELECT_HOMME']))
+                {
+ 
+                       
+                     
+
+                    $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT and Genre="Homme" ';
+                    
+                }
+                else if(isset($_POST['SELECT_FEMME']))
+                {
+ 
+                    $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT  and Genre="Femme" ';
+       
+                    
+                }
+                else if(isset($_POST['SELECT_DATE']))
+                {
+                      
+                    $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT  and DATE_CONSULTATION LIKE "%'.$_POST['SELECTED_DATE'].'%"  ';
+                }
+
+              
+                
                 // Connexion à la base de données
                 try
                 {
-                    $bdd = new PDO('mysql:host=localhost;dbname=bd_telemedecine;charset=utf8', 'root', '');
+                    $bdd = new PDO('mysql:host=localhost;dbname=bd_telemedecinev1;charset=utf8', 'root', '');
                 }
                 catch(Exception $e)
                 {
                         die('Erreur : '.$e->getMessage());
                 }
 
-                // Récupération des 10 derniers messages
-                $reponse = $bdd->query('SELECT NOM_PAT, TEL ,MATRICULE_PAT,AGE ,ADRESS ,Sexe FROM patient ORDER BY MATRICULE_PAT DESC LIMIT 0, 10');
+              
+                $reponse = $bdd->query($req);
 
                 // Affichage de chaque message (toutes les données sont protégées par htmlspecialchars)
                 while ($donnees = $reponse->fetch())
@@ -78,12 +139,12 @@
                
                 echo '<div class="patientRow">
                 <div class="vertical">
-                    <span class="font-w-m font-s-18 txt-c-D">'.htmlspecialchars($donnees['NOM_PAT']).'</span>
-                    <span class="font-w-n font-s-14 txt-c-D">'.htmlspecialchars($donnees['Sexe']).'</span>
+                    <span class="font-w-m font-s-18 txt-c-D">'.htmlspecialchars($donnees['NOM_PAT'].' '.$donnees['Prenom_PAT']).'</span>
+                    <span class="font-w-n font-s-14 txt-c-D">'.htmlspecialchars($donnees['Genre']).'</span>
                 </div>
                 <div class="vertical">
                     <span class="font-w-m font-s-18 txt-c-D">Date Consultation</span>
-                    <span class="font-w-n font-s-14 txt-c-SD">15/03/2020</span>
+                    <span class="font-w-n font-s-14 txt-c-SD">'.htmlspecialchars($donnees['DATE_CONSULTATION']).'</span>
                 </div>
                 <div class="vertical">
                     <span class="font-w-m font-s-18 txt-c-D">Matricule</span>
@@ -208,6 +269,10 @@
             
 </div>
 <style>
+    .vertical
+    {
+        width:9%;
+    }
     .box-notif
     {
         display: none!important;
@@ -253,6 +318,17 @@
      
     
    }
+   .small-inputs button 
+   {
+       background-color:  #1FDBAE;
+       color:white;
+   }
+   .small-inputs button:hover
+   {
+       background-color:  white;
+       color:#1FDBAE;
+   }
+  
          
      
 </style>

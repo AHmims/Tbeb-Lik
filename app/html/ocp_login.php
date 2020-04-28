@@ -54,7 +54,7 @@
                 if($mdp == $Medecin_mdp){
                     
                     $_SESSION["Matricule"] = $matricule;
-                    header('Location:http://localhost/Tbeb-Lik/app/html/ocp_patient_formulaire.php'); 
+                    header('Location:http://localhost/Tbeb-Lik/app/html/ocp_medecin_page3'); 
                 }
                 else{ 
                     ?>
