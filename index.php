@@ -20,7 +20,7 @@
                         Comment ça marche ?
                     </a>
                     <button id="btnLogin">
-                        <a href="app/Login/Login_patient.php">
+                        <a href="app/html/ocp_login.php">
                         <img src="app/icon/lock.svg" alt="lockicon">
                         S’identifier
                          </a>

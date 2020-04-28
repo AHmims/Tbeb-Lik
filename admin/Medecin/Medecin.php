@@ -74,7 +74,7 @@
         <li><a href="../index.php" >
           <span class="icon"><i class="fas fa-home"></i></span>
           <span class="title">ACCEUIL</span></a></li>
-        <li><a href="Medecin.html" class="active">
+        <li><a href="#" class="active">
           <span class="icon"><i class="fas fa-user"></i></span>
           <span class="title">MEDECIN</span>
           </a></li>

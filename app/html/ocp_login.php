@@ -1,4 +1,3 @@
-<?php session_start();?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -47,12 +46,15 @@
                     'matricule' => $matricule
             ]);
             $reponse =$req-> fetch();
+            session_start();
             if($reponse)
             {
                 $medecin=true;
                 $Medecin_mdp = $reponse->PASSWORD;
                 if($mdp == $Medecin_mdp){
-                    header('Location: ./ocp_medecin_page3.php'); 
+                    
+                    $_SESSION["Matricule"] = $matricule;
+                    header('Location:http://localhost/Tbeb-Lik/app/html/ocp_patient_formulaire.php'); 
                 }
                 else{ 
                     ?>

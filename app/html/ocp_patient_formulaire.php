@@ -1,6 +1,92 @@
-<?php session_start();
-   
-    ?>
+<?php 
+ require '../../Database/database.php';
+ require '../../include/function.php';
+ $status = true;
+ $nombre_jrs = $motif = $ATCDS = $Tele = $filenamecertif = $filenameordennance = $nombrjourerror = $motiferror = $ATCDSerror = $Teleerror = $filenamecertiferror = $filenameordennanceerror = "";
+
+session_start(); 
+if($_SESSION['matricule'] == null){
+   header("Location:http://localhost/Tbeb-Lik/app/html/ocp_login.php");
+}else{
+    if(isset($_POST["envoi"])){
+    $nombre_jrs  = checkInput($_POST["nombre_jrs"]);
+    $motif  = checkInput($_POST["motif"]);
+    $ATCDS = checkInput($_POST["ATCDS"]);
+    $Tele = checkInput($_POST["tel"]);
+    $filenamecertif   =   $_FILES['certif']['name'];
+    $filenameordennance = $_FILES['ordonnance']['name'];
+        if(empty($nombre_jrs)){
+            $nombrjourerror = "ce champs ne peut pas etre vide";
+             $status = false;
+        }
+        if(empty($motif)){
+            $motiferror = "ce champs ne peut pas etre vide";
+            $status = false;
+        }
+        if(empty($ATCDS)){
+            $ATCDSerror = "ce champs ne peut pas etre vide";
+            $status = false;
+        }
+        if(empty($Tele)){
+            $Teleerror = "ce champs ne peut pas etre vide";
+            $status = false;
+        }
+        if(empty($filenamecertif)){
+            $filenamecertiferror = "ce champs ne peut pas etre vide";
+            $status = false;
+        }
+        if(empty($filenameordennance)){
+            $filenameordennanceerror = "ce champs ne peut pas etre vide";
+            $status = false;
+        }
+        $destination = 'uploads/'.$filenamecertif;
+        $destination2 = 'uploads/'.$filenameordennance;
+        $extension = pathinfo($filenamecertif, PATHINFO_EXTENSION);
+        $extensionordannace = pathinfo($filenameordennance, PATHINFO_EXTENSION);
+        $file = $_FILES['certif']['tmp_name'];
+        $fileordannace = $_FILES['ordonnance']['tmp_name'];
+        if(strlen($Tele)!=10){
+            $Teleerror = "ce champs il 'est incorrect";
+            $status = false;
+        }
+if (!in_array($extension,['pdf', 'docx'])){
+    $status = false;
+    $filenamecertiferror = "error dans l'extension de la fichier il doit etre soit pdf ou docs";
+}
+if(!in_array($extensionordannace,['pdf', 'docx'])){
+    $status = false;
+    $filenameordennanceerror = "error dans l'extension de la fichier il doit etre soit pdf ou docs";
+}
+if($status)
+{
+    try{
+        move_uploaded_file($file,$destination); 
+        move_uploaded_file($fileordannace,$destination2);
+        $db = Database::connect();  
+        $statement = $db->prepare("Insert into certification_medical (DOCUMENT,ID_Sender) values (?,?)");
+        $statement->execute(array($filenamecertif,$_SESSION["Matricule"]));  
+        $statement = $db->prepare("Insert into ordonnance (DOCUMENT,ID_Sender) values (?,?)");
+        $statement->execute(array($filenameordennance,$_SESSION["Matricule"])); 
+        $statement = $db->prepare("Update patients set Tel = ? where  MATRICULE_PAT = ?");
+        $statement->execute([$Tele,$_SESSION["Matricule"]]);
+        $statement = $db->prepare("select * from ordonnance where ID_Sender = ? Order by ID_ord desc LIMIT 1 ");
+        $statement->execute(array($_SESSION["Matricule"]));
+        $id_ord = $statement->fetch();
+        $statement = $db->prepare("select * from certification_medical where ID_Sender = ? order by ID desc LIMIT 1  ");
+        $statement->execute(array($_SESSION["Matricule"]));
+        $id_certif = $statement->fetch();
+        $statement = $db->prepare("Insert into consultation (MATRICULE_PAT,JOUR_REPOS,MOTIF,ATC,ID_PIECE,ID) values (?,?,?,?,?,?)");
+        $statement->execute(array($_SESSION["Matricule"],$nombre_jrs,$motif,$ATCDS,$id_ord["ID_ord"],$id_certif["ID"]));  
+        Database::disconnect();  
+        // header("Location:http://localhost/Tbeb-Lik/app/html/ocp_medecin_page3.php");  
+    }catch(Exception $e){
+        die('Error loading file "'.$e->getMessage());
+    }
+         
+}
+}
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -10,7 +96,6 @@
     <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
     <title>Formulaire</title>
 </head>
-
 <body>
     <div id="content">
         <header id="navBar">
@@ -22,23 +107,17 @@
                     <a href="#" id="btnNotif" class="notifActive">
                         <img src="../icon/bellDark.svg" alt="">
                     </a>
-                    <a href="#" id="logout">
+                    <a href="../../Connexion/Logout.php" id="logout">
                         <img src="../icon/logout.svg" alt="">
                         Se déconnecter
                     </a>
                 </div>
             </div>
         </header>
-        
-
         <section class="formulaire">
-            <div style="margin-top:200px;">
-                <h2 style="color:#02A2AF; font-family: Gilroy;font-size:30px;text-align:center">  Veuillez remplir ce formulaire pour votre 
-                <br> <?php echo $_POST['name_selectedOption']; ?> </h2>
-                <img src="../img/doctor1.svg" alt="back">
-            </div>
-            <form id="form_patient" method="post">
- 
+            <img src="../img/doctor1.svg" alt="back">
+
+            <form id="form_patient" enctype="multipart/form-data" method="post">
                 <h2> Informations personnelles : </h2>
                 <div> 
                     <div><label for="nom"> Nom  : </label> 
@@ -52,123 +131,57 @@
                 </div>
                 <div>
                     <label for="date_naiss"> Date de naissance : </label> 
-                    <input type="text" id="date_naiss"  value="<?php echo $_SESSION['daten']?>"  disabled>
+                    <input type="text" id="date_naiss"  value="<?php echo  $_SESSION['daten']?>"  disabled>
                 </div>
                 <div>
                     <label for="numero"> Numéro de téléphone : </label> 
-                    <input type="number" name="tel" id="numero"  >
+                    <input type="number" name="tel" id="numero">
                 </div>
+                <span class="help-inline" style="color:red"> 
+                <?php echo $Teleerror; ?>
+                </span>
                 <h2> Détails de maladie : </h2>
                 <div> 
                     <label for="motif"> Motif : </label> 
                     <textarea name="motif" id="motif"></textarea>
                 </div>
+                <span class="help-inline" style="color:red"> 
+                <?php echo $motiferror; ?>
+                </span>
                 <div> 
                     <label for="ATCDS"> ATCDs : </label> 
                     <textarea name="ATCDS" id="ATCDS"></textarea>
                 </div>
+                <span class="help-inline" style="color:red"> 
+                <?php echo $ATCDSerror; ?>
+                </span>
                 <div> 
                     <label for="nombre_jrs"> Nombre de jours du RM : </label> 
                     <input type="number" name="nombre_jrs"  id="nombre_jrs">
                 </div>
+                <span class="help-inline" style="color:red"> 
+                <?php echo $nombrjourerror; ?>
+                </span>
                 <div> 
                     <label for="ordonnance"> Ordonnance : </label> 
-                    <input type="file" name="ordonnance" id="ordonnance">
+                    <input type="file" name="ordonnance" accept="application/pdf" id="ordonnance">
                 </div>
+                <span class="help-inline" style="color:red"> 
+                <?php echo $filenameordennanceerror; ?>
+                </span>
                 <div> 
                     <label for="certif"> Certification médicale : </label> 
-                    <input type="file" name="certif" id="certif">
+                    <input type="file" name="certif" accept="application/pdf" id="certif">
                 </div>
+                <span class="help-inline" style="color:red"> 
+                <?php echo $filenamecertiferror; ?>
+                </span>
                 <div><button type="submit" name="envoi" id="btnEnvoyer"> Envoyer </button></div>
-              
 
             </form>
             </section>
-
-            <?php   
-                if(isset($_POST['envoi'])){
-
-                    extract($_POST);
-
-                    if(!empty($motif) && !empty($ATCDS) && !empty($nombre_jrs) )
-                    {
-                        include '../Login/connexiondb.php';
-                        global $db;
-
-                        $q = $db->prepare("INSERT INTO consultation (MATRICULE_PAT,JOUR_REPOS_R,MOTIF,ATC) VALUES
-                         (:matricule,:jours,:motif,:atc)");
-
-                        $q->execute([
-                                'matricule' =>  $_SESSION['matricule'],
-                                'jours' => $nombre_jrs,
-                                'motif' => $motif,
-                                'atc' => $ATCDS
-                        ]);
-                    }
-                    else{
-                    ?>
-                    <p style="text-align:center; color:red; font-size:20px;"> 
-                    <?php
-                        echo "Veuillez remplir tous les champs";
-                    ?> </p> 
-                    <?php
-                    }
-                }
-            ?>
-
-
-        
-
-        <!-- <footer>
-            <div class="footer-bottom-text ">
-                <div>Powered By YouCode-Safi.</div>
-                <span>Copyright © 2020. All rights reserved.</span>
-            </div>
-        </footer> -->
-        <footer>
-        <div class="part1">
-            <div class="parags">
-                <div class="parag1">
-                    <h1> A propos de nous </h1>
-                    <hr>
-                    <p>
-                        Equipe de 4 apprenants de YouCode-Safi.
-                        <ul>
-                            <li> Sanaa Saadoune </li>
-                            <li> Mehdi Choukri </li>
-                            <li> Zakaria Kamili</li>
-                            <li> Ali Hmims </li>
-                        </ul>
-                    </p>
-                </div>
-                <div class="parag2">
-                    <h1> Contactez-nous </h1>
-                    <hr>
-                    <div> <img src="../img/mail.png" alt="socialmedia" height="40px" width="40px"> Tbeb-Lik@gmail.com</div>
-                    <div> <img src="../img/fb.png" alt="socialmedia"  height="40px" width="40px"> /Tbeb-Lik </div>
-                    <div> <img src="../img/twitter.png" alt="socialmedia"  height="40px" width="40px"> @TbebLik </div>                    
-                </div>
-                <div class="parag3">
-                    <h1> Comment ça marche? </h1>
-                    <hr>
-                    <p>
-                        Tbeb-Lik est une plateforme de consultation en ligne qui assure la relation patient-médecin sans avoir à se déplacer.
-                        <br><a href="" style="color:blue">Cliquez-ici</a> pour plus d'infos.
-                    </p>
-                </div>
-            </div>
-        </div>
-        <div class="part2">
-            <div>Powered By YouCode-Safi.</div>
-            <span>Copyright © 2020. All rights reserved.</span>
-        </div>
-    </footer>
-
-
-
-
+        <?php require "../../include/footer.php"?>
     </div>
     <script src="../js/patient_1_OCP.js"></script>
 </body>
-
 </html>
