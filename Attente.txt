@@ -1,0 +1,13 @@
+- la liste des patients en forme de Tableau f partie medecin.
+
+- Numéro de telephone non renseigné f partie formulaire patient.
+
+- Ajout d'une page pour le profil du patient qui contient l'historique de ses demandes et un icon à coté du dernière demande. 
+
+-Formulaire d'ajout des patient f partie admin disabled quand on clique sur ajouter fichier.
+
+- Button dans la partie medecin de Cloture du document: qui genere le compte rendu de consultation en format pdf! (matricule,nbr de jours du repos, nbr de jours validés..)
+
+-historique f la partie medecin en forme de tableau.
+
+-Mot de passe pour patient
