@@ -33,6 +33,21 @@ document.getElementById('patientSubmit').addEventListener('click', () => {
     document.getElementsByClassName('submitPopupBg')[0].style.display = "flex";
 });
 document.getElementById('popup-btnSubmit').addEventListener('click', () => {
+    const inputs = document.getElementsByClassName('submitPopupInput');
+    $.post('createDoc', {
+        userId: sessionStorage.getItem('user_M'),
+        data: {
+            nbrJA: inputs[4].value,
+            nbrJV: inputs[5].value,
+            visaM: inputs[6].value
+        }
+    }, (response) => {
+        response = Boolean(response);
+        if (response)
+            alert('Document generée avec success');
+        else
+            alert('Essayer une nouvelle fois');
+    });
     document.getElementsByClassName('submitPopupBg')[0].style.display = "none";
 });
 // 

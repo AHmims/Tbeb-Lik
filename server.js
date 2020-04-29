@@ -11,7 +11,7 @@ const __SERVER = require('https').createServer({
 const __IO = require('socket.io')(__SERVER);
 const __PATH = require('path');
 //IMPORTED MODULES
-
+const __PDF = require('./model/savePdf');
 //GLOBAL VARIABLES
 const __PORT = 8080;
 let chatters = [],
@@ -60,7 +60,6 @@ __IO.on('connection', socket => {
 // NAMEPSACES
 const __CHAT = __IO.of('/chat');
 const __HUB = __IO.of('/medecinHub');
-// 
 // CHAT
 __CHAT.on('connection', socket => {
     console.log('Chat in');
@@ -449,6 +448,25 @@ __APP.post('/getActivePatients', (req, res) => {
     // 
     res.end(JSON.stringify(patientByMedecin));
 });
+// 
+__APP.post('/createDoc', async (req, res) => {
+    let data = req.body.data;
+    rooms.forEach(room => {
+        if (room.medecin.id == req.body.userId) {
+            data.mle = room.patient.id;
+            chatters.forEach(user => {
+                data.nom = "nom";
+                data.prenom = "prenom";
+                data.direction = "direction";
+            });
+        }
+    });
+    // 
+    var state = await __PDF.makeDoc(data);
+    res.end(state.toString());
+});
+// 
+// 
 //START SERVER
 __SERVER.listen(__PORT, '0.0.0.0', () => {
     console.log(`Server started...\nListening on port ${__PORT}`);
