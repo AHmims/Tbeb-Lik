@@ -97,7 +97,7 @@ __CHAT.on('connection', socket => {
         }
         // UPDATE THE ROOMS USER SOCKETID #IF EXISTS
         //BY THE NEW ONE
-        updateRooms();
+        updateRooms(userData.userId);
 
     });
     // 

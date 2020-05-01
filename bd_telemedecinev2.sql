@@ -1,3 +1,23 @@
+create database tbeblikDB;
+use tbeblikDB;
+drop database tbeblikDB
+
+create user 'tbeblikAdmin'@'localhost';
+alter user 'tbeblikAdmin'@'localhost' IDENTIFIED BY 't2b0e2b0l5i1kadmin';
+grant ALL on tbeblikDB.* to 'tbeblikAdmin'@'localhost';
+
+DROP TABLE IF EXISTS `preConsultation`;
+CREATE TABLE IF NOT EXISTS `preConsultation` (
+  	`MATRICULE_PAT` char(250) NOT NULL,
+	`dateCreation` datetime NOT NULL,
+	`idPreCons` int(11) NOT NULL,
+	`motif` text,
+	`atcd` text,
+	`nbJourA` int(11) NOT NULL,
+	PRIMARY KEY (`idPreCons`)
+);
+
+/* */
 -- phpMyAdmin SQL Dump
 -- version 4.8.5
 -- https://www.phpmyadmin.net/
@@ -6,13 +26,6 @@
 -- Généré le :  lun. 27 avr. 2020 à 01:06
 -- Version du serveur :  5.7.26
 -- Version de PHP :  7.2.18
-create database tbeblikDB;
-use tbeblikDB;
-
-create user 'tbeblikAdmin'@'localhost';
-alter user 'tbeblikAdmin'@'localhost' IDENTIFIED BY 't2b0e2b0l5i1kadmin';
-grant select on tbeblikDB.* to 'tbeblikAdmin'@'localhost';
-/* */
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -73,7 +86,7 @@ CREATE TABLE IF NOT EXISTS `certification_medical` (
 DROP TABLE IF EXISTS `consultation`;
 CREATE TABLE IF NOT EXISTS `consultation` (
   `MATRICULE_PAT` char(250) NOT NULL,
-  `MATRICULE` char(250) NOT NULL,
+  `Matricule_Med` char(250) NOT NULL,
   `ID_CNSLT` int(11) NOT NULL,
   `CODE_REF` char(250) DEFAULT NULL,
   `JOUR_REPOS` int(11) DEFAULT NULL,
@@ -84,7 +97,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
   `ID_PIECE` int(11) DEFAULT NULL,
   `ID` int(11) DEFAULT NULL,
   PRIMARY KEY (`ID_CNSLT`),
-  KEY `FK_CONSULTATION` (`MATRICULE`),
+  KEY `FK_CONSULTATION` (`Matricule_Med`),
   KEY `FK_CONSULTATION2` (`MATRICULE_PAT`),
   KEY `FK_CONTIENT2` (`ID`),
   KEY `FK_CONTIENT3` (`ID_PIECE`)
@@ -94,7 +107,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
 -- Déchargement des données de la table `consultation`
 --
 
-INSERT INTO `consultation` (`MATRICULE_PAT`, `MATRICULE`, `ID_CNSLT`, `CODE_REF`, `JOUR_REPOS`, `MOTIF`, `ATC`, `TYPE`, `DATE_CONSULTATION`, `ID_PIECE`, `ID`) VALUES
+INSERT INTO `consultation` (`MATRICULE_PAT`, `Matricule_Med`, `ID_CNSLT`, `CODE_REF`, `JOUR_REPOS`, `MOTIF`, `ATC`, `TYPE`, `DATE_CONSULTATION`, `ID_PIECE`, `ID`) VALUES
 ('BH82982', '', 1, 'REF CONS', 5, NULL, NULL, NULL, '2020-04-26 00:00:00', NULL, NULL),
 ('BH82900', '', 2, 'CODE REF', 6, NULL, NULL, NULL, '2020-04-29 00:00:00', NULL, NULL),
 ('BH82901', '', 3, 'FDFD', 4, 'GGG', 'GGG', NULL, '2020-05-18 00:00:00', NULL, NULL),
@@ -109,7 +122,7 @@ INSERT INTO `consultation` (`MATRICULE_PAT`, `MATRICULE`, `ID_CNSLT`, `CODE_REF`
 
 DROP TABLE IF EXISTS `medecin`;
 CREATE TABLE IF NOT EXISTS `medecin` (
-  `MATRICULE` char(250) NOT NULL,
+  `Matricule_Med` char(250) NOT NULL,
   `ID_SPEC` int(11) NOT NULL,
   `ID_ADMIN` int(11) NOT NULL,
   `NOM_MED` char(250) DEFAULT NULL,
@@ -118,7 +131,7 @@ CREATE TABLE IF NOT EXISTS `medecin` (
   `DISPONIBLE` tinyint(1) DEFAULT NULL,
   `VILLE` char(250) DEFAULT NULL,
   `PASSWORD` char(250) DEFAULT NULL,
-  PRIMARY KEY (`MATRICULE`),
+  PRIMARY KEY (`Matricule_Med`),
   KEY `FK_AJOUTER` (`ID_ADMIN`),
   KEY `FK_CONTIENT` (`ID_SPEC`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -127,7 +140,7 @@ CREATE TABLE IF NOT EXISTS `medecin` (
 -- Déchargement des données de la table `medecin`
 --
 
-INSERT INTO `medecin` (`MATRICULE`, `ID_SPEC`, `ID_ADMIN`, `NOM_MED`, `TEL`, `EMAIL`, `DISPONIBLE`, `VILLE`, `PASSWORD`) VALUES
+INSERT INTO `medecin` (`Matricule_Med`, `ID_SPEC`, `ID_ADMIN`, `NOM_MED`, `TEL`, `EMAIL`, `DISPONIBLE`, `VILLE`, `PASSWORD`) VALUES
 ('bh150', 2, 1, 'Mohamed Elmehdi Choukri', '0614075409', 'medelmehdi.choukri@gmail.com', 1, NULL, '123456'),
 ('bh151', 2, 1, 'Kamili Zakaria', '0666663614', 'Zakaria@gmail.com', 1, NULL, '123456');
 
@@ -139,15 +152,15 @@ INSERT INTO `medecin` (`MATRICULE`, `ID_SPEC`, `ID_ADMIN`, `NOM_MED`, `TEL`, `EM
 
 DROP TABLE IF EXISTS `message`;
 CREATE TABLE IF NOT EXISTS `message` (
-  `id` int(11) NOT NULL,
+  `messageId` int(11) auto_increment,
   `Matricule_emmeter` char(250) NOT NULL,
   `contenu` text,
-  `id_room` int(11) DEFAULT NULL,
+  `roomId` char(250) DEFAULT NULL,
   `date_envoi` datetime DEFAULT NULL,
   `type` text,
   `id_pieceJointes` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_CONSULTATION3` (`id_room`)
+  PRIMARY KEY (`messageId`),
+  KEY `FK_CONSULTATION3` (`roomId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -204,17 +217,37 @@ INSERT INTO `patients` (`CIN`, `MATRICULE_PAT`, `NOM_PAT`, `Prenom_PAT`, `PASSWO
 --
 -- Structure de la table `room`
 --
+drop table if exists `appUser`;
+create table if not exists `appUser` (
+	`userId` char(250) NOT NULL,
+    `userType` char(7) not null,
+    `socket` char(250) not null,
+    `online` boolean,
+    `linkedMedecinMatricule` char(250) default null
+)
+DELIMITER //
+CREATE TRIGGER createRoom
+AFTER INSERT
+ON `appUser` FOR EACH ROW
+BEGIN
+	if new.userType = 'Patient' then
+		insert into `room` (roomId,userPatientMatricule)
+        values(CONCAT('cRoom-',(SELECT FLOOR(RAND()*(100000-2))+1)),new.userId);
+    end if;
+END;//
+DELIMITER ;
+
+insert into `appUser`(userId,userType,socket,online) values('qsdsssssq','Medecin','/sqdqsd',true);
+select * from appUser;
+select * from room;
+-- -----------------------------------
 
 DROP TABLE IF EXISTS `room`;
 CREATE TABLE IF NOT EXISTS `room` (
-  `id` int(11) NOT NULL,
-  `Matricule_Pat` char(250) DEFAULT NULL,
-  `Matricule_Med` char(250) DEFAULT NULL,
-  `Date_Debut` datetime DEFAULT NULL,
-  `Date_Fin` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `FK_CONSULTATION5` (`Matricule_Pat`),
-  KEY `FK_CONSULTATION4` (`Matricule_Med`)
+  `roomId` char(250) NOT NULL,
+  `userPatientMatricule` char(250) NOT NULL,
+  `userMedecinMatricule` char(250) DEFAULT NULL,
+  PRIMARY KEY (`roomId`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
