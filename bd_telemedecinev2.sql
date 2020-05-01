@@ -236,20 +236,18 @@ create table if not exists `appUser` (
     `linkedMedecinMatricule` char(250) default null,
     `roomId` char(250) default null
 )
-
 DELIMITER //
 CREATE TRIGGER createRoom
-AFTER INSERT
+BEFORE INSERT
 ON `appUser` FOR EACH ROW
 BEGIN
 	DECLARE roomUniqueId varchar(250) default null;
 	if new.userType = 'Patient' then
-		SET roomUniqueId = CONCAT('NOTIF-',(SELECT FLOOR(RAND()*(1000000-2))+1));
-        -- -----
-		update appUser set appUser.roomId = roomUniqueId where appUser.userId = new.userId;
-		-- -----
+		SET roomUniqueId = CONCAT('cRoom-',(SELECT FLOOR(RAND()*(100000-2))+1));
+		SET new.roomId = roomUniqueId;
+        -- ----
 		insert into `room` (roomId,userPatientMatricule)
-        values(roomUniqueId,new.userId);
+			values(new.roomId,new.userId);
     end if;
 END;//
 DELIMITER ;
@@ -327,3 +325,8 @@ select * from preconsultation;
 select * from patients;
 
 insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_PAT) values (null, default, 'motif', 'atcd', 3,'BH82900');
+
+select * from medecin;
+select * from appUser;
+select * from room;
+insert into appUser (userId,userType,socket,online) values('BH82905','Patient','/socket',true);

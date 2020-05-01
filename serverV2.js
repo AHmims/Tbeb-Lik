@@ -77,7 +77,7 @@ __CHAT.on('connection', socket => {
                 online: true
             }, exsistingUser.userId);
             // 
-            socket.join(chatters[i].roomId);
+            socket.join(exsistingUser.roomId);
             // 
             getPatientList(chatters[i].linkedMedecin);
             updateRooms(userData.userId);
