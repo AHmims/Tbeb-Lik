@@ -6,17 +6,27 @@ create user 'tbeblikAdmin'@'localhost';
 alter user 'tbeblikAdmin'@'localhost' IDENTIFIED BY 't2b0e2b0l5i1kadmin';
 grant ALL on tbeblikDB.* to 'tbeblikAdmin'@'localhost';
 
+set global log_bin_trust_function_creators=1;
+
 DROP TABLE IF EXISTS `preConsultation`;
 CREATE TABLE IF NOT EXISTS `preConsultation` (
-  	`MATRICULE_PAT` char(250) NOT NULL,
-	`dateCreation` datetime NOT NULL,
-	`idPreCons` int(11) NOT NULL,
+	`idPreCons` char(250) not null,
+	`dateCreation` datetime default now(),
 	`motif` text,
 	`atcd` text,
 	`nbJourA` int(11) NOT NULL,
-	PRIMARY KEY (`idPreCons`)
+	`MATRICULE_PAT` char(250) NOT NULL,
+	PRIMARY KEY (`idPreCons`),
+	KEY `FK_CONSULTATION2` (`MATRICULE_PAT`)
 );
-
+DELIMITER //
+CREATE TRIGGER assignNotifId
+BEFORE INSERT
+ON `preConsultation` FOR EACH ROW
+BEGIN
+	SET NEW.idPreCons = CONCAT('NOTIF-',(SELECT FLOOR(RAND()*(1000000-2))+1));
+END;//
+DELIMITER ;
 /* */
 -- phpMyAdmin SQL Dump
 -- version 4.8.5
@@ -223,23 +233,26 @@ create table if not exists `appUser` (
     `userType` char(7) not null,
     `socket` char(250) not null,
     `online` boolean,
-    `linkedMedecinMatricule` char(250) default null
+    `linkedMedecinMatricule` char(250) default null,
+    `roomId` char(250) default null
 )
+
 DELIMITER //
 CREATE TRIGGER createRoom
 AFTER INSERT
 ON `appUser` FOR EACH ROW
 BEGIN
+	DECLARE roomUniqueId varchar(250) default null;
 	if new.userType = 'Patient' then
+		SET roomUniqueId = CONCAT('NOTIF-',(SELECT FLOOR(RAND()*(1000000-2))+1));
+        -- -----
+		update appUser set appUser.roomId = roomUniqueId where appUser.userId = new.userId;
+		-- -----
 		insert into `room` (roomId,userPatientMatricule)
-        values(CONCAT('cRoom-',(SELECT FLOOR(RAND()*(100000-2))+1)),new.userId);
+        values(roomUniqueId,new.userId);
     end if;
 END;//
 DELIMITER ;
-
-insert into `appUser`(userId,userType,socket,online) values('qsdsssssq','Medecin','/sqdqsd',true);
-select * from appUser;
-select * from room;
 -- -----------------------------------
 
 DROP TABLE IF EXISTS `room`;
@@ -299,3 +312,18 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+-- PLAYGROUND ---------------------
+
+select * from specialites;
+
+select m.NOM_MED,s.NOM_SPEC from medecin as m,specialites as s
+	where m.ID_SPEC = s.ID_SPEC;
+
+select * from consultation;
+select * from preconsultation;
+select * from patients;
+
+insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_PAT) values (null, default, 'motif', 'atcd', 3,'BH82900');

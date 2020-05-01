@@ -12,7 +12,7 @@ class medecin {
     }
 }
 // 
-class patient {
+class patients {
     constructor(CIN, MATRICULE_PAT, NOM_PAT, Prenom_PAT, PASSWORD, Date_Emb, Tel, ADRESS, Date_Retrait, Direction, Genre) {
         this.CIN = CIN;
         this.MATRICULE_PAT = MATRICULE_PAT;
@@ -73,12 +73,13 @@ class room {
 }
 // 
 class appUser {
-    constructor(userId, userType, socket, online, linkedMedecinMatricule) {
+    constructor(userId, userType, socket, online, linkedMedecinMatricule = null, roomId = null) {
         this.userId = userId;
         this.userType = userType;
         this.socket = socket;
         this.online = online;
         this.linkedMedecinMatricule = linkedMedecinMatricule;
+        this.roomId = roomId;
     }
 }
 // 
@@ -91,4 +92,15 @@ class message {
         this.type = type;
         this.id_pieceJointes = id_pieceJointes;
     }
+}
+// 
+module.exports = {
+    medecin,
+    patients,
+    certification_medical,
+    consultation,
+    preConsultation,
+    room,
+    appUser,
+    message
 }
