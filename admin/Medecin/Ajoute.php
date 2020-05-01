@@ -3,6 +3,7 @@
      require '../../include/function.php';
      $ID_spec   = $Matricule = $Nom = $Email = $Tele  = $specialiter =  $Disponible = $Matriculeerror = $NomError = $EmailError = $TeleError = $specialiterError = $DisponibleError  =   "" ;
      $isSuccess  = $status =  true;
+     $password = "";
      $error = null;
      session_start();
      if( $_SESSION["user"] == null){
@@ -59,9 +60,9 @@
             }else{
                 $Disponible = false;
             }
-           
-            $statement = $db->prepare("Insert into medecin (MATRICULE,ID_ADMIN,ID_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE) value(?,?,?,?,?,?,?)");
-            $statement->execute(array($Matricule,1,$ID_spec["ID_SPEC"],$Nom,$Tele,$Email,$Disponible));    
+            $password = $Nom . $Matricule;
+            $statement = $db->prepare("Insert into medecin (MATRICULE,ID_ADMIN,ID_SPEC,NOM_MED,TEL,EMAIL,DISPONIBLE,PASSWORD) value(?,?,?,?,?,?,?,?)");
+            $statement->execute(array($Matricule,1,$ID_spec["ID_SPEC"],$Nom,$Tele,$Email,$Disponible,$password));   
             Database::disconnect();
             header("Location: Ajoute.php");
         }catch(Exception $e){
@@ -124,7 +125,7 @@
                 </div>   
                 <div class="form-group">
                     <!-- <labe for="price">Telephone: </labe> -->
-                    <input type="number" name="Tele"   id="point" placeholder="Telephone"   value="">
+                    <input type="number" name="Tele"   id="point" placeholder="06XXXXXXXX"   value="">
                     <span class="help-inline"  style="color:red"> 
                     <?php echo $TeleError; ?>
                     </span>

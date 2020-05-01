@@ -3,8 +3,11 @@
  require '../../include/function.php';
  $status = true;
  $nombre_jrs = $motif = $ATCDS = $Tele = $filenamecertif = $filenameordennance = $nombrjourerror = $motiferror = $ATCDSerror = $Teleerror = $filenamecertiferror = $filenameordennanceerror = "";
-
 session_start(); 
+$valeur = "";
+if(isset($_POST["btn"])){
+    $valeur = $_POST['name_selectedOption'];
+}
 if($_SESSION['matricule'] == null){
    header("Location:http://localhost/Tbeb-Lik/app/html/ocp_login.php");
 }else{
@@ -13,6 +16,7 @@ if($_SESSION['matricule'] == null){
     $motif  = checkInput($_POST["motif"]);
     $ATCDS = checkInput($_POST["ATCDS"]);
     $Tele = checkInput($_POST["tel"]);
+    $type = checkInput($_POST["valeur"]);
     $filenamecertif   =   $_FILES['certif']['name'];
     $filenameordennance = $_FILES['ordonnance']['name'];
         if(empty($nombre_jrs)){
@@ -64,21 +68,23 @@ if($status)
         move_uploaded_file($fileordannace,$destination2);
         $db = Database::connect();  
         $statement = $db->prepare("Insert into certification_medical (DOCUMENT,ID_Sender) values (?,?)");
-        $statement->execute(array($filenamecertif,$_SESSION["Matricule"]));  
+        $statement->execute(array($filenamecertif,$_SESSION["matricule"]));  
         $statement = $db->prepare("Insert into ordonnance (DOCUMENT,ID_Sender) values (?,?)");
-        $statement->execute(array($filenameordennance,$_SESSION["Matricule"])); 
+        $statement->execute(array($filenameordennance,$_SESSION["matricule"])); 
         $statement = $db->prepare("Update patients set Tel = ? where  MATRICULE_PAT = ?");
-        $statement->execute([$Tele,$_SESSION["Matricule"]]);
+        $statement->execute([$Tele,$_SESSION["matricule"]]);
         $statement = $db->prepare("select * from ordonnance where ID_Sender = ? Order by ID_ord desc LIMIT 1 ");
-        $statement->execute(array($_SESSION["Matricule"]));
+        $statement->execute(array($_SESSION["matricule"]));
         $id_ord = $statement->fetch();
+        $statement = $db->prepare("select * from type_repos where DESCRIPTION = ? ");
+        $statement->execute(array($type));
+        $type_repos = $statement->fetch();
         $statement = $db->prepare("select * from certification_medical where ID_Sender = ? order by ID desc LIMIT 1  ");
-        $statement->execute(array($_SESSION["Matricule"]));
+        $statement->execute(array($_SESSION["matricule"]));
         $id_certif = $statement->fetch();
-        $statement = $db->prepare("Insert into consultation (MATRICULE_PAT,JOUR_REPOS,MOTIF,ATC,ID_PIECE,ID) values (?,?,?,?,?,?)");
-        $statement->execute(array($_SESSION["Matricule"],$nombre_jrs,$motif,$ATCDS,$id_ord["ID_ord"],$id_certif["ID"]));  
-        Database::disconnect();  
-        // header("Location:http://localhost/Tbeb-Lik/app/html/ocp_medecin_page3.php");  
+        $statement = $db->prepare("Insert into consultation (MATRICULE_PAT,JOUR_REPOS,MOTIF,ATC,ID_PIECE,ID,ETAT,TYPE) values (?,?,?,?,?,?,?,?)");
+        $statement->execute(array($_SESSION["matricule"],$nombre_jrs,$motif,$ATCDS,$id_ord["ID_ord"],$id_certif["ID"],0,$type_repos["ID_TYPE"]));  
+        Database::disconnect();    
     }catch(Exception $e){
         die('Error loading file "'.$e->getMessage());
     }
@@ -117,7 +123,9 @@ if($status)
         <section class="formulaire">
             <div style="margin-top:200px;">
                     <h2 style="color:#02A2AF; font-family: Gilroy;font-size:30px;text-align:center">  Veuillez remplir ce formulaire pour votre 
-                    <br> <?php echo $_POST['name_selectedOption']?> </h2>
+                    <br> <?php
+                 echo   $valeur;
+                    ?> </h2>
                     <img src="../img/doctor1.svg" alt="back">
             </div>
 
@@ -125,6 +133,7 @@ if($status)
                 <h2> Informations personnelles : </h2>
                 <div> 
                     <div><label for="nom"> Nom  : </label> 
+                    <input type="hidden" name="valeur" id="nom"  value="<?php echo  $valeur; ?>">
                     <input type="text" name="nom" id="nom" disabled value="<?php echo $_SESSION['nom'] ?>"></div>
                     <div><label for="prenom"> Prénom : </label> 
                     <input type="text" name="prenom" id="prenom" disabled value="<?php echo $_SESSION['prenom'] ?>"></div>

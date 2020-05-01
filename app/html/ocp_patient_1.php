@@ -19,7 +19,7 @@
                         <img src="../icon/bellDark.svg" alt="">
                     </a>
                     <form action="ocp_patient_formulaire.php" method="post"> 
-                   <button id="btnLogin">
+                   <button id="btnLogin" name="btn">
                         <div id="navMenuTextCont">
                             <span name="selectedOption" >
                                 Repos maladie

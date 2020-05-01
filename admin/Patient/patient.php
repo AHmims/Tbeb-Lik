@@ -47,9 +47,12 @@ $highestColumn = $sheet->getHighestColumn();
  }
  for($row = 2 ; $row<=sizeof($data);$row++){
   $statement = $db->prepare("Insert into patients (MATRICULE_PAT,CIN,NOM_PAT,Prenom_PAT,Date_Emb,Date_Naissence,Direction,Date_Retrait) value(?,?,?,?,?,?,?,?)");
-  $statement->execute(array($data[$row]["A"],$data[$row]["B"],$data[$row]["C"],$data[$row]["D"],converttodate($data[$row]["E"]),converttodate($data[$row]["F"]),$data[$row]["G"],converttodate($data[$row]["H"])));  
+  $statement->execute(array($data[$row]["A"],$data[$row]["B"],$data[$row]["C"],$data[$row]["D"],converttodate($data[$row]["E"]),converttodate($data[$row]["F"]),$data[$row]["G"],converttodate($data[$row]["H"])));
+  $statement = $db->prepare("Update patients set PASSWORD = ? where  MATRICULE_PAT = ?");
+  $password = $data[$row]["A"] . $data[$row]["C"];
+  $statement->execute([$password,$data[$row]["A"]]);
+  
  }
-
         Database::disconnect();
 
        }

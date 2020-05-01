@@ -85,7 +85,6 @@ if( $_SESSION["user"] == ""){
     <img src="../app/img/img1.png" class="img">
   
   </div>
-  <?php echo $_SESSION["user"] ?>
 </div>
 	
 </body>

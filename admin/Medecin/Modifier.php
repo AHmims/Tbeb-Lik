@@ -2,7 +2,7 @@
      
      require '../../Database/database.php';
      require '../../include/function.php';
-     $id =  $nom_spec =   $ID_spec = $error  =    $Matricule = $Nom = $Email = $Tele  = $specialiter =  $Disponible = $Matriculeerror = $NomError = $EmailError = $TeleError = $specialiterError = $DisponibleError  =   "" ;
+     $id =  $nom_spec =   $ID_spec = $error  =    $Matricule = $Nom = $Email = $Tele  = $specialiter =  $Disponible =  $Disponiblenum = $Matriculeerror = $NomError = $EmailError = $TeleError = $specialiterError = $DisponibleError  =   "" ;
      $isSuccess = true;
      $Disponible = "vrai";
      session_start();
@@ -50,10 +50,10 @@
                $DisponibleError = "ce champ et  vide ou bien incorrect";
            }else{
             if($Disponible == "Vrai"){
-                $Disponible = true;
+                $Disponiblenum = 1;
                 
                }else{
-                $Disponible = false;
+                $Disponiblenum = 0;
                }
            }
            if(empty($specialiter)){
@@ -68,7 +68,7 @@
             $ID_spec = $statement1->fetch();
             $id = $_POST["id"];
             $statement = $db->prepare("Update medecin set MATRICULE = ?,ID_ADMIN = ?,ID_SPEC = ?,NOM_MED = ?,TEL = ?,EMAIL = ?,DISPONIBLE = ? where  MATRICULE = ?");
-            $statement->execute([$Matricule,1,$ID_spec["ID_SPEC"],$Nom,$Tele,$Email,$Disponible,$id]);     
+            $statement->execute([$Matricule,1,$ID_spec["ID_SPEC"],$Nom,$Tele,$Email,$Disponiblenum,$id]);     
             Database::disconnect();
             header("Location:Medecin.php");
         }catch(Exception $e){
@@ -151,7 +151,7 @@
                 </div>   
                 <div class="form-group">
                     <labe for="price">Telephone: </labe>
-                    <input type="text"  id="point" name="Tele"  placeholder="Telephone"   value="<?php echo $Tele; ?>">
+                    <input type="text"  id="point" name="Tele"  placeholder="06XXXXXXXX"   value="<?php echo $Tele; ?>">
                     <span class="help-inline"  style="color:red"> 
                     <?php echo $TeleError; ?>
                     </span>

@@ -1,4 +1,52 @@
- 
+ <?php
+require '../../Database/database.php';
+require '../../include/function.php';
+if (isset($_GET['file_id'])) {
+    $id = $_GET['file_id'];
+    $db = Database::connect();  
+    $statement = $db->prepare("select ID_ord,Document,ID_Sender from ordonnance where ordonnance.ID_ord = ?");
+    $statement->execute(array($id));
+    $file = $statement->fetch();
+    // fetch file to download from database
+    $filepath = 'uploads/' . $file['Document'];
+
+    if (file_exists($filepath)) {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . basename($filepath));
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize('uploads/' . $file['Document']));
+        readfile('uploads/' . $file['Document']);
+        exit;
+    }
+
+}
+if (isset($_GET['file_id2'])) {
+    $id = $_GET['file_id2'];
+    $db = Database::connect();  
+    $statement = $db->prepare("select ID,Document,ID_Sender from certification_medical where certification_medical.ID = ?");
+    $statement->execute(array($id));
+    $file = $statement->fetch();
+    // fetch file to download from database
+    $filepath = 'uploads/' . $file['Document'];
+
+    if (file_exists($filepath)) {
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/octet-stream');
+        header('Content-Disposition: attachment; filename=' . basename($filepath));
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize('uploads/' . $file['Document']));
+        readfile('uploads/' . $file['Document']);
+        exit;
+    }
+
+}
+
+ ?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -67,14 +115,6 @@
             <div class="fitBox">
                
                 <?php
-                 
-                 
-                 
-             
-                
-                
-               
-               
                 $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT
                 ORDER BY `patients`.`MATRICULE_PAT`  ASC LIMIT 0, 10';
 
@@ -97,10 +137,6 @@
 
                 else if(isset($_POST['SELECT_HOMME']))
                 {
- 
-                       
-                     
-
                     $req = 'SELECT DISTINCT patients.MATRICULE_PAT as MATRICULE_PAT , TIMESTAMPDIFF(year,Date_Naissence, now() ) as AGE, NOM_PAT,Prenom_PAT, TEL ,Date_Naissence ,ADRESS ,Genre,DATE_CONSULTATION FROM patients , consultation where patients.MATRICULE_PAT=consultation.MATRICULE_PAT and Genre="Homme" ';
                     
                 }
@@ -122,7 +158,7 @@
                 // Connexion à la base de données
                 try
                 {
-                    $bdd = new PDO('mysql:host=localhost;dbname=bd_telemedecinev1;charset=utf8', 'root', '');
+                    $bdd = new PDO('mysql:host=localhost;dbname=tbeb-lik;charset=utf8', 'root', '');
                 }
                 catch(Exception $e)
                 {
@@ -135,31 +171,29 @@
                 // Affichage de chaque message (toutes les données sont protégées par htmlspecialchars)
                 while ($donnees = $reponse->fetch())
                 {
-                    
-               
                 echo '<div class="patientRow">
                 <div class="vertical">
-                    <span class="font-w-m font-s-18 txt-c-D">'.htmlspecialchars($donnees['NOM_PAT'].' '.$donnees['Prenom_PAT']).'</span>
+                <a href="ocp_medecin_page3.php?id=' .$donnees['MATRICULE_PAT'] . '" class="gnrl">   <span class="font-w-m font-s-18 txt-c-D">'.htmlspecialchars($donnees['NOM_PAT'].' '.$donnees['Prenom_PAT']).'</span> </a>
                     <span class="font-w-n font-s-14 txt-c-D">'.htmlspecialchars($donnees['Genre']).'</span>
                 </div>
                 <div class="vertical">
-                    <span class="font-w-m font-s-18 txt-c-D">Date Consultation</span>
-                    <span class="font-w-n font-s-14 txt-c-SD">'.htmlspecialchars($donnees['DATE_CONSULTATION']).'</span>
+                <a href="ocp_medecin_page3.php?id=' .$donnees['MATRICULE_PAT'] . '" class="gnrl">    <span class="font-w-m font-s-18 txt-c-D">Date Consultation</span> </a>
+                    <a href="ocp_medecin_page3.php?id=' . $donnees['MATRICULE_PAT'] .'"> <span class="font-w-n font-s-14 txt-c-SD">'.htmlspecialchars($donnees['DATE_CONSULTATION']).'</span></a>
                 </div>
                 <div class="vertical">
-                    <span class="font-w-m font-s-18 txt-c-D">Matricule</span>
+                <a href="ocp_medecin_page3.php?id=' . $donnees['MATRICULE_PAT'] .'" class="gnrl">  <span class="font-w-m font-s-18 txt-c-D">Matricule</span> </a>
                     <span class="font-w-n font-s-14 txt-c-SD">'.htmlspecialchars($donnees['MATRICULE_PAT']).'</span>
                 </div>
                 <div class="vertical">
-                    <span class="font-w-m font-s-18 txt-c-D">Age</span>
+                <a href="ocp_medecin_page3.php?id=' . $donnees['MATRICULE_PAT'] .'" class="gnrl">       <span class="font-w-m font-s-18 txt-c-D">Age</span> </a>
                     <span class="font-w-n font-s-14 txt-c-SD">'.htmlspecialchars($donnees['AGE']).'</span>
                 </div>
                 <div class="vertical">
-                    <span class="font-w-m font-s-18 txt-c-D">Adresse</span>
+                <a href="ocp_medecin_page3.php?id=' . $donnees['MATRICULE_PAT'] .'" class="gnrl">      <span class="font-w-m font-s-18 txt-c-D">Adresse</span> </a>
                     <span class="font-w-n font-s-14 txt-c-SD">'.htmlspecialchars($donnees['ADRESS']).'</span>
                 </div>
                 <div class="vertical">
-                    <span class="font-w-m font-s-18 txt-c-D">Numéro de téléphone</span>
+                <a href="ocp_medecin_page3.php?id=' . $donnees['MATRICULE_PAT'] . '" class="gnrl">      <span class="font-w-m font-s-18 txt-c-D">Numéro de téléphone</span> </a>
                     <span class="font-w-n font-s-14 txt-c-SD">'.htmlspecialchars($donnees['TEL']).'</span>
                 </div>
             </div>';
@@ -235,33 +269,45 @@
                     <span class="font-w-m font-s-10 txt-c-D"><i class="fas fa-folder "></i> Archive des documents</span>
                     <!--Date 1-->
                     <div class="C_date">
-                        <span >15/03/2020</span>
+                        <span>ordonnance</span>
                     </div>
                     <div class="row-collection">
-                   
-                        <button class="btn-download">image.jpg</button>
-                        <button class="btn-download">doc.pdf</button>
+                    <?php
+                    $donnes_ord ="";
+                    if(isset($_GET["id"]) ){
+                        $id = $_GET["id"];
+                        $certif = "";
+                        $db = Database::connect();  
+                        $statement = $db->prepare("select ID_ord,Document,ID_Sender,DATE_CONSULTATION from ordonnance,consultation where ordonnance.ID_ord = consultation.ID_PIECE AND ordonnance.ID_Sender = ? order by ID_ord desc LIMIT 2");
+                        $statement->execute(array($id));
+                        while($donnes_ord = $statement->fetch()){
+                            echo '<a href="ocp_medecin_page3.php?file_id=' . $donnes_ord['ID_ord'] . '" class="btn-download">' . $donnes_ord["Document"] . '</a>';
+                        }
+                        Database::disconnect();    
+                    }
+                    ?>
                     </div>
                     <!--Date 2-->
                     <div class="C_date">
-                        <span >15/03/2020</span>
+                        <span>Certification medicale</span>
                     </div>
-                    
                     <div class="row-collection">
-                   
-                        <button class="btn-download">image.jpg</button>
-                        <button class="btn-download">doc.pdf</button>
+                    <?php
+                    $donnes_certif ="";
+                    if(isset($_GET["id"])){
+                        $id = $_GET["id"];
+                        $certif = "";
+                        $db = Database::connect();  
+                        $statement = $db->prepare("select certification_medical.ID,DOCUMENT,ID_Sender,DATE_CONSULTATION from certification_medical,consultation where certification_medical.ID = consultation.ID AND certification_medical.ID_Sender = ? order by ID desc LIMIT 2");
+                        $statement->execute(array($id));
+                        while($donnes_certif = $statement->fetch()){
+                            echo '<a href="ocp_medecin_page3.php?file_id2=' . $donnes_certif['ID'] . '" class="btn-download">' . $donnes_certif["DOCUMENT"] . '</a>';
+                        }
+                        Database::disconnect();    
+                    }
+                    ?>
                     </div>
                     <!--Date 3-->
-                    <div class="C_date">
-                        <span >15/03/2020</span>
-                    </div>
-                    
-                    <div class="row-collection">
-                   
-                        <button class="btn-download">image.jpg</button>
-                        <button class="btn-download">doc.pdf</button>
-                    </div>
                 </div>
 
                 </div>
@@ -269,9 +315,12 @@
             
 </div>
 <style>
+.gnrl{
+    text-decoration: none;
+}
     .vertical
     {
-        width:9%;
+        width:12%;
     }
     .box-notif
     {
