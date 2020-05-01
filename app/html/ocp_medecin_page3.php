@@ -281,6 +281,10 @@ if (isset($_GET['file_id2'])) {
                         $statement = $db->prepare("select ID_ord,Document,ID_Sender,DATE_CONSULTATION from ordonnance,consultation where ordonnance.ID_ord = consultation.ID_PIECE AND ordonnance.ID_Sender = ? order by ID_ord desc LIMIT 2");
                         $statement->execute(array($id));
                         while($donnes_ord = $statement->fetch()){
+<<<<<<< HEAD
+=======
+                            echo '<div>' . $donnes_ord["DATE_CONSULTATION"] . '</div>';
+>>>>>>> 8495477db5c4d3a9674d3c7a2ef19497894ece1d
                             echo '<a href="ocp_medecin_page3.php?file_id=' . $donnes_ord['ID_ord'] . '" class="btn-download">' . $donnes_ord["Document"] . '</a>';
                         }
                         Database::disconnect();    
@@ -301,6 +305,10 @@ if (isset($_GET['file_id2'])) {
                         $statement = $db->prepare("select certification_medical.ID,DOCUMENT,ID_Sender,DATE_CONSULTATION from certification_medical,consultation where certification_medical.ID = consultation.ID AND certification_medical.ID_Sender = ? order by ID desc LIMIT 2");
                         $statement->execute(array($id));
                         while($donnes_certif = $statement->fetch()){
+<<<<<<< HEAD
+=======
+                            echo '<div>' . $donnes_certif["DATE_CONSULTATION"] . '</div>';
+>>>>>>> 8495477db5c4d3a9674d3c7a2ef19497894ece1d
                             echo '<a href="ocp_medecin_page3.php?file_id2=' . $donnes_certif['ID'] . '" class="btn-download">' . $donnes_certif["DOCUMENT"] . '</a>';
                         }
                         Database::disconnect();    
