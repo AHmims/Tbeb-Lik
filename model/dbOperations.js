@@ -64,7 +64,6 @@ async function getAppUserCustomData(keys, id) {
             res = await cnx.query(req, [id]);
         cnx.release();
         // 
-        console.log(res[0]);
         return res[0][0];
     } catch (err) {
         console.error('error :', err);
@@ -83,6 +82,28 @@ async function getAppUserPatientsByMedecinId(id) {
         console.error('error :', err);
     }
 }
+// 
+async function getAppUserCustomDataBySocket(keys, socketId) {
+    let slctdKeys = '';
+    keys.forEach(key => {
+        slctdKeys += `appUser.${key},`;
+    });
+    slctdKeys = removeLastChar(slctdKeys);
+
+    try {
+        let req = `SELECT ${slctdKeys} FROM appUser where appUser.socket = ? LIMIT 1`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [socketId]);
+        cnx.release();
+        // 
+        if (res[0].length > 0)
+            return res[0][0];
+        else if (res[0].length == 0)
+            return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
 // GET NOTIFICATION ID BY PATIENT ID
 async function getNotificationDataByPatientId(id, accepted) {
     try {
@@ -96,8 +117,8 @@ async function getNotificationDataByPatientId(id, accepted) {
         console.error('error :', err);
     }
 }
-// EXAMPLE OF KEY {online : false,socket : 'ssss'}
-async function updateAppUserData(keyANDvalue, id) {
+// EXAMPLE OF KEY {online : false,socket : 'ssss'} | params = {table : "ss",id : "userId"}
+async function customDataUpdate(keyANDvalue, id, params) {
     keyANDvalue = getObjectKeysWithValues(keyANDvalue);
     let strSection = '';
     keyANDvalue[0].forEach(key => {
@@ -107,7 +128,7 @@ async function updateAppUserData(keyANDvalue, id) {
     keyANDvalue[1].push(id);
     // 
     try {
-        let req = `UPDATE appUser SET ${strSection} WHERE userId = ?`,
+        let req = `UPDATE ${params.table} SET ${strSection} WHERE ${params.id} = ?`,
             cnx = await db.connect(),
             res = await cnx.query(req, keyANDvalue[1]);
         cnx.release();
@@ -117,6 +138,23 @@ async function updateAppUserData(keyANDvalue, id) {
         console.error('error :', err);
     }
 }
+// 
+async function getRoomId(key, id) {
+    try {
+        let req = `SELECT roomId FROM room WHERE ${key} = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [id]);
+        cnx.release();
+        // 
+        if (res[0].length > 0)
+            return res[0][0];
+        else if (res[0].length == 0)
+            return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// 
 //#endregion
 // 
 //#region HELPER FUNCTIONS
@@ -161,7 +199,9 @@ module.exports = {
     getAppUserDataById,
     getAppUserCustomData,
     getAppUserPatientsByMedecinId,
+    getAppUserCustomDataBySocket,
     getNotificationDataByPatientId,
-    updateAppUserData
+    customDataUpdate,
+    getRoomId
 }
 // 

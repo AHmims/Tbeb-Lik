@@ -72,10 +72,13 @@ __CHAT.on('connection', socket => {
         let exsistingUser = await _DB.getAppUserDataById(userInstance.userId);
         // 
         if (exsistingUser != null) {
-            let updatingResult = await _DB.updateAppUserData({
+            let updatingResult = await _DB.customDataUpdate({
                 socket: socket.id,
                 online: true
-            }, exsistingUser.userId);
+            }, exsistingUser.userId, {
+                table: "appUser",
+                id: "userId"
+            });
             // 
             socket.join(exsistingUser.roomId);
             // 
@@ -126,20 +129,24 @@ __CHAT.on('connection', socket => {
 
     });
     // 
-    socket.on('disconnect', () => {
-        for (let i = 0; i < chatters.length; i++) {
+    socket.on('disconnect', async () => {
+        let retData = await _DB.getAppUserCustomDataBySocket(["userId", "userType", "linkedMedecinMatricule"], socket.id);
+        if (retData != null) {
             // IF A USER DISCONNECTS SET THEIR STATUS TO OFFLINE
-            if (chatters[i].socket == socket.id)
-                chatters[i].online = false;
+            let updatingResult = await _DB.customDataUpdate({
+                online: false
+            }, retData.userId, {
+                table: "appUser",
+                id: "userId"
+            });
             // WHEN A PATIENT DISCONNECTS SEND A REQUEST TO REFRESH THE CORRESPONDING
             // MEDECIN PATIENTS LIST 
-            if (chatters[i].type == 'Patient') {
-                if (chatters[i].socket == socket.id)
-                    getPatientList(chatters[i].linkedMedecin);
+            if (retData.userType == 'Patient') {
+                getPatientList(retData.linkedMedecinMatricule);
             } else
                 removeMeFromEveryInstanceSoThatThingsWontBreakLater();
+            // 
         }
-        // 
     });
     // 
     socket.on('joinRoom', (notificationId, date) => {
@@ -360,18 +367,21 @@ __CHAT.on('connection', socket => {
         return roomId;
     }
     // 
-    function removeMeFromEveryInstanceSoThatThingsWontBreakLater() {
+    async function removeMeFromEveryInstanceSoThatThingsWontBreakLater() {
         socket.leaveAll();
         // REMOVE TRACE FROM THE ROOMS
-        for (let i = 0; i < rooms.length; i++) {
-            if (rooms[i].medecin.socketId == socket.id) {
-                rooms[i].medecin = {
-                    id: "",
-                    socketId: ""
-                }
-                // STOP STREAM FLUX
-                socket.to(rooms[i].id).emit('liveStreamTerminated');
-            }
+        let retData = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
+        let roomId = await _DB.getRoomId("userMedecinMatricule", retData.userId);
+        // 
+        if (roomId != null) {
+            let updatingResult = await _DB.customDataUpdate({
+                userMedecinMatricule: ""
+            }, room.roomId, {
+                table: "room",
+                id: "roomId"
+            });
+            // STOP STREAM FLUX
+            socket.to(room.roomId).emit('liveStreamTerminated');
         }
         // 
     }

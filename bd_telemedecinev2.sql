@@ -330,6 +330,8 @@ insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_
 select * from medecin;
 select * from appUser;
 select * from room;
+delete from room where room.roomId <> 1
+drop table room;
 insert into appUser (userId,userType,socket,online,linkedMedecinMatricule) values('BH82900','Patient','/socket',true,'bh151');
 -- ---
 select a.*,p.NOM_PAT,p.Prenom_PAT
@@ -338,4 +340,5 @@ where a.linkedMedecinMatricule = 'bh151'
 and a.userId = p.MATRICULE_PAT;
 
 -- -----
-delete from appUser where online = 1 and userId = 'BH82903';
+delete from appUser where userId = 'BH82903';
+UPDATE appUser SET socket = 'sdqsdq',online = false WHERE userId = 'BH82903'
