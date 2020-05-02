@@ -95,28 +95,26 @@ __CHAT.on('connection', socket => {
     });
     // 
     socket.on('setMedecin', medecinId => {
-        let userData = setUserSocket('Medecin', socket, medecinId);
+        let userInstance = setUserSocket('Medecin', socket, medecinId);
         // 
-        let exsists = false;
-        for (let i = 0; i < chatters.length; i++) {
-            if (chatters[i].userId == userData.userId) {
-                chatters[i].socket = socket.id;
-                exsists = true;
-                chatters[i].online = true;
-                // 
-                // updateRooms(userData.userId);
-                // getPatientList(chatters[i].userId);
-                // 
-                break;
-            }
+        let exsistingUser = await _DB.getAppUserDataById(userInstance.userId);
+        // 
+        if (exsistingUser != null) {
+            let updatingResult = await _DB.customDataUpdate({
+                socket: socket.id,
+                online: true
+            }, exsistingUser.userId, {
+                table: "appUser",
+                id: "userId"
+            });
         }
         // 
-        if (!exsists) {
-            chatters.push(userData);
+        else {
+            let insertResult = await _DB.insertData(userInstance);
         }
-        console.log(chatters);
+        // console.log(chatters);
         //JOIN THE FIRST ROOM IF THE DOCTOR IS A PART OF ONE
-        for (let i = 0; i < notifications.length; i++) {
+        /*for (let i = 0; i < notifications.length; i++) {
             if (notifications[i].medecin == medecinId) {
                 let functionData = joiningRoom(notifications[i].index);
                 let roomId = functionData.roomId;
@@ -125,7 +123,7 @@ __CHAT.on('connection', socket => {
                 break;
             }
 
-        }
+        }*/
 
     });
     // 
