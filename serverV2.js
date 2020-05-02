@@ -94,7 +94,7 @@ __CHAT.on('connection', socket => {
         }
     });
     // 
-    socket.on('setMedecin', medecinId => {
+    socket.on('setMedecin', async medecinId => {
         let userInstance = setUserSocket('Medecin', socket, medecinId);
         // 
         let exsistingUser = await _DB.getAppUserDataById(userInstance.userId);
@@ -252,12 +252,13 @@ __CHAT.on('connection', socket => {
         let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
         //
         for (let i = 0; i < appUsersPatients.length; i++) {
-            let objectClass = new _CLASSES.appUser(Object.values(appUsersPatients[i]));
+            let pholder = Object.values(appUsersPatients[i]);
+            let objectClass = new _CLASSES.appUser(...pholder);
             let refinedObject = objectClass.getStatus();
             // 
             refinedObject.notifId = null;
             // 
-            let userNotifications = await _DB.getNotificationDataByPatientId(refinedObject.userId);
+            let userNotifications = await _DB.getNotificationDataByPatientId(refinedObject.userId, 0);
             // 
             userNotifications.forEach(notif => {
                 if (notif.MATRICULE_PAT == refinedObject.userId)

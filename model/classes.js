@@ -67,7 +67,7 @@ class room {
 }
 // 
 class appUser {
-    constructor(userId, userType, socket, online, linkedMedecinMatricule = null, roomId = null) {
+    constructor(userId, userType, socket, online, linkedMedecinMatricule, roomId) {
         this.userId = userId;
         this.userType = userType;
         this.socket = socket;
