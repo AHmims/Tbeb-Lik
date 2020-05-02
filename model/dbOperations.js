@@ -171,6 +171,37 @@ async function getRoomIdByNotifId(notifId) {
     }
 }
 // 
+async function getRoomIdBySocketId(socketId) {
+    try {
+        let req = `SELECT r.roomId FROM room AS r,appUser as a WHERE (r.userPatientMatricule = a.userId OR r.userMedecinMatricule = a.userId) AND a.socket = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [socketId]);
+        cnx.release();
+        // 
+        if (res[0].length > 0)
+            return res[0][0];
+        else if (res[0].length == 0)
+            return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// 
+async function getRoomDataById(roomId) {
+    try {
+        let req = `SELECT * FROM room WHERE roomId = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [roomId]);
+        cnx.release();
+        // 
+        if (res[0].length > 0)
+            return res[0][0];
+        else if (res[0].length == 0)
+            return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
 //#endregion
 // 
 //#region HELPER FUNCTIONS
@@ -219,6 +250,8 @@ module.exports = {
     getNotificationDataByPatientId,
     customDataUpdate,
     getRoomId,
-    getRoomIdByNotifId
+    getRoomIdByNotifId,
+    getRoomIdBySocketId,
+    getRoomDataById
 }
 // 

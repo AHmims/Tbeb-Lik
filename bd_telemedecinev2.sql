@@ -93,18 +93,6 @@ CREATE TABLE IF NOT EXISTS `certification_medical` (
 --
 -- Structure de la table `consultation`
 --
-CREATE TABLE IF NOT EXISTS `preConsultation` (
-	`idPreCons` char(250) not null,
-	`dateCreation` datetime default now(),
-	`motif` text,
-	`atcd` text,
-	`nbJourA` int(11) NOT NULL,
-    `accepted` boolean default false,
-	`MATRICULE_PAT` char(250) NOT NULL,
-	PRIMARY KEY (`idPreCons`),
-	KEY `FK_CONSULTATION2` (`MATRICULE_PAT`)
-);
-
 
 DROP TABLE IF EXISTS `consultation`;
 CREATE TABLE IF NOT EXISTS `consultation` (
@@ -354,3 +342,9 @@ SELECT r.roomId
 FROM preConsultation AS p,room AS r
 WHERE p.MATRICULE_PAT = r.userPatientMatricule
 AND p.idPreCons = 
+-- -----
+select roomId from appUser where socket = '/chat#AStOtKYel13N87dkAAAA' AND userId in (select * from room)
+
+select r.roomId from room as r,appUser as a1
+where (r.userPatientMatricule = a1.userId OR r.userMedecinMatricule = a1.userId)
+and a1.socket = '/chat#AStOtKYel13N87dkAAAA'

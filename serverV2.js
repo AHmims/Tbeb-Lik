@@ -147,72 +147,53 @@ __CHAT.on('connection', socket => {
         }
     });
     // 
-    socket.on('joinRoom', (notificationId, date) => {
+    socket.on('joinRoom', async (notificationId, date) => {
         let functionData = joiningRoom(notificationId, date);
         let roomId = functionData.roomId;
         // 
         removeMeFromEveryInstanceSoThatThingsWontBreakLater();
-        socket.join(roomId);
+
+        if (roomId != null)
+            socket.join(roomId);
+        else
+            console.log('joinRoom => roomId == null');
         // 
-        let roomInstance = {
-            id: roomId,
-            patient: {
-                id: null,
-                socketId: null
-            },
-            medecin: {
-                id: null,
-                socketId: null
-            }
-        }
-        // 
-        var medecinId = null;
-        chatters.forEach(element => {
-            if (element.socket == socket.id) {
-                medecinId = element.userId;
-                roomInstance.medecin.id = element.userId;
-                roomInstance.medecin.socketId = element.socket;
-            }
-        });
+        let dbRes = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
+        var medecinId = dbRes != null ? dbRes.userId : null;
         // 
         if (medecinId != null) {
-            if (notifications[functionData.arrayIndex]) {
-                notifications[functionData.arrayIndex].medecin = medecinId;
-                notifications[functionData.arrayIndex].date = date;
-                // notifications[functionData.arrayIndex].resolved = true;
+            if (roomId != null) {
+                let dbInsertRet = await _DB.insertData(new _CLASSES.consultation(null, date, medecinId, notificationId));
+                console.log('dbInsertRet =>  : ' + dbInsertRet);
                 // 
-                for (let i = 0; i < chatters.length; i++) {
-                    if (chatters[i].type == 'Patient') {
-                        if (chatters[i].roomId == roomId) {
-                            chatters[i].linkedMedecin = medecinId;
-                            roomInstance.patient.id = chatters[i].userId;
-                            roomInstance.patient.socketId = chatters[i].socket;
-                        }
-                    }
-                }
-                // CHECK FOR DUPS
-                let roomExists = false;
-                for (let i = 0; i < rooms.length; i++) {
-                    if (rooms[i].id == roomInstance.id) {
-                        rooms[i] = roomInstance; // IF THE ROOM ALREADY EXISTS UPDATE IT'S INFOS
-                        console.log(roomInstance)
-                        roomExists = true;
-                    }
-                }
-                if (!roomExists)
-                    rooms.push(roomInstance);
+                let dbPatientUpdate = await _DB.customDataUpdate({
+                    linkedMedecinMatricule: medecinId
+                }, medecinId, {
+                    table: "appUser",
+                    id: "userId"
+                });
+                console.log('dbPatientUpdate => ' + dbPatientUpdate);
+                // 
+                let updatedRoomLinkedMedecin = await _DB.customDataUpdate({
+                    userMedecinMatricule: medecinId
+                }, roomId, {
+                    table: "room",
+                    id: "roomId"
+                });
+                // 
+                console.log('updatedRoomLinkedMedecin => ' + updatedRoomLinkedMedecin);
             }
         }
     });
     // 
-    socket.on('msgSent', (msg) => {
-        console.log('_______________\n' + msg + '\n__________');
-        let roomId = getRoomIdFromSocket();
+    socket.on('msgSent', async (msg) => {
+        let room = await getRoomIdFromSocket();
         // 
-        console.log(roomId);
-        msg = getMsgAdditionalData(msg, 'Text');
-        socket.to(roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
-        //__CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
+        if (room != null) {
+            msg = await getMsgAdditionalData(msg, 'Text');
+            socket.to(room.roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
+            //__CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
+        }
     });
     // 
     // VIDEO
@@ -300,30 +281,17 @@ __CHAT.on('connection', socket => {
         }
     }
     // 
-    function getMsgAdditionalData(msgTxt, type) {
-        let msgObject = {
-            date: new Date(Date.now()),
-            content: msgTxt,
-            type: type,
-            room: {
-                id: null,
-                sender: null,
-                receiver: null
-            }
+    async function getMsgAdditionalData(msgTxt, type) {
+        let msgObject = new _CLASSES.message(null, msgTxt, null, new Date(Date.now()), type, null);
+        msgObject.roomId = await getRoomIdFromSocket();
+        // 
+        if (msgObject.roomId != null) {
+            let retData = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
+            // let roomData = await _DB.getRoomDataById(msgObject.roomId);
+            // 
+            msgObject.Matricule_emmeter = retData.userId;
+            // 
         }
-        // 
-        rooms.forEach(room => {
-            if (room.patient.socketId == socket.id) {
-                msgObject.room.id = room.id;
-                msgObject.room.sender = room.patient.id;
-                msgObject.room.receiver = room.medecin.id;
-            } else if (room.medecin.socketId == socket.id) {
-                msgObject.room.id = room.id;
-                msgObject.room.sender = room.medecin.id;
-                msgObject.room.receiver = room.patient.id;
-            }
-        });
-        // 
         return msgObject;
     }
     // 
@@ -331,7 +299,7 @@ __CHAT.on('connection', socket => {
         let dbResult = await _DB.getRoomIdByNotifId(nId);
         // 
         let retData = {
-            roomId: dbResult.roomId,
+            roomId: dbResult != null ? dbResult.roomId : null,
             arrayIndex: -1
         }
         // 
@@ -351,15 +319,9 @@ __CHAT.on('connection', socket => {
         return retData;
     }
     // 
-    function getRoomIdFromSocket() {
-        let roomId = null;
-        console.log(socket.id);
-        rooms.forEach(element => {
-            console.log(element);
-            if (element.patient.socketId == socket.id || element.medecin.socketId == socket.id)
-                roomId = element.id;
-        });
-        return roomId;
+    async function getRoomIdFromSocket() {
+        let dbResult = await _DB.getRoomIdBySocketId(socket.id);
+        return dbResult != null ? dbResult.roomId : null;
     }
     // 
     async function removeMeFromEveryInstanceSoThatThingsWontBreakLater() {
