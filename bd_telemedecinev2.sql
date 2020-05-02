@@ -15,6 +15,7 @@ CREATE TABLE IF NOT EXISTS `preConsultation` (
 	`motif` text,
 	`atcd` text,
 	`nbJourA` int(11) NOT NULL,
+    `accepted` boolean default false,
 	`MATRICULE_PAT` char(250) NOT NULL,
 	PRIMARY KEY (`idPreCons`),
 	KEY `FK_CONSULTATION2` (`MATRICULE_PAT`)
@@ -329,4 +330,12 @@ insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_
 select * from medecin;
 select * from appUser;
 select * from room;
-insert into appUser (userId,userType,socket,online) values('BH82905','Patient','/socket',true);
+insert into appUser (userId,userType,socket,online,linkedMedecinMatricule) values('BH82900','Patient','/socket',true,'bh151');
+-- ---
+select a.*,p.NOM_PAT,p.Prenom_PAT
+from appUser as a,patients as p
+where a.linkedMedecinMatricule = 'bh151'
+and a.userId = p.MATRICULE_PAT;
+
+-- -----
+delete from appUser where online = 1 and userId = 'BH82903';

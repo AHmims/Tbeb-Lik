@@ -37,12 +37,61 @@ async function getDataAll(className) {
 // GET appUSER data by id
 async function getAppUserDataById(id) {
     try {
-        let req = `SELECT * FROM appUser where id = ? LIMIT 1`,
+        let req = `SELECT * FROM appUser where userId = ? LIMIT 1`,
             cnx = await db.connect(),
             res = await cnx.query(req, [id]);
         cnx.release();
         // 
+        if (res[0].length > 0)
+            return res[0][0];
+        else if (res[0].length == 0)
+            return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// GET WANTED DATA FROM appUser : keys = ["key1","key2"]
+async function getAppUserCustomData(keys, id) {
+    let slctdKeys = '';
+    keys.forEach(key => {
+        slctdKeys += `appUser.${key},`;
+    });
+    slctdKeys = removeLastChar(slctdKeys);
+
+    try {
+        let req = `SELECT ${slctdKeys} FROM appUser where userId = ? LIMIT 1`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [id]);
+        cnx.release();
+        // 
+        console.log(res[0]);
         return res[0][0];
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// GET USERS BY MEDECIN ID
+async function getAppUserPatientsByMedecinId(id) {
+    try {
+        let req = `SELECT a.*,p.NOM_PAT,p.Prenom_PAT FROM appUser AS a,patients AS p WHERE a.linkedMedecinMatricule = ? AND a.userId = p.MATRICULE_PAT`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [id]);
+        cnx.release();
+        // 
+        return res[0];
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// GET NOTIFICATION ID BY PATIENT ID
+async function getNotificationDataByPatientId(id, accepted) {
+    try {
+        let req = `SELECT * FROM preconsultation WHERE MATRICULE_PAT = ? AND accepted = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [id, accepted]);
+        cnx.release();
+        // 
+        return res[0];
     } catch (err) {
         console.error('error :', err);
     }
@@ -54,10 +103,11 @@ async function updateAppUserData(keyANDvalue, id) {
     keyANDvalue[0].forEach(key => {
         strSection += `${key} = ?,`
     });
-    strSection = fieldsPlaceHolders(strSection);
+    strSection = removeLastChar(strSection);
+    keyANDvalue[1].push(id);
     // 
     try {
-        let req = `UPDATE appUser SET ${strSection} WHERE userId = ${id}`,
+        let req = `UPDATE appUser SET ${strSection} WHERE userId = ?`,
             cnx = await db.connect(),
             res = await cnx.query(req, keyANDvalue[1]);
         cnx.release();
@@ -96,18 +146,22 @@ function getClassValues(data) {
 
 function getObjectKeysWithValues(data) {
     return [
-        Object.key(data),
+        Object.keys(data),
         Object.values(data)
     ]
 }
 
 function removeLastChar(str) {
-    return substring(0, str.length - 1);
+    return str.substring(0, str.length - 1);
 }
 //#endregion
 module.exports = {
     insertData,
     getDataAll,
     getAppUserDataById,
+    getAppUserCustomData,
+    getAppUserPatientsByMedecinId,
+    getNotificationDataByPatientId,
     updateAppUserData
 }
+// 

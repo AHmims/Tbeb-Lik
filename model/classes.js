@@ -54,13 +54,14 @@ class consultation {
 }
 // 
 class preConsultation {
-    constructor(MATRICULE_PAT, dateCreation, idPreCons, motif, atcd, nbJourA) {
-        this.MATRICULE_PAT = MATRICULE_PAT;
-        this.dateCreation = dateCreation;
+    constructor(idPreCons, dateCreation, motif, atcd, nbJourA, accepted, MATRICULE_PAT) {
         this.idPreCons = idPreCons;
+        this.dateCreation = dateCreation;
         this.motif = motif;
         this.atcd = atcd;
         this.nbJourA = nbJourA;
+        this.accepted = accepted;
+        this.MATRICULE_PAT = MATRICULE_PAT;
     }
 }
 // 
@@ -80,6 +81,13 @@ class appUser {
         this.online = online;
         this.linkedMedecinMatricule = linkedMedecinMatricule;
         this.roomId = roomId;
+    }
+    // 
+    getStatus() {
+        return {
+            userId: this.userId,
+            online: this.online
+        }
     }
 }
 // 

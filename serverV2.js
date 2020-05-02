@@ -66,35 +66,29 @@ const __HUB = __IO.of('/medecinHub');
 __CHAT.on('connection', socket => {
     console.log('Chat in');
     // 
-    socket.on('setPatient', patientId => {
+    socket.on('setPatient', async patientId => {
         let userInstance = setUserSocket('Patient', socket, patientId);
         // 
-        let exsistingUser = _DB.getAppUserDataById(userInstance.userId);
+        let exsistingUser = await _DB.getAppUserDataById(userInstance.userId);
         // 
-        if (exsistingUser.length > 0) {
-            let updatingResult = _DB.updateAppUserData({
+        if (exsistingUser != null) {
+            let updatingResult = await _DB.updateAppUserData({
                 socket: socket.id,
                 online: true
             }, exsistingUser.userId);
             // 
             socket.join(exsistingUser.roomId);
             // 
-            getPatientList(chatters[i].linkedMedecin);
-            updateRooms(userData.userId);
+            if (exsistingUser.linkedMedecinMatricule != null)
+                getPatientList(exsistingUser.linkedMedecinMatricule);
+            // updateRooms(userData.userId);
         }
         // 
-        if (!exsists) {
-            chatters.push(userData);
-            // __IO.sockets.in(userData.roomId).on('connection', () => {
-            //     console.log('connection to ' + userData.roomId);
-            // });
-            socket.join(userData.roomId);
-            getPatientList(userData.linkedMedecin);
+        else {
+            let insertResult = await _DB.insertData(userInstance);
+            socket.join(userInstance.roomId);
+            // getPatientList(userInstance.linkedMedecinMatricule);
         }
-        // UPDATE THE ROOMS USER SOCKETID #IF EXISTS
-        //BY THE NEW ONE
-        updateRooms(userData.userId);
-
     });
     // 
     socket.on('setMedecin', medecinId => {
@@ -107,7 +101,7 @@ __CHAT.on('connection', socket => {
                 exsists = true;
                 chatters[i].online = true;
                 // 
-                updateRooms(userData.userId);
+                // updateRooms(userData.userId);
                 // getPatientList(chatters[i].userId);
                 // 
                 break;
@@ -238,7 +232,7 @@ __CHAT.on('connection', socket => {
     //
     //  
     // 
-    async function setUserSocket(type, socket, id) {
+    function setUserSocket(type, socket, id) {
         return new _CLASSES.appUser(id, type, socket.id, true);
         // -- ----------
         // let status = await _DB.insertData(new _CLASSES.appUser(id, type, socket.id, true));
@@ -269,39 +263,28 @@ __CHAT.on('connection', socket => {
         return id;
     }
     // 
-    function getPatientList(medecinId) {
-        let patientByMedecin = chatters.filter(element => {
-            if (element.type == 'Patient')
-                return element.linkedMedecin == medecinId;
-            else
-                return false;
-        });
-        // 
-        for (let i = 0; i < patientByMedecin.length; i++) {
-            let refinedObject = _.pick(patientByMedecin[i], ["userId", "online"]);
-            // console.log(refinedObject);
+    async function getPatientList(medecinId) {
+        let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
+        //
+        for (let i = 0; i < appUsersPatients.length; i++) {
+            let objectClass = new _CLASSES.appUser(Object.values(appUsersPatients[i]));
+            let refinedObject = objectClass.getStatus();
             // 
             refinedObject.notifId = null;
             // 
-            notifications.forEach(notif => {
-                if (notif.data.matricule == patientByMedecin[i].userId)
-                    refinedObject.notifId = notif.index;
+            let userNotifications = await _DB.getNotificationDataByPatientId(refinedObject.userId);
+            // 
+            userNotifications.forEach(notif => {
+                if (notif.MATRICULE_PAT == refinedObject.userId)
+                    refinedObject.notifId = notif.idPreCons;
             });
             // 
-            patientByMedecin[i] = refinedObject;
-            // console.log(patientByMedecin[i]);
-        } // 
-        // console.log(patientByMedecin);
-        let medecinSocketId = null;
-        chatters.forEach(element => {
-            if (element.userId == medecinId)
-                medecinSocketId = element.socket;
-        });
-        // SEND DATA TO A SPECEFIC SOCKET
-        console.log('###################');
-        console.log(medecinSocketId);
-        console.log('###################');
-        socket.to(medecinSocketId).emit('p_liste', patientByMedecin);
+            refinedObject.nom = `${appUsersPatients[i].NOM_PAT} ${appUsersPatients[i].Prenom_PAT.toUpperCase()}`;
+            // 
+            appUsersPatients[i] = refinedObject;
+        }
+        let medecinSocketId = await _DB.getAppUserCustomData(["socket"], medecinId);
+        socket.to(medecinSocketId).emit('p_liste', appUsersPatients);
     }
     // 
     function updateRooms(userId) {
