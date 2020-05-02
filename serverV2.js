@@ -27,32 +27,16 @@ __APP.use(__EXPRESS.json());
 __APP.use(__EXPRESS.static(__PATH.join(__dirname, 'public')));
 //TRAITMENT
 __IO.on('connection', socket => {
-    // console.log('Socket connected!');
-    socket.on('newNotif', data => {
-        chatters.forEach(user => {
-            // console.log(user.socket, socket.id);
-            if (user.socket == `/chat#${socket.id}`) {
-                console.log('___________________________________________');
-                data.matricule = user.userId // this is key
-            }
-        });
-        // 
-        let notifData = {
-            index: `NOTIF-${notifications.length + 1}`,
-            data: data,
-            medecin: null,
-            date: null,
-            resolved: false
+    // data = {motif : "",atcd : "",nbJourA : ""}
+    socket.on('newNotif', async data => {
+        let user = await _DB.getAppUserCustomDataBySocket(["userId"], `/chat#${socket.id}`);
+        if (user != null) {
+            let insertRes = await _DB.insertData(new _CLASSES.preConsultation(null, null, data.motif, data.atcd, data.nbJourA, false, user.userId));
+            console.log(`Preconsultation Insert => ${insertRes}`);
+            // 
+            let notifData = await getNotificationFullData(user.userId);
+            __HUB.emit('getNotifs', [notifData]);
         }
-        // 
-        console.log(notifData);
-        notifications.push(notifData);
-        // 
-        let toSendNotifs = notifications.filter(element => {
-            return element.resolved == false;
-        });
-        // 
-        __HUB.emit('getNotifs', toSendNotifs);
     });
     socket.on('disconnect', () => {
         // console.log('Socket off');
@@ -147,8 +131,8 @@ __CHAT.on('connection', socket => {
         }
     });
     // 
-    socket.on('joinRoom', async (notificationId, date) => {
-        let functionData = joiningRoom(notificationId, date);
+    socket.on('joinRoom', async (notificationId, date = new Date(Date.now())) => {
+        let functionData = await joiningRoom(notificationId, date);
         let roomId = functionData.roomId;
         // 
         removeMeFromEveryInstanceSoThatThingsWontBreakLater();
@@ -163,12 +147,11 @@ __CHAT.on('connection', socket => {
         // 
         if (medecinId != null) {
             if (roomId != null) {
-                let dbInsertRet = await _DB.insertData(new _CLASSES.consultation(null, date, medecinId, notificationId));
-                console.log('dbInsertRet =>  : ' + dbInsertRet);
+                let tempRoom = await _DB.getRoomDataById(roomId);
                 // 
                 let dbPatientUpdate = await _DB.customDataUpdate({
                     linkedMedecinMatricule: medecinId
-                }, medecinId, {
+                }, tempRoom.userPatientMatricule, {
                     table: "appUser",
                     id: "userId"
                 });
@@ -180,8 +163,18 @@ __CHAT.on('connection', socket => {
                     table: "room",
                     id: "roomId"
                 });
-                // 
                 console.log('updatedRoomLinkedMedecin => ' + updatedRoomLinkedMedecin);
+                // 
+                let exists = await _DB.checkExistence({
+                    table: 'consultation',
+                    id: 'idPreCons'
+                }, notificationId);
+                let dbInsertRet = 0;
+                if (!exists)
+                    dbInsertRet = await _DB.insertData(new _CLASSES.consultation(null, date, medecinId, notificationId));
+                console.log('dbInsertRet =>  : ' + dbInsertRet);
+                // 
+
             }
         }
     });
@@ -191,8 +184,8 @@ __CHAT.on('connection', socket => {
         // 
         if (room != null) {
             msg = await getMsgAdditionalData(msg, 'Text');
-            socket.to(room.roomId).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
-            //__CHAT.to(roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
+            socket.to(room).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
+            //__CHAT.to(room.roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
         }
     });
     // 
@@ -250,6 +243,7 @@ __CHAT.on('connection', socket => {
     // 
     async function getPatientList(medecinId) {
         let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
+        // console.log(appUsersPatients);
         //
         for (let i = 0; i < appUsersPatients.length; i++) {
             let pholder = Object.values(appUsersPatients[i]);
@@ -270,7 +264,9 @@ __CHAT.on('connection', socket => {
             appUsersPatients[i] = refinedObject;
         }
         let medecinSocketId = await _DB.getAppUserCustomData(["socket"], medecinId);
-        socket.to(medecinSocketId).emit('p_liste', appUsersPatients);
+        // console.log(medecinSocketId.socket);
+        // console.log(appUsersPatients);
+        socket.to(medecinSocketId.socket).emit('p_liste', appUsersPatients);
     }
     // 
     function updateRooms(userId) {
@@ -329,11 +325,11 @@ __CHAT.on('connection', socket => {
         socket.leaveAll();
         // REMOVE TRACE FROM THE ROOMS
         let retData = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
-        let roomId = await _DB.getRoomId("userMedecinMatricule", retData.userId);
+        let room = await _DB.getRoomId("userMedecinMatricule", retData.userId);
         // 
-        if (roomId != null) {
+        if (room != null) {
             let updatingResult = await _DB.customDataUpdate({
-                userMedecinMatricule: ""
+                userMedecinMatricule: null
             }, room.roomId, {
                 table: "room",
                 id: "roomId"
@@ -354,6 +350,29 @@ __HUB.on('connection', socket => {
         socket.emit('notifAccepted', notifId);
     });
 });
+// GLOBAL FUNCTIONS
+async function getNotificationFullData(userId) {
+    let patientData = await _DB.getPatientPreConsultationDataById(userId);
+    if (patientData != null) {
+        let insertedNotificationData = await _DB.getLastInsertedNotification(userId);
+        if (insertedNotificationData != null) {
+            return {
+                index: insertedNotificationData.idPreCons,
+                name: patientData.nom,
+                date: insertedNotificationData.dateCreation,
+                matricule: userId,
+                age: patientData.age,
+                numeroTel: patientData.tel,
+                motif: insertedNotificationData.motif,
+                atcds: insertedNotificationData.atcd,
+                nbJourApporte: insertedNotificationData.nbJourA,
+                files: ["null"]
+            }
+        }
+    }
+}
+// 
+// 
 // ROUTES
 __APP.get('/', (req, res) => {
     res.sendFile(__PATH.join(__dirname, 'public', 'html', 'ocp_login.html'));

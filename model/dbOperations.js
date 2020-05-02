@@ -157,7 +157,7 @@ async function getRoomId(key, id) {
 // 
 async function getRoomIdByNotifId(notifId) {
     try {
-        let req = `SELECT p.accepted r.roomId FROM preConsultation AS p,room AS r WHERE p.MATRICULE_PAT = r.userPatientMatricule AND p.idPreCons = ?`,
+        let req = `SELECT p.accepted,r.roomId FROM preConsultation AS p,room AS r WHERE p.MATRICULE_PAT = r.userPatientMatricule AND p.idPreCons = ?`,
             cnx = await db.connect(),
             res = await cnx.query(req, [notifId]);
         cnx.release();
@@ -198,6 +198,48 @@ async function getRoomDataById(roomId) {
             return res[0][0];
         else if (res[0].length == 0)
             return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// params = {table : "tableName",id : "idKey"}
+async function checkExistence(params, id) {
+    try {
+        let req = `SELECT COUNT(${params.id}) AS nb FROM ${params.table} WHERE ${params.id} = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [id]);
+        cnx.release();
+        // 
+        return res[0][0].nb > 0 ? true : false;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// 
+async function getPatientPreConsultationDataById(userId) {
+    try {
+        let req = `SELECT concat(NOM_PAT,' ',Prenom_PAT) AS nom,TIMESTAMPDIFF(YEAR, Date_Naissence, CURDATE()) AS age,Tel AS tel FROM patients WHERE MATRICULE_PAT = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [userId]);
+        cnx.release();
+        // 
+        if (res[0].length > 0)
+            return res[0][0];
+        else if (res[0].length == 0)
+            return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// 
+async function getLastInsertedNotification(userId) {
+    try {
+        let req = `SELECT * FROM preConsultation WHERE accepted = FALSE AND  MATRICULE_PAT = ? ORDER BY dateCreation DESC LIMIT 1`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [userId]);
+        cnx.release();
+        // 
+        return res[0].length > 0 ? res[0][0] : null;
     } catch (err) {
         console.error('error :', err);
     }
@@ -252,6 +294,9 @@ module.exports = {
     getRoomId,
     getRoomIdByNotifId,
     getRoomIdBySocketId,
-    getRoomDataById
+    getRoomDataById,
+    checkExistence,
+    getPatientPreConsultationDataById,
+    getLastInsertedNotification
 }
 // 

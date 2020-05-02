@@ -3,7 +3,7 @@ const __HUB_SOCKET = io('/medecinHub');
 // 
 //
 __SOCKET.on('connect', () => {
-    __SOCKET.emit('setMedecin', 'TbebLik');
+    __SOCKET.emit('setMedecin', 'HG97');
 });
 // 
 document.getElementById('btn-send').addEventListener('click', () => {
@@ -11,16 +11,18 @@ document.getElementById('btn-send').addEventListener('click', () => {
 });
 //  
 document.getElementById('btn-join').addEventListener('click', () => {
+    // __SOCKET.emit('showSocketId');
     __SOCKET.emit('joinRoom', document.getElementById('roomId').value);
-    // 
-    if (peer != null) {
-        peer.destroy();
-        document.getElementById('clientVideo').srcObject = null;
-        document.getElementById('remoteVideo').srcObject = null;
-    }
+    // // 
+    // if (peer != null) {
+    //     peer.destroy();
+    //     document.getElementById('clientVideo').srcObject = null;
+    //     document.getElementById('remoteVideo').srcObject = null;
+    // }
 });
 // 
 __SOCKET.on('p_liste', data => {
+    console.log('cc');
     console.log(data);
 });
 // 

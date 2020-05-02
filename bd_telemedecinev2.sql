@@ -20,12 +20,15 @@ CREATE TABLE IF NOT EXISTS `preConsultation` (
 	PRIMARY KEY (`idPreCons`),
 	KEY `FK_CONSULTATION2` (`MATRICULE_PAT`)
 );
+show triggers;
+drop trigger assignNotifId;
 DELIMITER //
 CREATE TRIGGER assignNotifId
 BEFORE INSERT
 ON `preConsultation` FOR EACH ROW
 BEGIN
 	SET NEW.idPreCons = CONCAT('NOTIF-',(SELECT FLOOR(RAND()*(1000000-2))+1));
+    SET NEW.dateCreation = now();
 END;//
 DELIMITER ;
 /* */
@@ -320,14 +323,16 @@ insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_
 select * from medecin;
 select * from appUser;
 select * from room;
+select * from consultation;
 delete from appUser where appUser.userId = 'HG97';
 update appUser set linkedMedecinMatricule = 'HG97' where userId = 'BH82903';
 update room set userMedecinMatricule = 'HG97' where roomId = 'cRoom-97615';
 drop table room;
 insert into appUser (userId,userType,socket,online) values('HG97','Medecin','/socket',true);
-insert into preConsultation values('x',default,'txt','txt',1,0,'BH82903');
+insert into preConsultation values('x',default,'txt','txt',1,0,'BH82904');
 delete from preConsultation where idPreCons = 'x';
 select * from preConsultation;
+select * from patients;
 -- ---
 select a.*,p.NOM_PAT,p.Prenom_PAT
 from appUser as a,patients as p
@@ -348,3 +353,17 @@ select roomId from appUser where socket = '/chat#AStOtKYel13N87dkAAAA' AND userI
 select r.roomId from room as r,appUser as a1
 where (r.userPatientMatricule = a1.userId OR r.userMedecinMatricule = a1.userId)
 and a1.socket = '/chat#AStOtKYel13N87dkAAAA'
+-- ----
+update appUser set linkedMedecinMatricule = null where userId ='BH82903';
+update room set userMedecinMatricule = null where roomId = 'cRoom-97615';
+-- ---
+SELECT COUNT(idPreCons) AS nb FROM consultation WHERE idPreCons = 'NOTIF-530846';
+-- ----
+delete from consultation where Matricule_Med = 'HG97';
+-- ---- 
+SELECT concat(NOM_PAT,' ',Prenom_PAT) AS nom,TIMESTAMPDIFF(YEAR, Date_Naissence, CURDATE()) AS age,Tel AS tel FROM patients WHERE MATRICULE_PAT = '';
+-- ----
+SELECT * FROM preConsultation 
+WHERE accepted = FALSE 
+AND  MATRICULE_PAT = 'BH82904'
+ORDER BY dateCreation DESC LIMIT 1;
