@@ -151,7 +151,6 @@ __CHAT.on('connection', socket => {
         let functionData = joiningRoom(notificationId, date);
         let roomId = functionData.roomId;
         // 
-        // 
         removeMeFromEveryInstanceSoThatThingsWontBreakLater();
         socket.join(roomId);
         // 
@@ -328,29 +327,27 @@ __CHAT.on('connection', socket => {
         return msgObject;
     }
     // 
-    function joiningRoom(nId, date = null) {
+    async function joiningRoom(nId, date = null) {
+        let dbResult = await _DB.getRoomIdByNotifId(nId);
+        // 
         let retData = {
-            roomId: null,
+            roomId: dbResult.roomId,
             arrayIndex: -1
         }
         // 
-        for (let i = 0; i < notifications.length; i++) {
-            if (notifications[i].index == nId) {
-                let patient = notifications[i].data.matricule;
-                chatters.forEach(user => {
-                    if (user.userId == patient)
-                        retData.roomId = user.roomId;
-                });
-                //
-                if (notifications[i].resolved == false && retData.roomId != null)
-                    socket.to(retData.roomId).emit('newNotification', date, true);
-                // 
-                notifications[i].resolved = true;
-                retData.arrayIndex = i;
-            }
-        }
+        if (!Boolean(dbResult.accepted) && retData.roomId != null)
+            socket.to(retData.roomId).emit('newNotification', date, true);
         // 
-        console.log('joiningRoom()', retData);
+        //TO-DO CREATE TABLE CONSULTATION INSTANCE
+        // 
+        let updateState = await _DB.customDataUpdate({
+            accepted: true
+        }, nId, {
+            table: "preConsultation",
+            id: "idPreCons"
+        })
+        retData.arrayIndex = -1;
+        // 
         return retData;
     }
     // 

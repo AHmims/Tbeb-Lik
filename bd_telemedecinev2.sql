@@ -93,25 +93,27 @@ CREATE TABLE IF NOT EXISTS `certification_medical` (
 --
 -- Structure de la table `consultation`
 --
+CREATE TABLE IF NOT EXISTS `preConsultation` (
+	`idPreCons` char(250) not null,
+	`dateCreation` datetime default now(),
+	`motif` text,
+	`atcd` text,
+	`nbJourA` int(11) NOT NULL,
+    `accepted` boolean default false,
+	`MATRICULE_PAT` char(250) NOT NULL,
+	PRIMARY KEY (`idPreCons`),
+	KEY `FK_CONSULTATION2` (`MATRICULE_PAT`)
+);
+
 
 DROP TABLE IF EXISTS `consultation`;
 CREATE TABLE IF NOT EXISTS `consultation` (
-  `MATRICULE_PAT` char(250) NOT NULL,
-  `Matricule_Med` char(250) NOT NULL,
-  `ID_CNSLT` int(11) NOT NULL,
-  `CODE_REF` char(250) DEFAULT NULL,
-  `JOUR_REPOS` int(11) DEFAULT NULL,
-  `MOTIF` text,
-  `ATC` text,
-  `TYPE` char(250) DEFAULT NULL,
-  `DATE_CONSULTATION` datetime DEFAULT NULL,
-  `ID_PIECE` int(11) DEFAULT NULL,
-  `ID` int(11) DEFAULT NULL,
-  PRIMARY KEY (`ID_CNSLT`),
-  KEY `FK_CONSULTATION` (`Matricule_Med`),
-  KEY `FK_CONSULTATION2` (`MATRICULE_PAT`),
-  KEY `FK_CONTIENT2` (`ID`),
-  KEY `FK_CONTIENT3` (`ID_PIECE`)
+	`JOUR_REPOS` int(11) DEFAULT NULL,
+	`DATE_CONSULTATION` datetime NOT NULL,
+	`Matricule_Med` char(250) NOT NULL,
+	`idPreCons` char(250) NOT NULL,
+	KEY `FK_CONSULTATION` (`Matricule_Med`),
+	KEY `FK_CONTIENT3` (`idPreCons`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 --
@@ -330,9 +332,14 @@ insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_
 select * from medecin;
 select * from appUser;
 select * from room;
-delete from room where room.roomId <> 1
+delete from appUser where appUser.userId = 'HG97';
+update appUser set linkedMedecinMatricule = 'HG97' where userId = 'BH82903';
+update room set userMedecinMatricule = 'HG97' where roomId = 'cRoom-97615';
 drop table room;
-insert into appUser (userId,userType,socket,online,linkedMedecinMatricule) values('BH82900','Patient','/socket',true,'bh151');
+insert into appUser (userId,userType,socket,online) values('HG97','Medecin','/socket',true);
+insert into preConsultation values('x',default,'txt','txt',1,0,'BH82903');
+delete from preConsultation where idPreCons = 'x';
+select * from preConsultation;
 -- ---
 select a.*,p.NOM_PAT,p.Prenom_PAT
 from appUser as a,patients as p
@@ -341,4 +348,9 @@ and a.userId = p.MATRICULE_PAT;
 
 -- -----
 delete from appUser where userId = 'BH82903';
-UPDATE appUser SET socket = 'sdqsdq',online = false WHERE userId = 'BH82903'
+UPDATE appUser SET socket = 'sdqsdq',online = false WHERE userId = 'BH82903';
+-- -----
+SELECT r.roomId 
+FROM preConsultation AS p,room AS r
+WHERE p.MATRICULE_PAT = r.userPatientMatricule
+AND p.idPreCons = 

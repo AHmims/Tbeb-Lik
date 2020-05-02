@@ -38,18 +38,11 @@ class certification_medical {
 }
 // 
 class consultation {
-    constructor(MATRICULE_PAT, Matricule_Med, ID_CNSLT, CODE_REF, JOUR_REPOS, MOTIF, ATC, TYPE, DATE_CONSULTATION, ID_PIECE, ID) {
-        this.MATRICULE_PAT = MATRICULE_PAT;
-        this.Matricule_Med = Matricule_Med;
-        this.ID_CNSLT = ID_CNSLT;
-        this.CODE_REF = CODE_REF;
+    constructor(JOUR_REPOS, DATE_CONSULTATION, Matricule_Med, idPreCons) {
         this.JOUR_REPOS = JOUR_REPOS;
-        this.MOTIF = MOTIF;
-        this.ATC = ATC;
-        this.TYPE = TYPE;
         this.DATE_CONSULTATION = DATE_CONSULTATION;
-        this.ID_PIECE = ID_PIECE;
-        this.ID = ID;
+        this.Matricule_Med = Matricule_Med;
+        this.idPreCons = idPreCons;
     }
 }
 // 

@@ -155,6 +155,22 @@ async function getRoomId(key, id) {
     }
 }
 // 
+async function getRoomIdByNotifId(notifId) {
+    try {
+        let req = `SELECT p.accepted r.roomId FROM preConsultation AS p,room AS r WHERE p.MATRICULE_PAT = r.userPatientMatricule AND p.idPreCons = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [notifId]);
+        cnx.release();
+        // 
+        if (res[0].length > 0)
+            return res[0][0];
+        else if (res[0].length == 0)
+            return null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// 
 //#endregion
 // 
 //#region HELPER FUNCTIONS
@@ -202,6 +218,7 @@ module.exports = {
     getAppUserCustomDataBySocket,
     getNotificationDataByPatientId,
     customDataUpdate,
-    getRoomId
+    getRoomId,
+    getRoomIdByNotifId
 }
 // 
