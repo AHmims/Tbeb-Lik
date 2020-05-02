@@ -99,7 +99,7 @@ CREATE TABLE IF NOT EXISTS `certification_medical` (
 
 DROP TABLE IF EXISTS `consultation`;
 CREATE TABLE IF NOT EXISTS `consultation` (
-	`JOUR_REPOS` int(11) DEFAULT NULL,
+	`JOUR_REPOS` int(11) DEFAULT -1,
 	`DATE_CONSULTATION` datetime NOT NULL,
 	`Matricule_Med` char(250) NOT NULL,
 	`idPreCons` char(250) NOT NULL,
@@ -323,7 +323,6 @@ insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_
 select * from medecin;
 select * from appUser;
 select * from room;
-select * from consultation;
 delete from appUser where appUser.userId = 'HG97';
 update appUser set linkedMedecinMatricule = 'HG97' where userId = 'BH82903';
 update room set userMedecinMatricule = 'HG97' where roomId = 'cRoom-97615';
@@ -363,7 +362,20 @@ delete from consultation where Matricule_Med = 'HG97';
 -- ---- 
 SELECT concat(NOM_PAT,' ',Prenom_PAT) AS nom,TIMESTAMPDIFF(YEAR, Date_Naissence, CURDATE()) AS age,Tel AS tel FROM patients WHERE MATRICULE_PAT = '';
 -- ----
-SELECT * FROM preConsultation 
+SELECT * FROM preConsultation;
+select * from consultation;
+update consultation set JOUR_REPOS = -1 where idPreCons= 'NOTIF-530846';
+update consultation set idPreCons = 'NOTIF-530846' where idPreCons= 'NOTIF-677351';
+delete from preConsultation where accepted = false
+-- ----
+select count(*) from preConsultation where MATRICULE_PAT = 'BH82903' AND idPreCons not in (select idPreCons from consultation where JOUR_REPOS >= 0);
+select count(*) from preConsultation as p,consultation as c
+where p.MATRICULE_PAT = 'BH82903' 
+and p.idPreCons = c.idPreCons
+and c.JOUR_REPOS <= -1;
+-- ----
+select * from consultation where JOUR_REPOS <= -1 AND idPreCons in (select idPreCons from preConsultation where MATRICULE_PAT = 'BH82903')
+-- ----
 WHERE accepted = FALSE 
 AND  MATRICULE_PAT = 'BH82904'
 ORDER BY dateCreation DESC LIMIT 1;

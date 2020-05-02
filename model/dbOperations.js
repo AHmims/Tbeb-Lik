@@ -203,9 +203,9 @@ async function getRoomDataById(roomId) {
     }
 }
 // params = {table : "tableName",id : "idKey"}
-async function checkExistence(params, id) {
+async function checkExistence(params, id, constraint = '') {
     try {
-        let req = `SELECT COUNT(${params.id}) AS nb FROM ${params.table} WHERE ${params.id} = ?`,
+        let req = `SELECT COUNT(${params.id}) AS nb FROM ${params.table} WHERE ${params.id} = ? ${constraint}`,
             cnx = await db.connect(),
             res = await cnx.query(req, [id]);
         cnx.release();
@@ -243,6 +243,26 @@ async function getLastInsertedNotification(userId) {
     } catch (err) {
         console.error('error :', err);
     }
+}
+// 
+async function consultationCheck(userId) {
+    let table1Check = await checkExistence({
+        table: "preConsultation",
+        id: "MATRICULE_PAT"
+    }, userId, 'AND accepted = false');
+    // 
+    if (!table1Check) {
+        try {
+            let req = `select count(*) as nb from consultation where JOUR_REPOS <= -1 AND idPreCons in (select idPreCons from preConsultation where MATRICULE_PAT = ?)`,
+                cnx = await db.connect(),
+                res = await cnx.query(req, [userId]);
+            cnx.release();
+            // 
+            return res[0][0].nb > 0 ? true : false;
+        } catch (err) {
+            console.error('error :', err);
+        }
+    } else return true;
 }
 //#endregion
 // 
@@ -297,6 +317,7 @@ module.exports = {
     getRoomDataById,
     checkExistence,
     getPatientPreConsultationDataById,
-    getLastInsertedNotification
+    getLastInsertedNotification,
+    consultationCheck
 }
 // 

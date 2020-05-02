@@ -22,7 +22,7 @@ document.getElementById('btn-join').addEventListener('click', () => {
 });
 // 
 __SOCKET.on('p_liste', data => {
-    console.log('cc');
+    // console.log('cc');
     console.log(data);
 });
 // 
