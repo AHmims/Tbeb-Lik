@@ -6,6 +6,11 @@ __SOCKET.on('connect', () => {
     __SOCKET.emit('setMedecin', 'HG97');
 });
 // 
+$.post('/getNotifications', {}, (response) => {
+    if (response != null)
+        response = JSON.parse(response);
+});
+// 
 document.getElementById('btn-send').addEventListener('click', () => {
     __SOCKET.emit('msgSent', document.getElementById('txt-field').value);
 });

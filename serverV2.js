@@ -96,7 +96,7 @@ __CHAT.on('connection', socket => {
                 id: "userId"
             });
             // 
-            await getPatientList(medecinId);
+            // await getPatientList(medecinId);
         }
         // 
         else {
@@ -190,6 +190,7 @@ __CHAT.on('connection', socket => {
         // 
         if (room != null) {
             msg = await getMsgAdditionalData(msg, 'Text');
+            console.log(msg);
             socket.to(room).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
             //__CHAT.to(room.roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
         }
@@ -232,21 +233,6 @@ __CHAT.on('connection', socket => {
         // }
     }
     // 
-    function generateRoomId() {
-        let exists = true;
-        let id = '';
-        while (exists) {
-            exists = false;
-            id = `cRoom-${Math.floor(Math.random()*100000)}`;
-            for (let i = 0; i < chatters.length; i++) {
-                if (chatters[i].roomId == id)
-                    exists = true;
-            }
-        }
-        // 
-        return id;
-    }
-    // 
     async function getPatientList(medecinId) {
         let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
         //
@@ -272,17 +258,8 @@ __CHAT.on('connection', socket => {
         // console.log(medecinSocketId.socket);
         // console.log(appUsersPatients);
         if (appUsersPatients.length > 0) {
-            console.log('getPatientList() => ', appUsersPatients);
+            // console.log('getPatientList() => ', appUsersPatients);
             socket.to(medecinSocketId.socket).emit('p_liste', appUsersPatients);
-        }
-    }
-    // 
-    function updateRooms(userId) {
-        for (let i = 0; i < rooms.length; i++) {
-            if (rooms[i].patient.id == userId)
-                rooms[i].patient.socketId = socket.id;
-            if (rooms[i].medecin.id == userId)
-                rooms[i].medecin.socketId = socket.id;
         }
     }
     // 
@@ -347,6 +324,7 @@ __CHAT.on('connection', socket => {
         }
         // 
     }
+    // 
 });
 // NOTIICATION SYSTEM
 __HUB.on('connection', socket => {
@@ -378,6 +356,17 @@ async function getNotificationFullData(userId) {
             }
         }
     }
+}
+async function getNotifications() {
+    let notifications = await _DB.getDataAll('preConsultation', 'WHERE accepted = FALSE');
+    if (notifications != null) {
+        let retData = [];
+        for (let i = 0; i < notifications.length; i++) {
+            let fullNotif = await getNotificationFullData(notifications[i].MATRICULE_PAT);
+            retData.push(fullNotif);
+        }
+        return retData;
+    } else return [];
 }
 // 
 // 
@@ -431,20 +420,26 @@ __APP.post('/getActivePatients', (req, res) => {
 });
 // 
 __APP.post('/createDoc', async (req, res) => {
-    let data = req.body.data;
-    rooms.forEach(room => {
-        if (room.medecin.id == req.body.userId) {
-            data.mle = room.patient.id;
-            chatters.forEach(user => {
-                data.nom = "nom";
-                data.prenom = "prenom";
-                data.direction = "direction";
-            });
-        }
-    });
+    var state = false;
     // 
-    var state = await __PDF.makeDoc(data);
+    let data = req.body.data;
+    let extraData = await _DB.getPatientDoculentDataFromMedecinId(req.body.userId);
+    console.log('extraData => ', extraData);
+    if (extraData != null) {
+        let finalData = {
+            ...data,
+            ...extraData
+        };
+        // 
+        state = await __PDF.makeDoc(finalData);
+    }
+    // 
     res.end(state.toString());
+});
+// 
+__APP.post('/getNotifications', async (req, res) => {
+    let data = await getNotifications();
+    res.end(JSON.stringify(data));
 });
 // 
 // 

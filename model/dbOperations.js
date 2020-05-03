@@ -22,9 +22,9 @@ async function insertData(data) {
     }
 }
 // 
-async function getDataAll(className) {
+async function getDataAll(className, constraint = '') {
     try {
-        let req = `SELECT * FROM ${className}`,
+        let req = `SELECT * FROM ${className} ${constraint}`,
             cnx = await db.connect(),
             res = await cnx.query(req);
         cnx.release();
@@ -264,6 +264,19 @@ async function consultationCheck(userId) {
         }
     } else return true;
 }
+// 
+async function getPatientDoculentDataFromMedecinId(medecinId) {
+    try {
+        let req = `select MATRICULE_PAT as mle,NOM_PAT as nom,Prenom_PAT as prenom,Direction as direction from patients where MATRICULE_PAT in (select userPatientMatricule from room where userMedecinMatricule = ?)`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [medecinId]);
+        cnx.release();
+        // 
+        return res[0].length > 0 ? res[0][0] : null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
 //#endregion
 // 
 //#region HELPER FUNCTIONS
@@ -318,6 +331,7 @@ module.exports = {
     checkExistence,
     getPatientPreConsultationDataById,
     getLastInsertedNotification,
-    consultationCheck
+    consultationCheck,
+    getPatientDoculentDataFromMedecinId
 }
 // 

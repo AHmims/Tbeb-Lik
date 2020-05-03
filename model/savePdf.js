@@ -82,14 +82,12 @@ async function makeDoc(data) {
                 align: "right"
             }).moveDown();
         // 
-        document.end();
-        // doc.pipe(fs.createWriteStream(path));
-        document.pipe(fse.createWriteStream(__FILEPATH));
+        await savePdfToFile(document, __FILEPATH);
         // 
-        document.on('end', () => {
-            return true;
-        });
+        return true;
+        // });
     } catch (err) {
+        console.log(err);
         return false;
     }
 }
@@ -117,6 +115,28 @@ function generateHr(document, y) {
         .moveTo(50, y)
         .lineTo(550, y)
         .stroke();
+}
+// 
+function savePdfToFile(pdf, fileName) {
+    return new Promise((resolve, reject) => {
+        let pendingStepCount = 2;
+
+        const stepFinished = () => {
+            if (--pendingStepCount == 0) {
+                resolve();
+            }
+        };
+
+        const writeStream = fse.createWriteStream(fileName);
+        writeStream.on('close', stepFinished);
+        pdf.pipe(writeStream);
+
+        pdf.end();
+
+        stepFinished();
+
+        // CREDITS : https://github.com/foliojs/pdfkit/issues/265#issuecomment-246564718
+    });
 }
 // 
 module.exports = {
