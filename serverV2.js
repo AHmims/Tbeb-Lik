@@ -71,7 +71,7 @@ __CHAT.on('connection', socket => {
             socket.join(exsistingUser.roomId);
             // 
             if (exsistingUser.linkedMedecinMatricule != null)
-                await getPatientList(exsistingUser.linkedMedecinMatricule);
+                await getPatientList(exsistingUser.linkedMedecinMatricule, userInstance.userId);
             // updateRooms(userData.userId);
         }
         // 
@@ -130,7 +130,7 @@ __CHAT.on('connection', socket => {
             // WHEN A PATIENT DISCONNECTS SEND A REQUEST TO REFRESH THE CORRESPONDING
             // MEDECIN PATIENTS LIST 
             if (retData.userType == 'Patient') {
-                getPatientList(retData.linkedMedecinMatricule);
+                getPatientList(retData.linkedMedecinMatricule, retData.userId);
             } else
                 removeMeFromEveryInstanceSoThatThingsWontBreakLater();
             // 
@@ -177,7 +177,7 @@ __CHAT.on('connection', socket => {
                 }, notificationId);
                 let dbInsertRet = 0;
                 if (!exists)
-                    dbInsertRet = await _DB.insertData(new _CLASSES.consultation(-1, date, medecinId, notificationId));
+                    dbInsertRet = await _DB.insertData(new _CLASSES.consultation(-1, date, medecinId, '', notificationId));
                 console.log('dbInsertRet =>  : ' + dbInsertRet);
                 // 
 
@@ -233,24 +233,27 @@ __CHAT.on('connection', socket => {
         // }
     }
     // 
-    async function getPatientList(medecinId) {
-        let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
+    async function getPatientList(medecinId, patientId) {
+        let patientByMedecin = await _DB.getChatPatients(medecinId, `AND a.userId = '${patientId}'`);
+        let medecinSocketId = await _DB.getAppUserCustomData(["socket"], medecinId);
+        socket.to(medecinSocketId.socket).emit('p_liste', patientByMedecin);
+        /*let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
         //
         for (let i = 0; i < appUsersPatients.length; i++) {
             let pholder = Object.values(appUsersPatients[i]);
             let objectClass = new _CLASSES.appUser(...pholder);
             let refinedObject = objectClass.getStatus();
             // 
-            refinedObject.notifId = null;
+            refinedObject.idPreCons = null;
             // 
             let userNotifications = await _DB.getNotificationDataByPatientId(refinedObject.userId, 0);
             // 
             userNotifications.forEach(notif => {
                 if (notif.MATRICULE_PAT == refinedObject.userId)
-                    refinedObject.notifId = notif.idPreCons;
+                    refinedObject.idPreCons = notif.idPreCons;
             });
             // 
-            refinedObject.nom = `${appUsersPatients[i].NOM_PAT} ${appUsersPatients[i].Prenom_PAT.toUpperCase()}`;
+            refinedObject.nom = `${appUsersPatients[i].NOM_PAT} ${appUsersPatients[i].Prenom_PAT}`;
             // 
             appUsersPatients[i] = refinedObject;
         }
@@ -258,9 +261,9 @@ __CHAT.on('connection', socket => {
         // console.log(medecinSocketId.socket);
         // console.log(appUsersPatients);
         if (appUsersPatients.length > 0) {
-            // console.log('getPatientList() => ', appUsersPatients);
+            console.log('getPatientList() => ', appUsersPatients);
             socket.to(medecinSocketId.socket).emit('p_liste', appUsersPatients);
-        }
+        }*/
     }
     // 
     async function getMsgAdditionalData(msgTxt, type) {
@@ -328,7 +331,7 @@ __CHAT.on('connection', socket => {
 });
 // NOTIICATION SYSTEM
 __HUB.on('connection', socket => {
-    console.log('___MEDECIN ON___' + socket.id);
+    // console.log('___MEDECIN ON___' + socket.id);
     socket.on('updateNotif', (notifId) => {
         // SOME SHIT HERE
         // AND BY SHIT I MEAN SEND SOME DATA TO ALL DOCTORS TO INFORM THEM 
@@ -395,36 +398,36 @@ __APP.get('/patient/contact', (req, res) => {
 });
 // 
 // 
-__APP.post('/getActivePatients', (req, res) => {
+__APP.post('/getActivePatients', async (req, res) => {
     let medecinId = req.body.medecinId;
-    let patientByMedecin = chatters.filter(element => {
-        if (element.type == 'Patient')
-            return element.linkedMedecin == medecinId;
-        else
-            return false;
-    });
     // 
-    for (let i = 0; i < patientByMedecin.length; i++) {
-        let refinedObject = _.pick(patientByMedecin[i], ["userId", "online"]);
-        refinedObject.notifId = null;
-        // 
-        notifications.forEach(notif => {
-            if (notif.data.matricule == patientByMedecin[i].userId)
-                refinedObject.notifId = notif.index;
-        });
-        // 
-        patientByMedecin[i] = refinedObject;
-    } // 
+    let patientsByMedecin = await _DB.getChatPatients(medecinId);
     // 
-    res.end(JSON.stringify(patientByMedecin));
+    res.end(JSON.stringify(patientsByMedecin));
 });
 // 
-__APP.post('/createDoc', async (req, res) => {
+__APP.post('/finalizeCase', async (req, res) => {
+    // KHTASR HD LKHRA LATER ON
+    let roomId = await _DB.getRoomId("userMedecinMatricule", req.body.userId);
+    let roomData = await _DB.getRoomDataById(roomId.roomId);
+    let notif = await _DB.getNotificationDataByPatientId(roomData.userPatientMatricule, 1);
+    if (notif != null) {
+        let consultationFinished = await _DB.customDataUpdate({
+            commentaire: req.body.cmmnt,
+            JOUR_REPOS: req.body.data.nbrJV
+        }, notif[0].idPreCons, {
+            table: "consultation",
+            id: "idPreCons"
+        });
+        // 
+        // console.log('consultationFinished => ', consultationFinished);
+    }
+    // 
     var state = false;
     // 
     let data = req.body.data;
     let extraData = await _DB.getPatientDoculentDataFromMedecinId(req.body.userId);
-    console.log('extraData => ', extraData);
+    // console.log('extraData => ', extraData);
     if (extraData != null) {
         let finalData = {
             ...data,

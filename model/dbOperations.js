@@ -127,6 +127,9 @@ async function customDataUpdate(keyANDvalue, id, params) {
     strSection = removeLastChar(strSection);
     keyANDvalue[1].push(id);
     // 
+    console.log(`UPDATE ${params.table} SET ${strSection} WHERE ${params.id} = ?`);
+    console.log(keyANDvalue[1]);
+    // 
     try {
         let req = `UPDATE ${params.table} SET ${strSection} WHERE ${params.id} = ?`,
             cnx = await db.connect(),
@@ -277,6 +280,19 @@ async function getPatientDoculentDataFromMedecinId(medecinId) {
         console.error('error :', err);
     }
 }
+// 
+async function getChatPatients(medecinId, constraint) {
+    try {
+        let req = `SELECT a.userId,a.online,CONCAT(p.NOM_PAT,' ',p.Prenom_PAT) as nom,n.idPreCons FROM appUser AS a,patients AS p,preConsultation AS n WHERE a.linkedMedecinMatricule = ? AND a.userId = p.MATRICULE_PAT AND a.userId = n.MATRICULE_PAT ${constraint}`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [medecinId]);
+        cnx.release();
+        // 
+        return res[0];
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
 //#endregion
 // 
 //#region HELPER FUNCTIONS
@@ -332,6 +348,7 @@ module.exports = {
     getPatientPreConsultationDataById,
     getLastInsertedNotification,
     consultationCheck,
-    getPatientDoculentDataFromMedecinId
+    getPatientDoculentDataFromMedecinId,
+    getChatPatients
 }
 // 

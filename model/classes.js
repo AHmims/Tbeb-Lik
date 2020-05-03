@@ -38,10 +38,11 @@ class certification_medical {
 }
 // 
 class consultation {
-    constructor(JOUR_REPOS, DATE_CONSULTATION, Matricule_Med, idPreCons) {
+    constructor(JOUR_REPOS, DATE_CONSULTATION, Matricule_Med, commentaire, idPreCons) {
         this.JOUR_REPOS = JOUR_REPOS;
         this.DATE_CONSULTATION = DATE_CONSULTATION;
         this.Matricule_Med = Matricule_Med;
+        this.commentaire = commentaire;
         this.idPreCons = idPreCons;
     }
 }

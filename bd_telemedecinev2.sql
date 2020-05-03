@@ -324,7 +324,7 @@ select * from medecin;
 select * from appUser;
 select * from room;
 delete from appUser where appUser.userId = 'HG97';
-update appUser set linkedMedecinMatricule = 'HG97' where userId = 'BH82903';
+update appUser set linkedMedecinMatricule = null where userId = 'BH82903';
 update room set userMedecinMatricule = 'HG97' where roomId = 'cRoom-97615';
 drop table room;
 insert into appUser (userId,userType,socket,online) values('HG97','Medecin','/socket',true);
@@ -366,7 +366,8 @@ SELECT * FROM preConsultation;
 select * from consultation;
 update consultation set JOUR_REPOS = -1 where idPreCons= 'NOTIF-530846';
 update consultation set idPreCons = 'NOTIF-530846' where idPreCons= 'NOTIF-677351';
-delete from preConsultation where accepted = false
+delete from preConsultation where accepted = true
+delete from consultation where idPreCons != 'r'
 -- ----
 select count(*) from preConsultation where MATRICULE_PAT = 'BH82903' AND idPreCons not in (select idPreCons from consultation where JOUR_REPOS >= 0);
 select count(*) from preConsultation as p,consultation as c
@@ -379,3 +380,18 @@ select * from consultation where JOUR_REPOS <= -1 AND idPreCons in (select idPre
 WHERE accepted = FALSE 
 AND  MATRICULE_PAT = 'BH82904'
 ORDER BY dateCreation DESC LIMIT 1;
+-- ----
+select * from medecin;
+select * from appUser;
+select * from room;
+select * from patients;
+
+select NOM_PAT,Prenom_PAT,Direction 
+from patients 
+where MATRICULE_PAT in (select userPatientMatricule from room where userMedecinMatricule = 'HG97');
+-- ---
+SELECT a.userId,a.online,CONCAT(p.NOM_PAT,' ',p.Prenom_PAT) as nom,n.idPreCons
+FROM appUser AS a,patients AS p,preConsultation AS n 
+WHERE a.linkedMedecinMatricule = 'HG97' 
+AND a.userId = p.MATRICULE_PAT
+AND a.userId = n.MATRICULE_PAT;

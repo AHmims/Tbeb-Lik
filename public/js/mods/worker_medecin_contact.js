@@ -34,13 +34,14 @@ document.getElementById('patientSubmit').addEventListener('click', () => {
 });
 document.getElementById('popup-btnSubmit').addEventListener('click', () => {
     const inputs = document.getElementsByClassName('submitPopupInput');
-    $.post('createDoc', {
+    $.post('/finalizeCase', {
         userId: sessionStorage.getItem('user_M'),
         data: {
             nbrJA: inputs[4].value,
             nbrJV: inputs[5].value,
             visaM: inputs[6].value
-        }
+        },
+        cmmnt: inputs[7].value
     }, (response) => {
         response = Boolean(response);
         if (response)
@@ -67,8 +68,7 @@ $.post('/getActivePatients', {
     medecinId: sessionStorage.getItem('user_M')
 }, (response) => {
     response = JSON.parse(response);
-    // 
-    console.log(response);
+    // console.log(response);
     displayPatientsList(response);
 });
 // 
@@ -114,7 +114,7 @@ function createContactBox(patient, index) {
     // 
     let txtName = document.createElement('span');
     txtName.setAttribute('class', 'patientContactName');
-    txtName.innerText = `NomP ${index}`;
+    txtName.innerText = patient.no;
     let txtMatr = document.createElement('span');
     txtMatr.setAttribute('class', 'patientContactMatricule');
     txtMatr.innerText = patient.userId;
@@ -132,14 +132,14 @@ function createContactBox(patient, index) {
         });
         // 
         cont.setAttribute('class', 'patientContact patientSelected');
-        switchUser(patient.notifId);
+        switchUser(patient.idPreCons);
     });
     // 
     if (index == 0) {
         cont.setAttribute('class', 'patientContact patientSelected');
-        switchUser(patient.notifId);
+        switchUser(patient.idPreCons);
     }
-    cont.setAttribute('data-notif', patient.notifId);
+    cont.setAttribute('data-notif', patient.idPreCons);
     // 
     return cont;
 }
