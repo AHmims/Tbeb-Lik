@@ -55,6 +55,7 @@ __CHAT.on('connection', socket => {
     console.log('Chat in');
     // 
     socket.on('setPatient', async patientId => {
+        console.log(patientId);
         let userInstance = setUserSocket('Patient', socket, patientId);
         // 
         let exsistingUser = await _DB.getAppUserDataById(userInstance.userId);
@@ -203,15 +204,15 @@ __CHAT.on('connection', socket => {
     //     socket.to(roomId).emit('patientLink');
     // });
     // 
-    socket.on('liveStreamInitFail', () => {
-        let roomId = getRoomIdFromSocket();
+    socket.on('liveStreamInitFail', async () => {
+        let roomId = await getRoomIdFromSocket();
         console.log('liveStreamInitFail()');
         socket.to(roomId).emit('patientLinkFailed');
     });
     // 
-    socket.on('liveStreamLink', (data) => {
-        let roomId = getRoomIdFromSocket();
-        console.log('liveStreamLink()');
+    socket.on('liveStreamLink', async (data) => {
+        let roomId = await getRoomIdFromSocket();
+        console.log('liveStreamLink() => ');
         socket.to(roomId).emit('liveStreamDataFlux', data);
     });
     //
