@@ -294,7 +294,7 @@ __CHAT.on('connection', socket => {
         }
         // 
         if (!Boolean(dbResult.accepted) && retData.roomId != null)
-            socket.to(retData.roomId).emit('newNotification', date, true, nId);
+            socket.to(retData.roomId).emit('newNotification', date, false, nId);
         // 
         //TO-DO CREATE TABLE CONSULTATION INSTANCE
         // 
@@ -466,9 +466,10 @@ __APP.post('/linkWithMedecin', async (req, res) => {
         if (data.accepted == 1) {
             let dateNow = new Date(Date.now());
             let notifDate = new Date(data.DATE_CONSULTATION);
-            if (notifDate - dateNow <= 0)
-                res.redirect('/medecin/contact');
-            else {
+            if (notifDate - dateNow <= 0) {
+                // console.log('notifDate - dateNow <= 0');
+                res.end('true');
+            } else {
                 if (data.JOUR_REPOS > -1)
                     res.end('Votre cas a ete traité');
                 else

@@ -66,12 +66,16 @@ function addNotification(date, state, nId) {
     cont.appendChild(txtCont);
     // 
     cont.addEventListener('click', () => {
-        if (state) {
+        if (!state) {
             $.post('/linkWithMedecin', {
                 notif: nId
             }, (response) => {
-                if (response == 'false')
+                if (response == 'true')
+                    window.location.assign('/patient/contact');
+                else if (response == 'false')
                     alert('Trop tot pour rejoindre');
+                // else 
+                // console.log(response);
             });
         }
         // window.location.href = "/patient/contact";
