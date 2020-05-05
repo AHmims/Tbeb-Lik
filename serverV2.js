@@ -428,9 +428,9 @@ __APP.post('/finalizeCase', async (req, res) => {
         });
         // 
         let preConsultationUpdate = await _DB.customDataUpdate({
-            nbJourA: req.body.data.nbJourA
+            nbJourA: req.body.data.nbrJA
         }, notif[0].idPreCons, {
-            table: "consultation",
+            table: "preConsultation",
             id: "idPreCons"
         });
         // console.log('consultationFinished => ', consultationFinished);
