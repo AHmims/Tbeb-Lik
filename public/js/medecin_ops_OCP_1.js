@@ -99,14 +99,6 @@ function creationCardConsultation(data, boxId) {
     }
     cont6.appendChild(txt12);
     cont6.appendChild(conttxt13);
-    // cont 7
-    // var btn1 = makeElement('button');
-    // btn1.setAttribute('class', 'btn-no m-top-20 radiusLeft margin-r-5');
-    // btn1.innerText = 'Refuser';
-    // // // BUTTON ACCEPTER
-    // btn1.addEventListener('click', function () {
-    //     console.log('Refuser');
-    // });
     var btn2 = makeElement('button');
     btn2.setAttribute('class', 'btn-acc m-top-20');
     btn2.innerText = 'Accepter';

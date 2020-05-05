@@ -74,11 +74,8 @@ function addNotification(date, state, nId) {
                     window.location.assign('/patient/contact');
                 else if (response == 'false')
                     alert('Trop tot pour rejoindre');
-                // else 
-                // console.log(response);
             });
         }
-        // window.location.href = "/patient/contact";
     });
     // 
     document.getElementById('notifBoxBody').appendChild(cont);

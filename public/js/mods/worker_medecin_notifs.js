@@ -5,18 +5,6 @@ document.getElementsByClassName('navIconBox')[0].setAttribute('class', 'navIconB
 // 
 function notifMiddleMan(data) {
     data.forEach(element => {
-        // var bluePrint = {
-        //     name: element.data.name,
-        //     date: "[Date]",
-        //     matricule: element.data.matricule,
-        //     age: "[Age]",
-        //     numeroTel: "[Numero Tel]",
-        //     motif: "[Motif]",
-        //     atcds: "[ATCDs]",
-        //     nbJourApporte: "[Nb]",
-        //     files: ["fichier.ext"]
-        // }
-        // // 
         creationCardConsultation(element, element.index);
     });
 }

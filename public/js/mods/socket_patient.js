@@ -6,9 +6,7 @@ __SOCKET.on('connect', () => {
     __SOCKET.emit('setPatient', sessionStorage.getItem('user_M'));
 });
 __SOCKET.on('msgReceived', msg => {
-    console.log(msg);
     displayReceivedMsg(msg);
-    // document.getElementById('remote').innerText += msg.content + '\n';
 });
 // 
 // 
@@ -53,15 +51,11 @@ __SOCKET.on('liveStreamTerminated', () => {
         document.getElementById('remoteVideo').srcObject = null;
         // 
         document.getElementById('remoteVideoPoster').style.display = "flex";
-        console.log('ended');
     }
 });
 // 
 // 
 __SOCKET.on('newNotification', (date, state, nId) => {
-    // sessionStorage.setItem('smtg', JSON.stringify(data));
-    // window.location.href = "/patient/contact";
-    console.log(date);
     addNotification(date, state, nId);
 });
 // 

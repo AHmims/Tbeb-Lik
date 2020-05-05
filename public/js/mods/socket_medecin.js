@@ -9,7 +9,6 @@ __SOCKET.on('connect', () => {
 __SOCKET.on('msgReceived', msg => {
     console.log(msg);
     displayReceivedMsg(msg);
-    // document.getElementById('remote').innerText += msg.content + '\n';
 });
 __SOCKET.on('p_liste', patients => {
     if (window.location.pathname == "/medecin/contact") {
@@ -36,9 +35,6 @@ __HUB_SOCKET.on('getNotifs', data => {
         console.log(data);
         notifMiddleMan(data);
     }
-    // 
-    // 
-    // __HUB_SOCKET.emit('requestValidated',)
 });
 // 
 __HUB_SOCKET.on('notifAccepted', nId => {
@@ -49,13 +45,11 @@ __HUB_SOCKET.on('notifAccepted', nId => {
 // 
 // 
 function notificationAccepted(notifId, date) {
-    // console.log(notifId);
     __SOCKET.emit('joinRoom', notifId, date);
     __HUB_SOCKET.emit('updateNotif', notifId);
 }
 
 function sendMsg(msg) {
-    // console.log('dong dong');
     __SOCKET.emit('msgSent', msg);
 }
 // 
@@ -84,7 +78,6 @@ async function streaminit() {
         stream: stream,
         trickle: false
     })
-    // __SOCKET.emit('liveStreamInit');
     // 
     __PEER.on('signal', function (data) {
         if (!ready)
