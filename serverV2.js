@@ -16,9 +16,6 @@ const _CLASSES = require('./model/classes');
 const _DB = require('./model/dbOperations');
 //GLOBAL VARIABLES
 const __PORT = 8080;
-let chatters = [],
-    rooms = [],
-    notifications = []; // .reolves => true / false / complete
 //MIDDLEWARES
 __APP.use(__EXPRESS.urlencoded({
     extended: true
@@ -34,7 +31,7 @@ __IO.on('connection', socket => {
             let exists = await _DB.consultationCheck(user.userId);
             if (!exists) {
                 let insertRes = await _DB.insertData(new _CLASSES.preConsultation(null, null, data.motif, data.atcd, data.nbJourA, false, user.userId));
-                console.log(`Preconsultation Insert => ${insertRes}`);
+                // console.log(`Preconsultation Insert => ${insertRes}`);
                 // 
                 // console.log('')
                 let notifData = await getNotificationFullData(user.userId);
@@ -53,10 +50,8 @@ const __CHAT = __IO.of('/chat');
 const __HUB = __IO.of('/medecinHub');
 // CHAT
 __CHAT.on('connection', socket => {
-    console.log('Chat in');
-    // 
     socket.on('setPatient', async patientId => {
-        console.log(patientId);
+        // console.log(patientId);
         let userInstance = setUserSocket('Patient', socket, patientId);
         // 
         let exsistingUser = await _DB.getAppUserDataById(userInstance.userId);
@@ -74,13 +69,11 @@ __CHAT.on('connection', socket => {
             // 
             if (exsistingUser.linkedMedecinMatricule != null)
                 await getPatientList(exsistingUser.linkedMedecinMatricule, userInstance.userId);
-            // updateRooms(userData.userId);
         }
         // 
         else {
             let insertResult = await _DB.insertData(userInstance);
             socket.join(userInstance.roomId);
-            // getPatientList(userInstance.linkedMedecinMatricule);
         }
     });
     // 
@@ -97,8 +90,6 @@ __CHAT.on('connection', socket => {
                 table: "appUser",
                 id: "userId"
             });
-            // 
-            // await getPatientList(medecinId);
         }
         // 
         else {
@@ -115,23 +106,10 @@ __CHAT.on('connection', socket => {
                     table: "room",
                     id: "userPatientMatricule"
                 });
-                console.log('dbPatientUpdate => ', dbPatientUpdate);
+                // console.log('dbPatientUpdate => ', dbPatientUpdate);
                 socket.join(roomData.roomId);
             }
         }
-        // console.log(chatters);
-        //JOIN THE FIRST ROOM IF THE DOCTOR IS A PART OF ONE
-        /*for (let i = 0; i < notifications.length; i++) {
-            if (notifications[i].medecin == medecinId) {
-                let functionData = joiningRoom(notifications[i].index);
-                let roomId = functionData.roomId;
-                // 
-                socket.join(roomId);
-                break;
-            }
-
-        }*/
-
     });
     // 
     socket.on('disconnect', async () => {
@@ -163,9 +141,9 @@ __CHAT.on('connection', socket => {
         if (roomId != null)
             socket.join(roomId);
         else
-            console.log('joinRoom => roomId == null');
-        // 
-        let dbRes = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
+            // console.log('joinRoom => roomId == null');
+            // 
+            let dbRes = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
         var medecinId = dbRes != null ? dbRes.userId : null;
         // 
         if (medecinId != null) {
@@ -178,7 +156,7 @@ __CHAT.on('connection', socket => {
                     table: "appUser",
                     id: "userId"
                 });
-                console.log('dbPatientUpdate => ' + dbPatientUpdate);
+                // console.log('dbPatientUpdate => ' + dbPatientUpdate);
                 // 
                 let updatedRoomLinkedMedecin = await _DB.customDataUpdate({
                     userMedecinMatricule: medecinId
@@ -186,7 +164,7 @@ __CHAT.on('connection', socket => {
                     table: "room",
                     id: "roomId"
                 });
-                console.log('updatedRoomLinkedMedecin => ' + updatedRoomLinkedMedecin);
+                // console.log('updatedRoomLinkedMedecin => ' + updatedRoomLinkedMedecin);
                 // 
                 let exists = await _DB.checkExistence({
                     table: 'consultation',
@@ -195,7 +173,7 @@ __CHAT.on('connection', socket => {
                 let dbInsertRet = 0;
                 if (!exists)
                     dbInsertRet = await _DB.insertData(new _CLASSES.consultation(-1, date, medecinId, '', notificationId));
-                console.log('dbInsertRet =>  : ' + dbInsertRet);
+                // console.log('dbInsertRet =>  : ' + dbInsertRet);
                 // 
 
             }
@@ -207,7 +185,7 @@ __CHAT.on('connection', socket => {
         // 
         if (room != null) {
             msg = await getMsgAdditionalData(msg, 'Text');
-            console.log(msg);
+            // console.log(msg);
             socket.to(room).emit('msgReceived', msg); //MESSAGE RECEIVED BY EVERYONE EXCEPT SENDER
             //__CHAT.to(room.roomId).emit('msgReceived', msg); // MESSAGE RECEIVED BY EVERYONE INCLUDIG SENDER
         }
@@ -216,19 +194,19 @@ __CHAT.on('connection', socket => {
     // VIDEO
     // socket.on('liveStreamInit', () => {
     //     let roomId = getRoomIdFromSocket();
-    //     console.log('liveStreamInit()');
+    //     // console.log('liveStreamInit()');
     //     socket.to(roomId).emit('patientLink');
     // });
     // 
     socket.on('liveStreamInitFail', async () => {
         let roomId = await getRoomIdFromSocket();
-        console.log('liveStreamInitFail()');
+        // console.log('liveStreamInitFail()');
         socket.to(roomId).emit('patientLinkFailed');
     });
     // 
     socket.on('liveStreamLink', async (data) => {
         let roomId = await getRoomIdFromSocket();
-        console.log('liveStreamLink() => ');
+        // console.log('liveStreamLink() => ');
         socket.to(roomId).emit('liveStreamDataFlux', data);
     });
     //
@@ -236,18 +214,6 @@ __CHAT.on('connection', socket => {
     // 
     function setUserSocket(type, socket, id) {
         return new _CLASSES.appUser(id, type, socket.id, true);
-        // -- ----------
-        // let status = await _DB.insertData(new _CLASSES.appUser(id, type, socket.id, true));
-        // if (status > 0) {
-        //     return await _DB.getAppUserDataById(id);
-        // }
-        // -- -------------
-        // return {
-        //     userId: id,
-        //     type: type,
-        //     socket: socket.id,
-        //     online: true
-        // }
     }
     // 
     async function getPatientList(medecinId, patientId) {
@@ -279,7 +245,7 @@ __CHAT.on('connection', socket => {
         // console.log(medecinSocketId.socket);
         // console.log(appUsersPatients);
         if (appUsersPatients.length > 0) {
-            console.log('getPatientList() => ', appUsersPatients);
+            // console.log('getPatientList() => ', appUsersPatients);
             socket.to(medecinSocketId.socket).emit('p_liste', appUsersPatients);
         }
     }
@@ -290,7 +256,6 @@ __CHAT.on('connection', socket => {
         // 
         if (msgObject.roomId != null) {
             let retData = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
-            // let roomData = await _DB.getRoomDataById(msgObject.roomId);
             // 
             msgObject.Matricule_emmeter = retData.userId;
             // 
@@ -301,7 +266,7 @@ __CHAT.on('connection', socket => {
     async function joiningRoom(nId, date = null) {
         let dbResult = await _DB.getRoomIdByNotifId(nId);
         // 
-        console.log('dbResult =>', dbResult);
+        // console.log('dbResult =>', dbResult);
         // 
         let retData = {
             roomId: dbResult != null ? dbResult.roomId : null,
@@ -310,8 +275,6 @@ __CHAT.on('connection', socket => {
         // 
         if (!Boolean(dbResult.accepted) && retData.roomId != null)
             socket.to(retData.roomId).emit('newNotification', date, false, nId);
-        // 
-        //TO-DO CREATE TABLE CONSULTATION INSTANCE
         // 
         let updateState = await _DB.customDataUpdate({
             accepted: true
@@ -330,10 +293,6 @@ __CHAT.on('connection', socket => {
     }
     // 
     async function removeMeFromEveryInstanceSoThatThingsWontBreakLater(userId) {
-        // REMOVE TRACE FROM THE ROOMS
-        console.log(userId);
-        // let retData = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
-        // console.log("retData => ", retData);
         let room = await _DB.getRoomId("userMedecinMatricule", userId);
         // 
         if (room != null) {
@@ -353,11 +312,7 @@ __CHAT.on('connection', socket => {
 });
 // NOTIICATION SYSTEM
 __HUB.on('connection', socket => {
-    // console.log('___MEDECIN ON___' + socket.id);
     socket.on('updateNotif', (notifId) => {
-        // SOME SHIT HERE
-        // AND BY SHIT I MEAN SEND SOME DATA TO ALL DOCTORS TO INFORM THEM 
-        // THAT THIS ORDER IS NO LONGER ACTIVE
         __HUB.emit('notifAccepted', notifId);
     });
 });
@@ -493,8 +448,6 @@ __APP.post('/linkWithMedecin', async (req, res) => {
         } else res.end('Champ non clickable');
     } else
         res.end('Erreur');
-    // console.log(req.body.notif);
-    // res.redirect
 });
 // 
 __APP.post('/getPatientNotifications', async (req, res) => {

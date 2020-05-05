@@ -127,8 +127,8 @@ async function customDataUpdate(keyANDvalue, id, params) {
     strSection = removeLastChar(strSection);
     keyANDvalue[1].push(id);
     // 
-    console.log(`UPDATE ${params.table} SET ${strSection} WHERE ${params.id} = ?`);
-    console.log(keyANDvalue[1]);
+    // console.log(`UPDATE ${params.table} SET ${strSection} WHERE ${params.id} = ?`);
+    // console.log(keyANDvalue[1]);
     // 
     try {
         let req = `UPDATE ${params.table} SET ${strSection} WHERE ${params.id} = ?`,
@@ -282,7 +282,7 @@ async function getPatientDoculentDataFromMedecinId(medecinId) {
 }
 // 
 async function getChatPatients(medecinId, constraint) {
-    console.log(medecinId);
+    // console.log(medecinId);
     try {
         let req = `SELECT a.userId,a.online,CONCAT(p.NOM_PAT,' ',p.Prenom_PAT) as nom,n.idPreCons FROM appUser AS a,patients AS p,preConsultation AS n WHERE a.linkedMedecinMatricule = ? AND a.userId = p.MATRICULE_PAT AND a.userId = n.MATRICULE_PAT ${constraint}`,
             cnx = await db.connect(),
@@ -316,8 +316,8 @@ async function getNotificationdata(notifId) {
             res = await cnx.query(req, [notifId]);
         cnx.release();
         // 
-        console.log(req);
-        console.log(res[0]);
+        // console.log(req);
+        // console.log(res[0]);
         return res[0].length > 0 ? res[0][0] : null;
     } catch (err) {
         console.error('error :', err);
