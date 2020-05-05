@@ -20,3 +20,7 @@ function notifMiddleMan(data) {
         creationCardConsultation(element, element.index);
     });
 }
+// 
+$.post('/getNotifications', {}, (response) => {
+    notifMiddleMan(JSON.parse(response));
+});

@@ -36,6 +36,7 @@ __IO.on('connection', socket => {
                 let insertRes = await _DB.insertData(new _CLASSES.preConsultation(null, null, data.motif, data.atcd, data.nbJourA, false, user.userId));
                 console.log(`Preconsultation Insert => ${insertRes}`);
                 // 
+                // console.log('')
                 let notifData = await getNotificationFullData(user.userId);
                 __HUB.emit('getNotifs', [notifData]);
             } else
@@ -235,10 +236,11 @@ __CHAT.on('connection', socket => {
     }
     // 
     async function getPatientList(medecinId, patientId) {
-        let patientByMedecin = await _DB.getChatPatients(medecinId, `AND a.userId = '${patientId}'`);
-        let medecinSocketId = await _DB.getAppUserCustomData(["socket"], medecinId);
-        socket.to(medecinSocketId.socket).emit('p_liste', patientByMedecin);
-        /*let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
+        // let patientByMedecin = await _DB.getChatPatients(medecinId, `AND a.userId = '${patientId}'`);
+        // let medecinSocketId = await _DB.getAppUserCustomData(["socket"], medecinId);
+        // socket.to(medecinSocketId.socket).emit('p_liste', patientByMedecin);
+        // 
+        let appUsersPatients = await _DB.getAppUserPatientsByMedecinId(medecinId);
         //
         for (let i = 0; i < appUsersPatients.length; i++) {
             let pholder = Object.values(appUsersPatients[i]);
@@ -264,7 +266,7 @@ __CHAT.on('connection', socket => {
         if (appUsersPatients.length > 0) {
             console.log('getPatientList() => ', appUsersPatients);
             socket.to(medecinSocketId.socket).emit('p_liste', appUsersPatients);
-        }*/
+        }
     }
     // 
     async function getMsgAdditionalData(msgTxt, type) {
@@ -290,7 +292,7 @@ __CHAT.on('connection', socket => {
         }
         // 
         if (!Boolean(dbResult.accepted) && retData.roomId != null)
-            socket.to(retData.roomId).emit('newNotification', date, true);
+            socket.to(retData.roomId).emit('newNotification', date, true, nId);
         // 
         //TO-DO CREATE TABLE CONSULTATION INSTANCE
         // 
@@ -446,6 +448,29 @@ __APP.post('/getNotifications', async (req, res) => {
     res.end(JSON.stringify(data));
 });
 // 
+__APP.post('/linkWithMedecin', async (req, res) => {
+    console.log(req.body.notif);
+    let data = await _DB.getNotificationdata(req.body.notif);
+    console.log(data);
+    if (data != null) {
+        if (data.accepted == 1) {
+            let dateNow = new Date(Date.now());
+            let notifDate = new Date(data.DATE_CONSULTATION);
+            if (notifDate - dateNow <= 0)
+                res.redirect('/medecin/contact');
+            else
+                res.end('false');
+        } else res.end('Champ non clickable');
+    } else
+        res.end('Erreur');
+    // console.log(req.body.notif);
+    // res.redirect
+});
+// 
+__APP.post('/getPatientNotifications', async (req, res) => {
+    let result = await _DB.getAllPatientNotification(req.body.matricule);
+    res.end(JSON.stringify(result));
+});
 // 
 //START SERVER
 __SERVER.listen(__PORT, '0.0.0.0', () => {

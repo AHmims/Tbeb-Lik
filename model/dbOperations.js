@@ -293,6 +293,36 @@ async function getChatPatients(medecinId, constraint) {
         console.error('error :', err);
     }
 }
+// 
+async function getAllPatientNotification(id) {
+    try {
+        let req = `SELECT c.JOUR_REPOS,c.DATE_CONSULTATION,p.idPreCons FROM preConsultation as p,consultation as c WHERE p.idPreCons = c.idPreCons AND p.accepted = true AND p.MATRICULE_PAT = ?`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [id]);
+        cnx.release();
+        // 
+        return res[0];
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
+// 
+async function getNotificationdata(notifId) {
+    try {
+        let req = `select p.accepted,c.DATE_CONSULTATION from preConsultation as p,consultation as c where p.idPreCons = ? and p.idPreCons = c.idPreCons`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [notifId]);
+        cnx.release();
+        // 
+        console.log(req);
+        console.log(res[0]);
+        return res[0].length > 0 ? res[0][0] : null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+
+}
+
 //#endregion
 // 
 //#region HELPER FUNCTIONS
@@ -349,6 +379,8 @@ module.exports = {
     getLastInsertedNotification,
     consultationCheck,
     getPatientDoculentDataFromMedecinId,
-    getChatPatients
+    getChatPatients,
+    getAllPatientNotification,
+    getNotificationdata
 }
 // 

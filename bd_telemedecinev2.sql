@@ -102,6 +102,7 @@ CREATE TABLE IF NOT EXISTS `consultation` (
 	`JOUR_REPOS` int(11) DEFAULT -1,
 	`DATE_CONSULTATION` datetime NOT NULL,
 	`Matricule_Med` char(250) NOT NULL,
+    `commentaire` text,
 	`idPreCons` char(250) NOT NULL,
 	KEY `FK_CONSULTATION` (`Matricule_Med`),
 	KEY `FK_CONTIENT3` (`idPreCons`)
@@ -329,7 +330,9 @@ update room set userMedecinMatricule = 'HG97' where roomId = 'cRoom-97615';
 drop table room;
 insert into appUser (userId,userType,socket,online) values('HG97','Medecin','/socket',true);
 insert into preConsultation values('x',default,'txt','txt',1,0,'BH82904');
-delete from preConsultation where idPreCons = 'x';
+delete from preConsultation where idPreCons <> 'x';
+delete from room where roomId <>'ss';
+delete from appUser where roomId <>'ss';
 select * from preConsultation;
 select * from patients;
 -- ---
@@ -362,12 +365,17 @@ delete from consultation where Matricule_Med = 'HG97';
 -- ---- 
 SELECT concat(NOM_PAT,' ',Prenom_PAT) AS nom,TIMESTAMPDIFF(YEAR, Date_Naissence, CURDATE()) AS age,Tel AS tel FROM patients WHERE MATRICULE_PAT = '';
 -- ----
-SELECT * FROM preConsultation;
+SELECT c.JOUR_REPOS,p.* 
+FROM preConsultation as p,consultation as c
+WHERE p.idPreCons = c.idPreCons;
+
+select p.accepted,c.DATE_CONSULTATION from preConsultation as p,consultation as c where p.idPreCons = c.idPreCons;
 select * from consultation;
+
 update consultation set JOUR_REPOS = -1 where idPreCons= 'NOTIF-530846';
 update consultation set idPreCons = 'NOTIF-530846' where idPreCons= 'NOTIF-677351';
-delete from preConsultation where accepted = true
-delete from consultation where idPreCons != 'r'
+delete from preConsultation where accepted = true;
+delete from consultation where idPreCons <> 'r';
 -- ----
 select count(*) from preConsultation where MATRICULE_PAT = 'BH82903' AND idPreCons not in (select idPreCons from consultation where JOUR_REPOS >= 0);
 select count(*) from preConsultation as p,consultation as c
@@ -394,4 +402,7 @@ SELECT a.userId,a.online,CONCAT(p.NOM_PAT,' ',p.Prenom_PAT) as nom,n.idPreCons
 FROM appUser AS a,patients AS p,preConsultation AS n 
 WHERE a.linkedMedecinMatricule = 'HG97' 
 AND a.userId = p.MATRICULE_PAT
-AND a.userId = n.MATRICULE_PAT;
+AND a.userId = n.MATRICULE_PAT
+AND a.userId = 'BH82982';
+-- ---
+select * from appUser where userId = 'BH82982';

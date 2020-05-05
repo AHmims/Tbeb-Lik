@@ -31,7 +31,7 @@ __SOCKET.on('patientLinkFailed', () => {
 // 
 __HUB_SOCKET.on('getNotifs', data => {
     console.log(data);
-    notifMiddleMan(data);
+    // notifMiddleMan(data);
     // 
     // 
     // __HUB_SOCKET.emit('requestValidated',)
