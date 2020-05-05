@@ -134,7 +134,7 @@ __CHAT.on('connection', socket => {
             if (retData.userType == 'Patient') {
                 getPatientList(retData.linkedMedecinMatricule, retData.userId);
             } else
-                removeMeFromEveryInstanceSoThatThingsWontBreakLater();
+                removeMeFromEveryInstanceSoThatThingsWontBreakLater(retData.userId);
             // 
         }
     });
@@ -286,6 +286,8 @@ __CHAT.on('connection', socket => {
     async function joiningRoom(nId, date = null) {
         let dbResult = await _DB.getRoomIdByNotifId(nId);
         // 
+        console.log('dbResult =>', dbResult);
+        // 
         let retData = {
             roomId: dbResult != null ? dbResult.roomId : null,
             arrayIndex: -1
@@ -312,11 +314,12 @@ __CHAT.on('connection', socket => {
         return dbResult != null ? dbResult.roomId : null;
     }
     // 
-    async function removeMeFromEveryInstanceSoThatThingsWontBreakLater() {
-        socket.leaveAll();
+    async function removeMeFromEveryInstanceSoThatThingsWontBreakLater(userId) {
         // REMOVE TRACE FROM THE ROOMS
-        let retData = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
-        let room = await _DB.getRoomId("userMedecinMatricule", retData.userId);
+        console.log(userId);
+        // let retData = await _DB.getAppUserCustomDataBySocket(["userId"], socket.id);
+        // console.log("retData => ", retData);
+        let room = await _DB.getRoomId("userMedecinMatricule", userId);
         // 
         if (room != null) {
             let updatingResult = await _DB.customDataUpdate({
@@ -329,6 +332,7 @@ __CHAT.on('connection', socket => {
             socket.to(room.roomId).emit('liveStreamTerminated');
         }
         // 
+        socket.leaveAll();
     }
     // 
 });
@@ -339,7 +343,7 @@ __HUB.on('connection', socket => {
         // SOME SHIT HERE
         // AND BY SHIT I MEAN SEND SOME DATA TO ALL DOCTORS TO INFORM THEM 
         // THAT THIS ORDER IS NO LONGER ACTIVE
-        socket.emit('notifAccepted', notifId);
+        __HUB.emit('notifAccepted', notifId);
     });
 });
 // GLOBAL FUNCTIONS
@@ -404,7 +408,7 @@ __APP.get('/patient/contact', (req, res) => {
 __APP.post('/getActivePatients', async (req, res) => {
     let medecinId = req.body.medecinId;
     // 
-    let patientsByMedecin = await _DB.getChatPatients(medecinId);
+    let patientsByMedecin = await _DB.getChatPatients(medecinId, '');
     // 
     res.end(JSON.stringify(patientsByMedecin));
 });

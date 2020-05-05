@@ -58,7 +58,7 @@ __SOCKET.on('liveStreamTerminated', () => {
 });
 // 
 // 
-__SOCKET.on('newNotification', (date, state) => {
+__SOCKET.on('newNotification', (date, state, nId) => {
     // sessionStorage.setItem('smtg', JSON.stringify(data));
     // window.location.href = "/patient/contact";
     console.log(date);

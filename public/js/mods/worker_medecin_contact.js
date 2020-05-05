@@ -68,7 +68,7 @@ $.post('/getActivePatients', {
     medecinId: sessionStorage.getItem('user_M')
 }, (response) => {
     response = JSON.parse(response);
-    // console.log(response);
+    console.log(response);
     displayPatientsList(response);
 });
 // 
@@ -114,7 +114,7 @@ function createContactBox(patient, index) {
     // 
     let txtName = document.createElement('span');
     txtName.setAttribute('class', 'patientContactName');
-    txtName.innerText = patient.no;
+    txtName.innerText = patient.nom;
     let txtMatr = document.createElement('span');
     txtMatr.setAttribute('class', 'patientContactMatricule');
     txtMatr.innerText = patient.userId;

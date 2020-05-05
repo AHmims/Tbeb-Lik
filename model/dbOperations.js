@@ -282,12 +282,14 @@ async function getPatientDoculentDataFromMedecinId(medecinId) {
 }
 // 
 async function getChatPatients(medecinId, constraint) {
+    console.log(medecinId);
     try {
         let req = `SELECT a.userId,a.online,CONCAT(p.NOM_PAT,' ',p.Prenom_PAT) as nom,n.idPreCons FROM appUser AS a,patients AS p,preConsultation AS n WHERE a.linkedMedecinMatricule = ? AND a.userId = p.MATRICULE_PAT AND a.userId = n.MATRICULE_PAT ${constraint}`,
             cnx = await db.connect(),
             res = await cnx.query(req, [medecinId]);
         cnx.release();
         // 
+        // console.log(res[0]);
         return res[0];
     } catch (err) {
         console.error('error :', err);

@@ -24,3 +24,13 @@ function notifMiddleMan(data) {
 $.post('/getNotifications', {}, (response) => {
     notifMiddleMan(JSON.parse(response));
 });
+// 
+function hideSelectedNotifBox(nId) {
+    let boxes = document.getElementsByClassName('box-notif');
+    Array.from(boxes).forEach(box => {
+        if (box.getAttribute('id') == nId) {
+            console.log('in');
+            box.remove();
+        }
+    });
+}

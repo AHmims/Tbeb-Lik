@@ -38,7 +38,8 @@ function creationCardConsultation(data, boxId) {
     txt1.innerText = data.name;
     var txt2 = makeElement('span');
     txt2.setAttribute('class', 'box-notif-date');
-    txt2.innerText = data.date;
+    let date = new Date(data.date);
+    txt2.innerText = `${date.getDate()}/${date.getMonth()+1}/${date.getFullYear()} le ${date.getHours()}:${date.getMinutes()}`
     cont1.appendChild(txt1);
     cont1.appendChild(txt2);
     //cont 2
@@ -99,15 +100,15 @@ function creationCardConsultation(data, boxId) {
     cont6.appendChild(txt12);
     cont6.appendChild(conttxt13);
     // cont 7
-    var btn1 = makeElement('button');
-    btn1.setAttribute('class', 'btn-no m-top-20 radiusLeft margin-r-5');
-    btn1.innerText = 'Refuser';
-    // // BUTTON ACCEPTER
-    btn1.addEventListener('click', function () {
-        console.log('Refuser');
-    });
+    // var btn1 = makeElement('button');
+    // btn1.setAttribute('class', 'btn-no m-top-20 radiusLeft margin-r-5');
+    // btn1.innerText = 'Refuser';
+    // // // BUTTON ACCEPTER
+    // btn1.addEventListener('click', function () {
+    //     console.log('Refuser');
+    // });
     var btn2 = makeElement('button');
-    btn2.setAttribute('class', 'btn-acc m-top-20 radiusRight');
+    btn2.setAttribute('class', 'btn-acc m-top-20');
     btn2.innerText = 'Accepter';
     btn2.addEventListener('click', function () {
         console.log('Accepter');
@@ -165,7 +166,7 @@ function creationCardConsultation(data, boxId) {
             DTSDQS.type = "date";
         });
     });
-    cont7.appendChild(btn1);
+    // cont7.appendChild(btn1);
     cont7.appendChild(btn2);
     // //
     container.appendChild(cont1);

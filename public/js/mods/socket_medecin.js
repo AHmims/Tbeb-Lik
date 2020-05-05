@@ -12,8 +12,10 @@ __SOCKET.on('msgReceived', msg => {
     // document.getElementById('remote').innerText += msg.content + '\n';
 });
 __SOCKET.on('p_liste', patients => {
-    console.log(patients);
-    displayPatientsList(patients);
+    if (window.location.pathname == "/medecin/contact") {
+        console.log(patients);
+        displayPatientsList(patients);
+    }
 });
 // 
 // 
@@ -31,12 +33,16 @@ __SOCKET.on('patientLinkFailed', () => {
 // 
 __HUB_SOCKET.on('getNotifs', data => {
     console.log(data);
-    // notifMiddleMan(data);
+    notifMiddleMan(data);
     // 
     // 
     // __HUB_SOCKET.emit('requestValidated',)
 });
 // 
+__HUB_SOCKET.on('notifAccepted', nId => {
+    console.log(nId);
+    hideSelectedNotifBox(nId);
+});
 // 
 // 
 // 
