@@ -427,6 +427,12 @@ __APP.post('/finalizeCase', async (req, res) => {
             id: "idPreCons"
         });
         // 
+        let preConsultationUpdate = await _DB.customDataUpdate({
+            nbJourA: req.body.data.nbJourA
+        }, notif[0].idPreCons, {
+            table: "consultation",
+            id: "idPreCons"
+        });
         // console.log('consultationFinished => ', consultationFinished);
     }
     // 
