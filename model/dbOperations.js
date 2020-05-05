@@ -309,7 +309,7 @@ async function getAllPatientNotification(id) {
 // 
 async function getNotificationdata(notifId) {
     try {
-        let req = `select p.accepted,c.DATE_CONSULTATION from preConsultation as p,consultation as c where p.idPreCons = ? and p.idPreCons = c.idPreCons`,
+        let req = `select p.accepted,c.DATE_CONSULTATION,c.JOUR_REPOS from preConsultation as p,consultation as c where p.idPreCons = ? and p.idPreCons = c.idPreCons`,
             cnx = await db.connect(),
             res = await cnx.query(req, [notifId]);
         cnx.release();

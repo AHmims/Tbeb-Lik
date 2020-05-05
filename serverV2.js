@@ -449,17 +449,21 @@ __APP.post('/getNotifications', async (req, res) => {
 });
 // 
 __APP.post('/linkWithMedecin', async (req, res) => {
-    console.log(req.body.notif);
+    // console.log(req.body.notif);
     let data = await _DB.getNotificationdata(req.body.notif);
-    console.log(data);
+    // console.log(data);
     if (data != null) {
         if (data.accepted == 1) {
             let dateNow = new Date(Date.now());
             let notifDate = new Date(data.DATE_CONSULTATION);
             if (notifDate - dateNow <= 0)
                 res.redirect('/medecin/contact');
-            else
-                res.end('false');
+            else {
+                if (data.JOUR_REPOS > -1)
+                    res.end('Votre cas a ete traité');
+                else
+                    res.end('false');
+            }
         } else res.end('Champ non clickable');
     } else
         res.end('Erreur');

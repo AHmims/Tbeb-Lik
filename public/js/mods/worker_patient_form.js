@@ -30,10 +30,11 @@ function updateCounter() {
 }
 // 
 function addNotification(date, state, nId) {
+    // console.log(state);
     let cont = document.createElement('div');
     cont.setAttribute('id', nId);
     let contClass = 'notification';
-    if (state != true)
+    if (!state != true)
         contClass += ' notif-inactive';
     cont.setAttribute('class', contClass);
     // 
@@ -96,6 +97,6 @@ $.post('/getPatientNotifications', {
     console.log(JSON.parse(response));
     response = JSON.parse(response);
     response.forEach(notif => {
-        addNotification(notif.DATE_CONSULTATION, !notif.JOUR_REPOS > -1, notif.idPreCons);
+        addNotification(notif.DATE_CONSULTATION, notif.JOUR_REPOS > -1, notif.idPreCons);
     });
 });
