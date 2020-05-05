@@ -6,14 +6,12 @@ document.getElementById('msgSend').addEventListener('click', () => {
     sendMsg(document.getElementById('msgInput').value);
     // 
     let msg = {
-        date: new Date(Date.now()),
-        content: document.getElementById('msgInput').value,
+        Matricule_emmeter: sessionStorage.getItem('user_M'),
+        contenu: document.getElementById('msgInput').value,
+        roomId: null,
+        date_envoi: new Date(Date.now()),
         type: 'Text',
-        room: {
-            id: null,
-            sender: null,
-            receiver: null
-        }
+        id_pieceJointes: null
     }
     createMsgBox(msg, 'sentMessage');
     document.getElementById('msgInput').value = "";
@@ -92,7 +90,7 @@ function createMsgBox(msg, type) {
     var container = document.createElement('div');
     container.setAttribute('class', `messageContainer ${type}`);
     var txt = document.createElement('span');
-    txt.innerText = msg.content;
+    txt.innerText = msg.contenu;
     // 
     container.appendChild(txt);
     document.getElementsByClassName('chatSectionMessages')[0].appendChild(container);

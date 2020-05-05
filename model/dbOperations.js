@@ -324,7 +324,20 @@ async function getNotificationdata(notifId) {
     }
 
 }
+//
 
+async function selectFirstConsultationForChat(medecinId) {
+    try {
+        let req = `select c.idPreCons,p.MATRICULE_PAT from consultation as c,preconsultation as p where c.idPreCons = p.idPreCons and Matricule_Med = ? order by JOUR_REPOS asc, DATE_CONSULTATION asc limit 1`,
+            cnx = await db.connect(),
+            res = await cnx.query(req, [medecinId]);
+        cnx.release();
+        // 
+        return res[0].length > 0 ? res[0][0] : null;
+    } catch (err) {
+        console.error('error :', err);
+    }
+}
 //#endregion
 // 
 //#region HELPER FUNCTIONS
@@ -383,6 +396,7 @@ module.exports = {
     getPatientDoculentDataFromMedecinId,
     getChatPatients,
     getAllPatientNotification,
-    getNotificationdata
+    getNotificationdata,
+    selectFirstConsultationForChat
 }
 // 

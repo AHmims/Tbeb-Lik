@@ -104,6 +104,21 @@ __CHAT.on('connection', socket => {
         else {
             let insertResult = await _DB.insertData(userInstance);
         }
+        let resultRow = await _DB.selectFirstConsultationForChat(medecinId);
+        if (resultRow != null) {
+            let notifId = resultRow.idPreCons;
+            let roomData = await _DB.getRoomIdByNotifId(notifId);
+            if (roomData != null) {
+                let dbPatientUpdate = await _DB.customDataUpdate({
+                    userMedecinMatricule: medecinId
+                }, resultRow.MATRICULE_PAT, {
+                    table: "room",
+                    id: "userPatientMatricule"
+                });
+                console.log('dbPatientUpdate => ', dbPatientUpdate);
+                socket.join(roomData.roomId);
+            }
+        }
         // console.log(chatters);
         //JOIN THE FIRST ROOM IF THE DOCTOR IS A PART OF ONE
         /*for (let i = 0; i < notifications.length; i++) {

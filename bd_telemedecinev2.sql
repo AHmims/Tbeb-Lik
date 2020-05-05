@@ -316,7 +316,9 @@ select m.NOM_MED,s.NOM_SPEC from medecin as m,specialites as s
 	where m.ID_SPEC = s.ID_SPEC;
 
 select * from consultation;
+delete from consultation where commentaire = '';
 select * from preconsultation;
+delete from preconsultation where accepted = 1;
 select * from patients;
 
 insert into preconsultation(idPreCons,dateCreation,motif,atcd,nbJourA,MATRICULE_PAT) values (null, default, 'motif', 'atcd', 3,'BH82900');
@@ -332,9 +334,12 @@ insert into appUser (userId,userType,socket,online) values('HG97','Medecin','/so
 insert into preConsultation values('x',default,'txt','txt',1,0,'BH82904');
 delete from preConsultation where idPreCons <> 'x';
 delete from room where roomId <>'ss';
-delete from appUser where roomId <>'ss';
+delete from appUser where roomId = null;
 select * from preConsultation;
+select * from consultation;
 select * from patients;
+delete from preConsultation where MATRICULE_PAT = 'BH82899';
+
 -- ---
 select a.*,p.NOM_PAT,p.Prenom_PAT
 from appUser as a,patients as p
@@ -348,7 +353,7 @@ UPDATE appUser SET socket = 'sdqsdq',online = false WHERE userId = 'BH82903';
 SELECT r.roomId 
 FROM preConsultation AS p,room AS r
 WHERE p.MATRICULE_PAT = r.userPatientMatricule
-AND p.idPreCons = 
+AND p.idPreCons = '';
 -- -----
 select roomId from appUser where socket = '/chat#AStOtKYel13N87dkAAAA' AND userId in (select * from room)
 
@@ -406,3 +411,5 @@ AND a.userId = n.MATRICULE_PAT
 AND a.userId = 'BH82982';
 -- ---
 select * from appUser where userId = 'BH82982';
+-- ----
+SELECT a.userId,a.online,CONCAT(p.NOM_PAT,' ',p.Prenom_PAT) as nom,n.idPreCons FROM appUser AS a,patients AS p,preConsultation AS n WHERE a.linkedMedecinMatricule = 'XQC' AND a.userId = p.MATRICULE_PAT AND a.userId = n.MATRICULE_PAT;
