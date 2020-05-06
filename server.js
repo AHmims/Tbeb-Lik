@@ -203,6 +203,12 @@ __CHAT.on('connection', socket => {
         // console.log('liveStreamLink() => ');
         socket.to(roomId).emit('liveStreamDataFlux', data);
     });
+    // 
+    socket.on('endCall', async () => {
+        let roomId = await getRoomIdFromSocket();
+        // console.log('liveStreamLink() => ');
+        socket.to(roomId).emit('liveStreamTerminated');
+    });
     //
     //  
     // 

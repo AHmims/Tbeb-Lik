@@ -91,3 +91,14 @@ async function streaminit() {
     });
     // 
 }
+// 
+function endCall() {
+    if (__PEER != null) {
+        __PEER = null;
+        document.getElementById('clientVideo').srcObject = null;
+        document.getElementById('remoteVideo').srcObject = null;
+        // 
+        document.getElementById('remoteVideoPoster').style.display = "flex";
+    }
+    __SOCKET.emit('endCall');
+}

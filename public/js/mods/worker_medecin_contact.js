@@ -23,6 +23,7 @@ document.getElementById('msgVideo').addEventListener('click', () => {
 });
 // 
 document.getElementById('videoControl-btnEnd').addEventListener('click', () => {
+    endCall();
     document.getElementById('chatSection').style.display = "flex";
     document.getElementById('videoSection').style.display = "none";
 });
@@ -42,9 +43,18 @@ document.getElementById('popup-btnSubmit').addEventListener('click', () => {
         cmmnt: inputs[7].value
     }, (response) => {
         response = Boolean(response);
-        if (response)
+        if (response) {
+            let msg = {
+                Matricule_emmeter: sessionStorage.getItem('user_M'),
+                contenu: "Rapport",
+                roomId: null,
+                date_envoi: new Date(Date.now()),
+                type: 'Document',
+                id_pieceJointes: null
+            }
+            createMsgBox(msg, 'sentMessage');
             alert('Document generée avec success');
-        else
+        } else
             alert('Essayer une nouvelle fois');
     });
     document.getElementsByClassName('submitPopupBg')[0].style.display = "none";
